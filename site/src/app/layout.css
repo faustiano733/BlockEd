@@ -1,0 +1,26 @@
+
+.main{
+    grid-template-columns: 0.5fr 2fr;
+    grid-template-rows: 100vh;
+
+}
+.menu{
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5fr 2fr 2fr 2fr 2fr;
+    justify-items: stretch;
+    align-items: center;
+
+    border-right: solid 2px black;
+    background-color: #2d53da;
+  }
+  
+  .menu-option{
+    background-color: #ffffff;
+    padding: auto;
+    align-items: center;
+    
+  }
+  
+  .menu-option:hover{
+    cursor: pointer;
+  }

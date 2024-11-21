@@ -1,0 +1,22 @@
+.app{
+
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: space-evenly;
+}
+ 
+.aluno{
+    gap: 1vw;
+    background-color: #2d53da;
+    padding: 1vh 1vw;
+    width: 60%;
+    height: 10%;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: space-evenly;
+}
+
+.aluno:hover{
+    cursor: pointer;
+}
+
