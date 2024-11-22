@@ -1,0 +1,214 @@
+
+/*
+:root{
+  --upperSpace: 96px;
+}
+*/
+#main{
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - var(--upperSpace));
+  padding: 10px;
+  gap: 8px;
+  background: white;
+  /*background: red;*/
+
+}
+
+.bloqueioItem{
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  color: #2a4859;
+  padding: 7px;
+  border-radius: 5px;
+  border: solid 1px #2a4859;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bloqueioItem svg, .bloqueioItem img{
+  height: 30px;
+  width: 30px;
+}
+/*
+#main{
+ align-items: center;
+ justify-content: space-evenly;
+}
+.bloqueioItem{
+  width: fit-content;
+  flex-direction: column;
+  font-size: 11px;
+  font-weight: bold;
+  color: #2a4859;
+  padding: 7px;
+  border-radius: 5px;
+  border: solid 1px #2a4859;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bloqueioItem svg, .bloqueioItem img{
+  height: 90px;
+  width: 100px;
+}*/
+.menuItem{
+  display: none;
+  height: calc(100% - var(--upperSpace) + 2px);
+  width: 100%;
+  position: fixed;
+  top: calc(var(--upperSpace) - 2px);
+  left: 0;
+  background: white;
+  flex-direction: column;
+  padding: 5px 10px;
+}
+#menuOutros section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+#menuOutros section div{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+}
+#menuOutros section div img{
+  height: 30px;
+  width: 30px;
+}
+.linha_horizontal{
+  width: 100%;
+  height: 1px;
+  background: #bbb;
+}
+
+#menuSites section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+
+.site{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site img{
+  height: 30px;
+  width: 30px;
+}
+
+#menuAplicativos section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+
+.app{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app img{
+  height: 30px;
+  width: 30px;
+}
+
+
+.add_more{
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.add_more img, .add_more svg{
+  height: 25px;
+  width: 25px;
+}
+
+.closeButton{
+display: flex;
+justify-content: flex-end;
+width: 100%;
+
+}
+.closeButton img, .closeButton svg{
+  height: 30px;
+  width: 30px;
+}
+
+
+@media(min-width: 800px/*var(--desktop-min-width)*/){
+#main{
+ flex-direction: row;
+ align-items: center;
+ justify-content: center;
+ gap: 20px;
+}
+.bloqueioItem{
+  width: fit-content;
+  flex-direction: column;
+  font-size: 11px;
+  font-weight: bold;
+  color: #2a4859;
+  padding: 7px;
+  border-radius: 5px;
+  border: solid 1px #2a4859;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bloqueioItem svg, .bloqueioItem img{
+  height: 120px;
+  width: 140px;
+}
+/*
+#main{
+  filter: blur(1px) brightness(0.5);
+}
+*/
+.menuItem{
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+#menuAplicativos section{
+  height: 400px;
+  width: 360px;
+  border-radius: 10px;
+}
+#menuSites section{
+  height: 400px;
+  width: 360px;
+  border-radius: 10px;
+}
+#menuOutros section{
+  height: 400px;
+  width: 360px;
+  border-radius: 10px;
+}
+}

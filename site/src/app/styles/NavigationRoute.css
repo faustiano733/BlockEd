@@ -1,0 +1,25 @@
+#barra{
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  align-items: center;
+  width:100%;
+}
+
+.route{
+  width: 28%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: #ccc;
+  color: black;
+  font-weight: bold;
+  font-size: 13px;
+  max-width: 100px;
+}
+
+.proximo{
+  font-weight: bold;
+}
