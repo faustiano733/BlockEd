@@ -15,10 +15,13 @@
   }
   
   .menu-option{
-    background-color: #ffffff;
     padding: auto;
     align-items: center;
     
+  }
+
+  .menu-option:focus{
+    background-color: #ffffff;
   }
   
   .menu-option:hover{
