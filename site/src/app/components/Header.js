@@ -6,7 +6,7 @@ export default function Header(){
   return(
     <div className="Header">
       <div className="headerConteiner">
-        <img src={null}/>
+        <img src={"/img/internet.svg"}/>
         <span>BlockED</span> 
       </div>
       <div className="headerConteiner" id="headerMenuController">

@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import "../globals.css";
-
+import Menu from "@components/Menu.js";
 /*
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
+	<Menu />
         {children}
       </body>
     </html>

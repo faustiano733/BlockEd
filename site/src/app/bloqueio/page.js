@@ -44,14 +44,14 @@ export default function Bloqueios(){
    }
   return(
     <>
-    <Header />
-    <NavigationRoute diretorios={diretorios}/>
+    {/*<NavigationRoute diretorios={diretorios}/>*/}
     <div id="main" style={(menuActual ? {filter: "blur(1px) brightness(0.5)"} : {})}>
       <BloqueioItem src="/img/android.svg" text="Aplicativos" menu="aplicativos"/>
       <BloqueioItem src="/img/internet.svg" text="Sites" menu="sites"/>
       <BloqueioItem src="/img/more1.svg" text="Outros"  menu="outros"/>
       
     </div>
+    {/*
     <div id="menuSites" className="menuItem" style={( menuActual == "sites" ? {display: "flex"} : {})}>
         <section>
 	<CloseMenu />
@@ -97,7 +97,7 @@ export default function Bloqueios(){
         </div>
         <nav className="linha_horizontal"></nav>
         </section>
-      </div>
+      </div>*/}
     </>
     );
 }
