@@ -7,13 +7,13 @@ import Header from "@components/Header.js";
 
 
 export default function Bloqueios(){
-  const [menuActual, setMenuActual] = useState(null);
+  const [menuActual, setMenuActual] = useState("outros");
   const [diretorios, setDiretorios] = useState("");
   function BloqueioItem(props){
     return(
-      <div className="bloqueioItem" onClick={() => {setMenuActual(props.menu); setDiretorios("/"+props.menu)}}>
+      <div className={props.menu == menuActual ? "bloqueioItem bloqueioItemFocused" : "bloqueioItem"} onClick={() => {setMenuActual(props.menu)}}>
         <img src={props.src} />
-        {props.text}
+        <span>{props.text}</span>
        </div>
     );
   }
@@ -35,6 +35,14 @@ export default function Bloqueios(){
         </div>
      );
    }
+
+  function MenuOutros(){
+    return(
+      <div className="menuItem">
+	empty
+      </div>
+    );
+  }
    function CloseMenu(){
      return(
        <nav className="closeButton" onClick={() => {setMenuActual(null); setDiretorios("")}}>
@@ -44,60 +52,18 @@ export default function Bloqueios(){
    }
   return(
     <>
-    {/*<NavigationRoute diretorios={diretorios}/>*/}
-    <div id="main" style={(menuActual ? {filter: "blur(1px) brightness(0.5)"} : {})}>
-      <BloqueioItem src="/img/android.svg" text="Aplicativos" menu="aplicativos"/>
-      <BloqueioItem src="/img/internet.svg" text="Sites" menu="sites"/>
-      <BloqueioItem src="/img/more1.svg" text="Outros"  menu="outros"/>
-      
+    <div id="main">
+      <div id="mainHeader">
+        <BloqueioItem src="/img/android.svg" text="Aplicativos" menu="aplicativos"/>
+        <BloqueioItem src="/img/internet.svg" text="Sites" menu="sites"/>
+        <BloqueioItem src="/img/more.svg" text="Outros"  menu="outros"/>
+      </div>
+      <div id="mainContent">
+      	{/* menuActual == "aplicativos" && */}
+      	{/* menuActual == "sites"*/}
+      	{ menuActual == "outros" && <MenuOutros />}
+      </div>
     </div>
-    {/*
-    <div id="menuSites" className="menuItem" style={( menuActual == "sites" ? {display: "flex"} : {})}>
-        <section>
-	<CloseMenu />
-	<nav className="linha_horizontal"></nav>
-        <Site domain="www.facebook.com"/>
-        <nav className="linha_horizontal"></nav>
-        <Site domain="www.tiktok.com"/>
-        <nav className="linha_horizontal"></nav>
-        <div className="add_more">
-          <img src="/img/more5.svg" />
-        </div>
-        <nav className="linha_horizontal"></nav>
-        </section>
-     </div>
-     <div id="menuAplicativos" className="menuItem" style={( menuActual == "aplicativos" ? {display: "flex"} : {})}>
-        <section>
-	<CloseMenu />
-	<nav className="linha_horizontal"></nav>
-        <Aplicativo name="Facebook"/>
-        <nav className="linha_horizontal"></nav>
-        <Aplicativo name="TikTok"/>
-        <nav className="linha_horizontal"></nav>
-        <div className="add_more">
-          <img src="/img/more5.svg" />
-        </div>
-        <nav className="linha_horizontal"></nav>
-        </section>
-     </div>
-      <div id="menuOutros" className="menuItem" style={( menuActual == "outros" ? {display: "flex"} : {})}>
-        <section>
-        <CloseMenu />
-        <nav className="linha_horizontal"></nav>        
-        <div>
-          <img src="/img/camera.svg" />
-          <span>Câmera</span>
-          <input type="checkbox" />
-        </div>
-        <nav className="linha_horizontal"></nav>
-        <div>
-	  <img src="/img/internet.svg" />
-          <span>Internet</span>
-          <input type="checkbox" />
-        </div>
-        <nav className="linha_horizontal"></nav>
-        </section>
-      </div>*/}
     </>
     );
 }
