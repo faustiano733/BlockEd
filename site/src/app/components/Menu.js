@@ -18,10 +18,10 @@ export default function Menu(){
 	<span>BlockEd</span>
       </div>
       <div className="menuContent">
-	<MenuItem href="/" text="Início" src="/img/home4.svg"/>
-	<MenuItem href="/perfil" text="Perfil" src="/img/user_setting.svg"/>
-	<MenuItem href="/bloqueio" text="Bloqueio" src="/img/locker.svg"/>
-	<MenuItem href="/alunos" text="Alunos" src="/img/profile.svg"/>
+	<MenuItem href="/" text="Início" src="/img/home.svg"/>
+	<MenuItem href="/perfil" text="Perfil" src="/img/profile.svg"/>
+	<MenuItem href="/bloqueio" text="Bloqueio" src="/img/lock.svg"/>
+	<MenuItem href="/alunos" text="Alunos" src="/img/alunos.svg"/>
       </div>
     </div>
   )
