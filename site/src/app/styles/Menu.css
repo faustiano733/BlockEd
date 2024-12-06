@@ -4,7 +4,7 @@
   width: 100%;
 }
 .menuHeader{
-  height: 120px;
+  height: 140px;
   background: #042b3d;
   display: flex;
   flex-direction: column;
@@ -27,19 +27,19 @@
  align-items: center;
  text-decoration: none;
  color: #042b3d;
- font-weight: bold;
+ font-weight: 400;
  padding: 10px 15px;
 }
 
 .menu_item_focused{
-  background: #b4cbdf;
+  background: #fff;
 }
 .menu_item span{
   display: none;
 }
 .menu_item img, .menu_item svg{
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
 }
 
 
