@@ -189,6 +189,20 @@ export default function Bloqueios(){
       	if(menuActual == "sites") return <MenuSites />
       	if(menuActual == "outros") return <MenuOutros />
    }
+  function MainContentMenu(){
+    if(menuActual == "aplicativos") return <MenuAplicativos /> 
+    if(menuActual == "sites") return <MenuSites />
+    if(menuActual == "outros") return <MenuOutros />
+    /*return(
+      <div className="menuContentMenu">
+      </div>
+     )*/
+   }
+  function MainContentSubMenu(){
+    if(menuActual == "aplicativos") return <AdicionarAplicativos />
+    if(menuActual == "sites") return <AdicionarSites />
+    if(menuActual == "outros") return <EmptyMenu text="BlockEd (^ v ^)"/>
+   }
   return(
     <>
     <div id="main">
@@ -199,6 +213,14 @@ export default function Bloqueios(){
         <BloqueioItem src="/img/android.svg" text="Aplicativos" menu="aplicativos"/>
         <BloqueioItem src="/img/internet.svg" text="Sites" menu="sites"/>
         <BloqueioItem src="/img/more.svg" text="Outros"  menu="outros"/>
+      </div>
+      <div id="mainContent2">
+	<div className="mainContentMenu">
+       	  <MainContentMenu />
+	</div>
+        <div className="mainContentMenu">
+       	  <MainContentSubMenu />
+        </div>
       </div>
     </div>
     </>

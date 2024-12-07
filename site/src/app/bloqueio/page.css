@@ -25,12 +25,34 @@
   background: white;
   overflow-y: auto;
 }
+#mainContent2{
+  display: none;
+  height: stretch;
+  justify-content: space-evenly;
+  align-items: center;
+  overflow-y: hidden;
+}
+
+.mainContentMenu{
+  height: 90%;
+  max-height: 800px;
+  min-height: 400px;
+  width: 33%;
+  max-width: 500px;
+  min-width: 300px;
+  /*border: solid 1px #2a4859;*/
+  box-shadow: 0 0 4px 1px #ddd;
+  border-radius: 30px;
+  padding: 10px;
+  overflow-y: hidden;
+}
 .bloqueioItem{
   width: stretch;
   font-size: 15px;
   font-weight: bold;
-  color: #3d4146;
+  color: #2a4859;
   padding: 7px;
+  background: white;
   /*border-radius: 5px;
   border: solid 1px #2a4859;*/
   display: flex;
@@ -269,57 +291,43 @@ width: 100%;
 }
 
 */
-@media(min-width: 800px){
-#main{
- flex-direction: row;
- align-items: center;
- justify-content: center;
- gap: 20px;
- width: stretch;
-}
-.bloqueioItem{
-  width: fit-content;
-  flex-direction: column;
-  font-size: 11px;
-  font-weight: bold;
-  color: #2a4859;
-  padding: 7px;
-  border-radius: 20px;
-  border: solid 1px #2a4859;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.bloqueioItem svg, .bloqueioItem img{
-  height: 120px;
-  width: 140px;
-}
-/*
-#main{
-  filter: blur(1px) brightness(0.5);
-}
-*/
-.menuItem{
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-}
-#menuAplicativos section{
-  height: 400px;
-  width: 360px;
-  border-radius: 10px;
-  padding: 0 10px;
-}
-#menuSites section{
-  height: 400px;
-  width: 360px;
-  border-radius: 10px;
-  padding: 0 10px;
-}
-#menuOutros section{
-  height: 400px;
-  width: 360px;
-  border-radius: 10px;
-  padding: 0 10px;
-}
+@media(min-width: 900px){
+  #mainContent{
+    display: none;
+  }
+  #mainContent2{
+    display: flex;
+  }
+  #mainFooter{
+    position: relative;
+    top: 5px;
+    left: 5px;
+    align-items: flex-start;
+    flex-direction: column;
+    background: transparent;
+    gap: 10px;
+    width: fit-content;
+  }
+  .bloqueioItem{
+    width: fit-content;
+    border-radius: 5px;
+    /*border: solid 1px #2a4859;*/
+    box-shadow: 0 0 2px 1px #ddd;
+    flex-direction: row;
+    justify-content: space-between;
+    transition: all 0.5s;
+  }
+  .bloqueioItemFocused{
+    /*background: #22caf7;*/
+    border: none;
+  }
+  .bloqueioItemFocused span{
+    display: inline;
+  }
+  .add{
+    display: none;
+  }
+  #main{
+    width: stretch;
+  }
 }
