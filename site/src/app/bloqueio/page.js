@@ -109,7 +109,7 @@ export default function Bloqueios(){
 	{sites.map((elemento, index)=>{
           return <Site key={index} domain={elemento.domain} />        }
         )}
-	<Add />
+	<Add onClick={()=>{setSubMenu("adicionarSites")}}/>
       </div>
     );
   }
@@ -122,6 +122,40 @@ export default function Bloqueios(){
         </div>
      );
   }
+
+  function AdicionarSites(){
+    const [searchSiteLoading, setSearchSiteLoading] = useState(false);
+    const [searchedSiteData, setSearchedSiteData] = useState(null);
+    //const [searchedApps, setSearchedApps] = useState([]);
+    async function searchSite(){
+      await sleep(1000);
+      setSearchSiteLoading(false);
+      setSearchedSiteData({status: 200, domain: "Twitter.com", added: false, allowed: true});
+      //setSearchedApps([{name: "Whatsapp"}, {name: "Instagram"}])
+    }
+    return(
+      <div className="menuItem" id="adicionarSites">
+	<div>
+	  <input type="text" placeholder="Insira o domínio do site"/>
+	  <img src={searchSiteLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={()=>{setSearchSiteLoading(true); searchSite()}}/>
+	</div>
+	{ searchedSiteData && <> 
+	{/*<small>Resultados</small>*/}
+	<section>
+	  <span>Status: {searchedSiteData.status}</span>
+	  <span>Domínio: {searchedSiteData.domain}</span>
+	  <span>Já adicionado: {searchedSiteData.added ? "Sim" : "Não"}</span>
+	  <span>Elegível: {searchedSiteData.allowed ? "Sim" : "Não"}</span>
+	  {/*<span></span>
+	  <span></span>
+	  <span></span>*/}
+        </section>
+	<div className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site <img src="/img/add.svg"/></div>
+        </>}
+      </div>
+    );
+  }
+
   function MenuOutros(){
     return(
       <div className="menuItem" id="menuOutros">
@@ -150,6 +184,7 @@ export default function Bloqueios(){
    }
    function MainContent(){
      	if(subMenu == "adicionarAplicativos") return <AdicionarAplicativos />
+     	if(subMenu == "adicionarSites") return <AdicionarSites />
       	if(menuActual == "aplicativos") return <MenuAplicativos />
       	if(menuActual == "sites") return <MenuSites />
       	if(menuActual == "outros") return <MenuOutros />
