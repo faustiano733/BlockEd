@@ -315,11 +315,16 @@ width: 100%;
     box-shadow: 0 0 2px 1px #ddd;
     flex-direction: row;
     justify-content: space-between;
-    transition: all 0.5s;
+    transition: all 1s ease;
   }
   .bloqueioItemFocused{
     /*background: #22caf7;*/
     border: none;
+    /*animation: girando 1s;*/
+    transition: all 1s ease;
+  }
+  .bloqueioItemFocused img{
+    animation: girando 1s;
   }
   .bloqueioItemFocused span{
     display: inline;
@@ -330,4 +335,14 @@ width: 100%;
   #main{
     width: stretch;
   }
+}
+
+
+@keyframes girando{
+ 0%{
+   transform: rotateY(0deg);
+ }
+ 100%{
+   transform: rotateY(360deg);
+ }
 }
