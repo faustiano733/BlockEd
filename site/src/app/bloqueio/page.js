@@ -2,8 +2,10 @@
 import "./page.css";
 import {useEffect, useState} from "react";
 import NavigationRoute from "@components/NavigationRoute.js";
+import { HorizontalLine, VerticalLine } from "@components/Lines.js";
 import Header from "@components/Header.js";
-
+import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "../../Icons.jsx";
+import { Metadata } from "next";
 
 
 export default function Bloqueios(){
@@ -18,7 +20,7 @@ export default function Bloqueios(){
   function BloqueioItem(props){
     return(
       <div className={props.menu == menuActual ? "bloqueioItem bloqueioItemFocused" : "bloqueioItem"} onClick={() => {setMenuActual(props.menu); setSubMenu(null)}}>
-        <img src={props.src} />
+        {props.icon}
         <span>{props.text}</span>
        </div>
     );
@@ -32,7 +34,7 @@ export default function Bloqueios(){
   }
   function Add(props){
     return(
-	<img className="add" src="/img/add2.svg" onClick={props.onClick && props.onClick}/>
+	<AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/>
     );
   }
     
@@ -63,16 +65,17 @@ export default function Bloqueios(){
   }
     if(props.loaded) return(
       <div className="app">
-         <img src="/img/android.svg"/>
+         <AndroidIcon />
          <span>{props.name}</span>
-         <img src="/img/delete.svg"/>
+         <DeleteIcon color="#ff8080"/>
        </div>
     );
     else return(
       <div className="app">
-         <img src="/img/android.svg"/>
+         <AndroidIcon />
          <span>{props.name}</span>
-         <img src={(appLoading) ? "/img/pending.svg" : (appAccepted) ? "/img/check.svg" : "/img/add.svg"} onClick={()=>{if(!appAccepted){setAppLoading(true); addApp(props.name)}}}/>
+         {/*<img src={(appLoading) ? "/img/pending.svg" : (appAccepted) ? "/img/check.svg" : "/img/add.svg"} onClick={()=>{if(!appAccepted){setAppLoading(true); addApp(props.name)}}}/>*/}
+         {appLoading ? <PendingIcon /> : appAccepted ? <CheckIcon /> : <AddIcon onClick={()=>{setAppLoading(true); addApp(props.name)}}/>}
       </div>
     );
   }
@@ -88,7 +91,8 @@ export default function Bloqueios(){
       <div className="menuItem" id="adicionarAplicativos">
 	<div>
 	  <input type="text" placeholder="Insira o nome do aplicativo"/>
-	  <img src={searchAppLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={()=>{setSearchAppLoading(true); searchApp()}}/>
+	  {/*<img src={searchAppLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={}/>*/}
+          { searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}
 	</div>
 	<small>Resultados</small>
 	<section>
@@ -107,7 +111,8 @@ export default function Bloqueios(){
       <div className="menuItem" id="menuSites">
         {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
 	{sites.map((elemento, index)=>{
-          return <Site key={index} domain={elemento.domain} />        }
+          return <Site key={index} domain={elemento.domain} /> 
+         }
         )}
 	<Add onClick={()=>{setSubMenu("adicionarSites")}}/>
       </div>
@@ -116,9 +121,9 @@ export default function Bloqueios(){
   function Site(props){
      return(
        <div className="site">
-          <img src="/img/internet.svg"/>
+          <SiteIcon />
           <span>{props.domain}</span>
-          <img src="/img/delete.svg"/>
+          <DeleteIcon color="#ff8080"/>
         </div>
      );
   }
@@ -137,7 +142,8 @@ export default function Bloqueios(){
       <div className="menuItem" id="adicionarSites">
 	<div>
 	  <input type="text" placeholder="Insira o domínio do site"/>
-	  <img src={searchSiteLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={()=>{setSearchSiteLoading(true); searchSite()}}/>
+	  {/*<img src={searchSiteLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={()=>{setSearchSiteLoading(true); searchSite()}}/>*/}
+          {searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} /> }
 	</div>
 	{ searchedSiteData && <> 
 	{/*<small>Resultados</small>*/}
@@ -150,7 +156,7 @@ export default function Bloqueios(){
 	  <span></span>
 	  <span></span>*/}
         </section>
-	<div className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site <img src="/img/add.svg"/></div>
+	<div className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site <AddIcon /></div>
         </>}
       </div>
     );
@@ -159,9 +165,9 @@ export default function Bloqueios(){
   function MenuOutros(){
     return(
       <div className="menuItem" id="menuOutros">
-	<MenuOutrosServico img="site.svg" text="Internet" />
-	<MenuOutrosServico img="camera.svg" text="Câmera" />
-	<MenuOutrosServico img="sound.svg" text="Silencioso" />
+	<MenuOutrosServico icon={<InternetIcon />} text="Internet" />
+	<MenuOutrosServico icon={<CameraIcon />} text="Câmera" />
+	<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />
       </div>
     );
   }
@@ -169,7 +175,7 @@ export default function Bloqueios(){
   function MenuOutrosServico(props){
     return(
       <div>
-        <img src={"/img/"+props.img} />
+        {props.icon}
         <span>{props.text}</span>
         <input type="checkbox" />
       </div>
@@ -210,14 +216,16 @@ export default function Bloqueios(){
 	<MainContent />
       </div>
       <div id="mainFooter">
-        <BloqueioItem src="/img/android.svg" text="Aplicativos" menu="aplicativos"/>
-        <BloqueioItem src="/img/internet.svg" text="Sites" menu="sites"/>
-        <BloqueioItem src="/img/more.svg" text="Outros"  menu="outros"/>
+        <BloqueioItem icon={<AndroidIcon />} text="Aplicativos" menu="aplicativos"/>
+        <BloqueioItem icon={<SiteIcon />} text="Sites" menu="sites"/>
+        <BloqueioItem icon={<MoreIcon />} text="Outros"  menu="outros"/>
       </div>
+      {/*<HorizontalLine />*/}
       <div id="mainContent2">
 	<div className="mainContentMenu">
        	  <MainContentMenu />
 	</div>
+        <VerticalLine />
         <div className="mainContentMenu">
        	  <MainContentSubMenu />
         </div>
