@@ -138,7 +138,7 @@
   align-items: center;
   justify-content: space-between;
   /*border: solid 1px #ddd;*/
-  box-shadow: 0 0 3px 0.5px #ddd;
+  box-shadow: 0 0 3px 1px #eee;
   border-radius: 5px;
   padding: 8px /*15px*/;
 }

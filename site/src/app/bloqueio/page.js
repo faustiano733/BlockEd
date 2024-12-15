@@ -7,6 +7,13 @@ import Header from "@components/Header.js";
 import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "../../Icons.jsx";
 import { Metadata } from "next";
 
+export function EmptyMenu({text}){
+    return(
+      <section className="emptyMenu">
+	{ text }
+      </section>
+    );
+  }
 
 export default function Bloqueios(){
   const [menuActual, setMenuActual] = useState("aplicativos");
@@ -25,13 +32,7 @@ export default function Bloqueios(){
        </div>
     );
   }
-  function EmptyMenu({text}){
-    return(
-      <section className="emptyMenu">
-	{ text }
-      </section>
-    );
-  }
+  
   function Add(props){
     return(
 	<AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/>
