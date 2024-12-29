@@ -6,8 +6,8 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #358bff;
+  --foreground: #fff;
   --desktop-min-width: 800px;
   --upperSpace: 96px;
 }

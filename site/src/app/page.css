@@ -28,14 +28,29 @@
 .headerCard{
   display: flex;
   width: fit-content;
-  box-shadow: 0 0 2px 1px #eee;
+  /*box-shadow: 0 0 2px 1px #eee;*/
   padding: 5px 7px;
   border-radius: 5px;
   align-items: center;
-  justify-content: space-around;
-  gap: 8px;
+  /*justify-content: space-around;*/
+  /*gap: 8px;*/
   font-size: 13px;
   font-weight: bold;
+}
+.headerCard small{
+  background: #358bfd;
+  color: white;
+  height: 15px;
+  width: 15px;
+  padding: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 1px 1px white;
+  border-radius: 40px;
+  position: relative;
+  top: -9px;
+  left: -9px;
 }
 
 .headerCardIconConteiner{
@@ -45,8 +60,10 @@
   align-items: center;
   width: fit-content;
   height: fit-content;
-  padding: 2px;
+  padding: 5px;
   border-radius: 1000px;
+  border: solid 1px #eee;
+  /*background: #303030;*/
 }
 
 .headerCard span{
@@ -65,22 +82,28 @@
 .graphConteiner{
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: space-evenly;
+  /*gap: 20px;*/
   padding: 10px;
-  width: 100%;
+  width: stretch;
   height: stretch;
   box-shadow: 0 0 2px 1px #eee;
   border-radius: 5px;
 }
 .pieGraphConteiner{
-  width: 100%;
+  width: stretch;
   height: 150px;
+  /*background: green;*/
+  display: flex;
 }
 
 .lineGraphConteiner{
-  width: 100%;
+  width: stretch;
   height: 100%;
+  /*background: red;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /*.pieGraphConteiner, .lineGraphConteiner{
@@ -95,6 +118,8 @@
   width: stretch;
   box-shadow: 0 0 2px 1px #eee;
   border-radius: 5px;
+  padding: 10px;
+  overflow-y: auto;
 }
 
 @media(min-width: 900px){
@@ -120,5 +145,8 @@
 
   #homePageContent{
     flex-direction: row;
+  }
+  .alunosContent{
+    display: flex;
   }
 }

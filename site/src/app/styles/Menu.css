@@ -52,9 +52,12 @@
 @media(min-width: 900px){
   .menu{
     width: 35%;
-    max-width: 300px;
-    min-width:220px;
+    max-width: 400px;
+    min-width:320px;
     height: 100%;
+  }
+  .menuHeader{
+    height: 200px;
   }
   .menuContent{
     height: stretch;

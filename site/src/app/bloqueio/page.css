@@ -59,6 +59,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
+  cursor: pointer;
 }
 
 .bloqueioItem span{
@@ -124,6 +125,7 @@
   background: white;
   font-weight: 300;
   color: gray;
+  width: stretch;
 }
 .add{
   position: absolute;
@@ -325,7 +327,7 @@ width: 100%;
     width: 300px;
     margin: 20px;
     border-radius: 5px;
-    box-shadow: 1px 1px 3px 0 #eee;
+    box-shadow: 1px 1px 3px 0 #ccc;
   }
   .bloqueioItem{
     border-radius: inherit;
@@ -366,7 +368,7 @@ width: 100%;
   .menuItem div{
     border: none;
     /*border-bottom: solid 1px #ddd;*/
-    box-shadow: 1px 1px 1px 0px #ddd;
+    box-shadow: 1px 1px 1px 0px #ccc;
   }
 }
 

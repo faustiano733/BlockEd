@@ -29,6 +29,7 @@
   align-items: center;
   padding: 6px;
   height: fit-content;
+  cursor: pointer;
 }
 
 .aluno svg{
@@ -141,6 +142,7 @@
   flex-direction: column;
   width: stretch;
   height: stretch;
+  /*max-width: 700px;*/
 }
 .subMenuAlunoDesktop{
   display: flex;
@@ -205,5 +207,6 @@
   }
   .aluno{
     box-shadow: none;
+    border-bottom: solid 1.5px #ddd;
   }
 }

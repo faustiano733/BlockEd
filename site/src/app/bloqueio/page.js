@@ -58,17 +58,23 @@ export default function Bloqueios(){
   function Aplicativo(props){
     const [appLoading, setAppLoading] = useState(false);
     const [appAccepted, setAppAccepted] = useState(false);
+    const [remAppLoading, setRemAppLoading] = useState(false);
 
     async function addApp(nomeDaApp){
       await sleep(1000);
       setAppLoading(false);
       setAppAccepted(true);
-  }
+    }
+    async function remApp(app){
+      await sleep(1000);
+      setRemAppLoading(false);
+    }
+
     if(props.loaded) return(
       <div className="app">
          <AndroidIcon />
          <span>{props.name}</span>
-         <DeleteIcon color="#ff8080"/>
+         {remAppLoading ? <PendingIcon color="#ff8080"/> : <DeleteIcon color="#ff8080" onClick={()=>{setRemAppLoading(true); remApp("bruh")}}/>}
        </div>
     );
     else return(
@@ -120,11 +126,18 @@ export default function Bloqueios(){
     );
   }
   function Site(props){
-     return(
+    const [remSiteLoading, setRemSiteLoading] = useState(false);
+    
+    async function remSite(site){
+      await sleep(1000);
+      setRemSiteLoading(false);
+    }
+
+    return(
        <div className="site">
           <SiteIcon />
           <span>{props.domain}</span>
-          <DeleteIcon color="#ff8080"/>
+          {remSiteLoading ? <PendingIcon color="#ff8080" /> : <DeleteIcon color="#ff8080" onClick={()=>{setRemSiteLoading(true); remSite("")}}/>}
         </div>
      );
   }

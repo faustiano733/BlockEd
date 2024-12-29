@@ -1,0 +1,78 @@
+
+.main{
+  display: flex;
+  flex-direction: column;
+  height: stretch;
+  gap: 10px;
+  background: white;
+  overflow: hidden;
+  width: 100%;
+  padding: 10px;
+}
+.profileHeader{
+  /*background: #00a8f5;*/
+  padding: 5px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+}
+.profileHeader small{
+  font-size: 11px;
+  opacity: 0.5;
+}
+.profileHeaderImg{
+  background: white;
+  /*border: solid 1px black;*/
+  box-shadow: 0 0 4px 0.5px #ddd;
+  border-radius: 50px;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px
+}
+
+.profileHeaderImg svg{
+  background: #ddd;
+  border: solid 1px transparent;
+  border-radius: inherit;
+  width: 50px;
+  height: 50px;
+}
+
+.profileContent{
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  /*box-shadow: 0 0 1px 1px gray;*/
+  height: stretch;
+  padding: 5px 0;
+}
+
+.profileOption{
+  width: 100%;
+  height: stretch;
+  max-height: 45px;
+  border: solid 1px #00b8f5;
+  /*box-shadow: 0 0 1px 0.3px #ddd;*/
+  border-radius: 5px;
+  padding: 5px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: /*#555*/ #00a8f5;
+}
+.profileOption svg{
+  height: 25px;
+  width: 25px;
+}
+#logoutButton{
+  border-color: #ff8080;
+  color: #ff8080;
+}
+@media(min-width: 900px){
+
+}

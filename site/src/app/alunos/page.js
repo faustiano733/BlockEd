@@ -8,23 +8,9 @@ import { StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteI
 import {EmptyMenu} from "../bloqueio/page.js";
 //import { Metadata } from "next";
 
-
-export default function AlunosPage(){
-  const [aluno, setAluno] = useState(null);
-  const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
-  const [loading, setLoading] = useState(false);
-  function CloseMenu(props){
+export function Aluno(props){
     return(
-      <div className="closeButton" style={{background: props.bg ? props.bg : "white"}}>
-      	<CloseIcon onClick={props.onClick} />
-      </div>
-    );
-  }
-
-
-  function Aluno(props){
-    return(
-      <div className="aluno" onClick={() => setAluno([{nome: "Carlos Chagas Bastos Santos", turma: "TI13B", idade:19, processo: "00578", actividade: "Normal"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "Samsung A13", last_connection:"há 1 dia"}])}>
+      <div className="aluno" onClick={props.onClick && props.onClick}>
         <div className="alunoInfo">
           <StudentIcon color="white" fill={true}/>
           <div>
@@ -37,6 +23,22 @@ export default function AlunosPage(){
       </div>
     );
   }
+export default function AlunosPage(){
+  const [aluno, setAluno] = useState(null);
+  const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
+  const [loading, setLoading] = useState(false);
+  const [searchAlunoLoading, setSearchAlunoLoading] = useState(false);
+
+  function CloseMenu(props){
+    return(
+      <div className="closeButton" style={{background: props.bg ? props.bg : "white"}}>
+      	<CloseIcon onClick={props.onClick} />
+      </div>
+    );
+  }
+
+
+  
   function Dispositivo(props){
     return(
       <div className="alunoDispositivo">
@@ -44,6 +46,9 @@ export default function AlunosPage(){
 	<small>{props.conexao}</small>
       </div>
     );
+  }
+  function pesquisarAluno(nomeDoAluno){
+    setTimeout(()=> setSearchAlunoLoading(false), 3000);
   }
   function SearchAluno(props){
     const [searchingAluno, setSearchingAluno] = useState(false);
@@ -58,7 +63,7 @@ export default function AlunosPage(){
     return(
       <div className="searchAlunoDesktop">
         <input type="text" placeholder="Insira o nome do aluno"/>
-        <SearchIcon />
+        {searchAlunoLoading ? <PendingIcon /> : <SearchIcon onClick={() =>{ setSearchAlunoLoading(true); pesquisarAluno("Carlos")}}/>}
       </div>
     );
   }
@@ -83,7 +88,7 @@ export default function AlunosPage(){
 	<Aluno nome="Joaquim de Andrade" dispositivos={2} ultimaConexao="há 4 dias" />*/}
         {
 	alunos.map((entidade, index) => (
-	  <Aluno key={`aluno-${index}`} nome={entidade.nome} dispositivos={entidade.dispositivos} ultimaConexao={entidade.ultimaConexao} />
+	  <Aluno key={`aluno-${index}`} nome={entidade.nome} dispositivos={entidade.dispositivos} ultimaConexao={entidade.ultimaConexao} onClick={() => setAluno([{nome: "Carlos Chagas Bastos Santos", turma: "TI13B", idade:19, processo: "00578", actividade: "Normal"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "Samsung A13", last_connection:"há 1 dia"}])}/>
 	))
 	}
 	<SearchAluno />
