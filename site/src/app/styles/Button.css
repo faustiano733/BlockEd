@@ -1,0 +1,18 @@
+.button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: fit-content;
+  color: white;
+  background: #00b8f5;
+  border-radius: 5px;
+  /*padding: 10px;*/
+  text-align: center;
+  height: 40px;
+}
+
+.button svg{
+  width: 25px;
+  height: 25px;
+}

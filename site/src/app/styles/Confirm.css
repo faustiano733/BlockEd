@@ -1,0 +1,43 @@
+.confirmConteiner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: stretch;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgb(0, 0, 0, 0.5);
+}
+
+.confirm{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  row-gap: 7px;
+}
+.confirmHeader{
+  width: 100%;
+  border-bottom: solid 0.5px black;
+  padding-bottom: 3px;
+}
+.confirm div{
+  width: 50%;
+}
+.confirmCancel{
+  color: #ff8080;
+  border-right: solid 0.5px black;
+}
+.confirmOk{
+  color: #00b8f5;
+}
+.confirmTxt{
+  display: block;
+  width: 100%;
+  padding-bottom: 5px;
+  color: rgb(0, 0, 0, 0.7);
+}
