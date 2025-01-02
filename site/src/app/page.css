@@ -16,11 +16,23 @@
   width: 100%;
 }
 
+.homePageDesktop{
+  display: none;
+  /*flex-wrap: wrap;*/
+  flex-direction: column;
+  width: stretch;
+  height: stretch;
+  /*background: red;*/
+  padding: 20px;
+  gap: 20px;
+}
+
 .homePageHeader{
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
+  width: stretch;
 }
 .homePageHeader svg{
   height: 30px;
@@ -117,7 +129,7 @@
 .overviewOptions{
   display: flex;
   background: #f5f5f5;
-  width: 60%;
+  width: 64%;
   padding: 2px;
   box-shadow: 0 0 2px 0.5px #ddd;
   border-radius: 15px;
@@ -125,7 +137,7 @@
 
 .overviewOption{
   color: #bbb;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
   width: stretch;
   display: flex;
@@ -176,20 +188,54 @@
   border-radius: 3px;
 }
 
-.pieGraphConteiner{
-  width: stretch;
-  height: 150px;
-  /*background: green;*/
+.othersConteiner{
+  width: 100%;
+  height: 30%;
+  /*background: white;*/
+  /*display: flex;*/
+  /*border-radius: 10px;*/
+  gap: 20px;
+  overflow: hidden;
   display: flex;
+  padding: 2px;
 }
-
-.lineGraphConteiner{
-  width: stretch;
-  height: 100%;
-  /*background: red;*/
+.othersConteiner section{
+  width: 50%;
+  height: stretch;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 2px 0.5px #ccc;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.othersConteiner .section1{
+  width: 90%;
+}
+.othersConteiner .section2{
+  width: 35%;
+}
+.desktopGraphConteiner{
+  /*background: white;
+  border-radius: 10px;*/
+  width: 100%;
+  height: 50%;
+  /*background: red;*/
+  display: flex; 
   justify-content: space-between;
+  gap: 20px;
+}
+.desktopGraphConteiner section{
+  width: stretch;
+  height: stretch;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 2px 0.5px #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /*.pieGraphConteiner, .lineGraphConteiner{
@@ -226,31 +272,22 @@
   position: relative;
   top: -30px;;
 }
+
 @media(min-width: 900px){
+  .homePage{
+    display: none;
+  }
   .homePageHeader{
-    justify-content: flex-start;
+    /*background: green;*/
+    flex-wrap: nowrap;
+    flex-direction: row;
     gap: 20px;
   }
-  .homePageHeader svg{
-    width: 20px;
-    height: 20px;
+  .homePageDesktop{
+    display: flex;
   }
   .headerCard{
-    font-size: 13px;
-    gap: 5px;
-    padding: 6px;
-  }
-  .headerCard span{
-    display: inline;
-  }
-  .headerCardIconConteiner{
-    padding: 4px;
-  }
-
-  #homePageContent{
-    flex-direction: row;
-  }
-  .alunosContent{
-    display: flex;
+    width: stretch;
+    background: white;
   }
 }
