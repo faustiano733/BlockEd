@@ -2,7 +2,7 @@
 import Image from "next/image";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
-import { CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon } from "@icon";
+import { LockIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon } from "@icon";
 import { useEffect, useState } from "react";
 import Button from "@components/Button.js";
 import Input from "@components/Input.js";
@@ -34,8 +34,8 @@ export default function Profile() {
 	  <StudentIcon color="white" fill/>
  	</div>
 	<div className="profileHeaderTxt">
-	  <h5>@ceutron</h5>
-	  <small>Instituto Politécnico Dom Damião Franklin</small>
+	  <h3>Ceutron</h3>
+	  <h6>Instituto Politécnico Dom Damião Franklin</h6>
 	</div>
       </div>
     );
@@ -43,8 +43,8 @@ export default function Profile() {
   function ProfileOption(props){
     return(
       <div id={props.id ? props.id : ""} className="profileOption" onClick={props.onClick && props.onClick}>
+	{props.icon ? props.icon : <ForwardIcon color="#358bff"/>}
 	<span>{props.text}</span>
-	{props.icon ? props.icon : <ForwardIcon color="#00b8f5"/>}
       </div>
     );
   }
@@ -58,9 +58,9 @@ export default function Profile() {
     return(
       <>
       <div className="profileContent">
-	<ProfileOption text="Alterar senha" onClick={()=> setSubMenu("senha")}/>
-	<ProfileOption text="Alterar localização da instituição" />
-	<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#00b8f5" />} onClick={()=> setDelAccount(true)}/>
+	<ProfileOption text="Alterar senha" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
+	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />}/>
+	<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>
 	<ProfileOption id="logoutButton" text="Terminar sessão" icon={logoutLoading ? <PendingIcon color="#ff8080" /> : <LogoutIcon color="#ff8080" />} onClick={()=>{setLogoutLoading(true); logout()}}/>
       </div>
       <Confirm visible={delAccount} text="Deletar Conta?" onCancel={()=>setDelAccount(false)} />
@@ -112,11 +112,11 @@ export default function Profile() {
       { subMenu ? <SubMenu /> : <> <Header /> <Content /> </> }
     </div>
     <div className="mainDesktop">
-      <div className="mainDesktopChild">
+      <div className="profileSettingsDesktop">
 	<Header />
         <Content />
       </div>
-      <div className="mainDesktopChild">
+      <div className="profileScreenDesktop">
         <SenhaMenu />
       </div>
     </div>
