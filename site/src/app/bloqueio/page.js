@@ -4,6 +4,8 @@ import {useEffect, useState} from "react";
 import NavigationRoute from "@components/NavigationRoute.js";
 import { HorizontalLine, VerticalLine } from "@components/Lines.js";
 import Header from "@components/Header.js";
+import Input from "@components/Input.js";
+import Button from "@components/Button.js";
 import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "../../Icons.jsx";
 import { Metadata } from "next";
 
@@ -19,8 +21,8 @@ export default function Bloqueios(){
   const [menuActual, setMenuActual] = useState("aplicativos");
   const [subMenu, setSubMenu] = useState(null);
   const [diretorios, setDiretorios] = useState("");
-  const [sites, setSites] = useState([{domain: "facebook.com"}, {domain: "tiktok.com"}]);
-  const [apps, setApps] = useState([{name: "Facebook"}, {name: "TikTok"}]);
+  const [sites, setSites] = useState([{domain: "facebook.com", tentativas: 10}, {domain: "tiktok.com", tentativas: 2}]);
+  const [apps, setApps] = useState([{name: "Facebook", tentativas: 3}, {name: "TikTok", tentativas: 4}]);
   
   const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -47,7 +49,7 @@ export default function Bloqueios(){
       <div className="menuItem" id="menuAplicativos">
 	{apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
         {apps.map((elemento, index)=>{
-	  return <Aplicativo key={index} name={elemento.name} loaded={true} />
+	  return <Aplicativo key={index} name={elemento.name} loaded={true} tentativas={elemento.tentativas}/>
         }
         )}
 	<Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
@@ -70,19 +72,21 @@ export default function Bloqueios(){
       setRemAppLoading(false);
     }
 
-    if(props.loaded) return(
+    return(
       <div className="app">
-         <AndroidIcon />
-         <span>{props.name}</span>
-         {remAppLoading ? <PendingIcon color="#ff8080"/> : <DeleteIcon color="#ff8080" onClick={()=>{setRemAppLoading(true); remApp("bruh")}}/>}
-       </div>
-    );
-    else return(
-      <div className="app">
-         <AndroidIcon />
-         <span>{props.name}</span>
-         {/*<img src={(appLoading) ? "/img/pending.svg" : (appAccepted) ? "/img/check.svg" : "/img/add.svg"} onClick={()=>{if(!appAccepted){setAppLoading(true); addApp(props.name)}}}/>*/}
-         {appLoading ? <PendingIcon /> : appAccepted ? <CheckIcon /> : <AddIcon onClick={()=>{setAppLoading(true); addApp(props.name)}}/>}
+	<div className="app_child1">
+          <AndroidIcon color="#358bff"/>
+	  <div>
+            <span>{props.name}</span>
+	    {props.loaded ? <small><small>{props.tentativas} tentativas</small></small> : ""}
+	  </div>
+	</div>
+        {
+	props.loaded ?
+	(remAppLoading ? <PendingIcon className="remIcon" color="#ff8080"/> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemAppLoading(true); remApp("bruh")}}/>) 
+	:
+        (appLoading ? <PendingIcon /> : appAccepted ? <CheckIcon /> : <AddIcon onClick={()=>{setAppLoading(true); addApp(props.name)}}/>)
+	}
       </div>
     );
   }
@@ -96,11 +100,11 @@ export default function Bloqueios(){
     }
     return(
       <div className="menuItem" id="adicionarAplicativos">
-	<div>
+	{/*<div>
 	  <input type="text" placeholder="Insira o nome do aplicativo"/>
-	  {/*<img src={searchAppLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={}/>*/}
-          { searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}
-	</div>
+          { }
+	</div>*/}
+        <Input placeholder="Insira o nome do aplicativo" icon={searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}/>
 	<small>Resultados</small>
 	<section>
 	  {(searchedApps.length < 1) && <EmptyMenu text="Nenhum app encontrado"/>}
@@ -118,7 +122,7 @@ export default function Bloqueios(){
       <div className="menuItem" id="menuSites">
         {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
 	{sites.map((elemento, index)=>{
-          return <Site key={index} domain={elemento.domain} /> 
+          return <Site key={index} domain={elemento.domain} tentativas={elemento.tentativas}/> 
          }
         )}
 	<Add onClick={()=>{setSubMenu("adicionarSites")}}/>
@@ -134,10 +138,15 @@ export default function Bloqueios(){
     }
 
     return(
-       <div className="site">
-          <SiteIcon />
-          <span>{props.domain}</span>
-          {remSiteLoading ? <PendingIcon color="#ff8080" /> : <DeleteIcon color="#ff8080" onClick={()=>{setRemSiteLoading(true); remSite("")}}/>}
+      <div className="site">
+	<div className="site_child1">
+          <SiteIcon color="#358bff"/>
+	  <div>
+            <span>{props.domain}</span>
+	    <small><small>{props.tentativas} tentativas</small></small> 
+	  </div>
+	</div>
+          {remSiteLoading ? <PendingIcon className="remIcon" color="#ff8080" /> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemSiteLoading(true); remSite("")}}/>}
         </div>
      );
   }
@@ -155,9 +164,7 @@ export default function Bloqueios(){
     return(
       <div className="menuItem" id="adicionarSites">
 	<div>
-	  <input type="text" placeholder="Insira o domínio do site"/>
-	  {/*<img src={searchSiteLoading ? "/img/pending.svg" : "/img/search.svg"} onClick={()=>{setSearchSiteLoading(true); searchSite()}}/>*/}
-          {searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} /> }
+	  <Input placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
 	</div>
 	{ searchedSiteData && <> 
 	{/*<small>Resultados</small>*/}
@@ -170,7 +177,7 @@ export default function Bloqueios(){
 	  <span></span>
 	  <span></span>*/}
         </section>
-	<div className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site <AddIcon /></div>
+	<Button className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site {/*<AddIcon />*/}</Button>
         </>}
       </div>
     );
@@ -179,18 +186,20 @@ export default function Bloqueios(){
   function MenuOutros(){
     return(
       <div className="menuItem" id="menuOutros">
-	<MenuOutrosServico icon={<InternetIcon />} text="Internet" />
-	<MenuOutrosServico icon={<CameraIcon />} text="Câmera" />
-	<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />
+	<MenuOutrosServico icon={<InternetIcon color="#358bff"/>} text="Internet" />
+	<MenuOutrosServico icon={<CameraIcon color="#358bff"/>} text="Câmera" />
+	{/*<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />*/}
       </div>
     );
   }
 
   function MenuOutrosServico(props){
     return(
-      <div>
-        {props.icon}
-        <span>{props.text}</span>
+      <div className="outro">
+	<div className="outro_child1">
+          {props.icon}
+          <span>{props.text}</span>
+	</div>
         <input type="checkbox" />
       </div>
     )
@@ -239,8 +248,8 @@ export default function Bloqueios(){
 	<div className="mainContentMenu">
        	  <MainContentMenu />
 	</div>
-        <VerticalLine />
-        <div className="mainContentMenu">
+        {/*<VerticalLine />*/}
+        <div className="mainContentMenu mainContentSubMenu">
        	  <MainContentSubMenu />
         </div>
       </div>
