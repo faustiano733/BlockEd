@@ -1,0 +1,487 @@
+
+/*
+:root{
+  --upperSpace: 96px;
+}
+*/
+#main{
+  display: flex;
+  flex-direction: column;
+  height: stretch;
+  /*padding: 10px;
+  gap: 8px;*/
+  background: white;
+  /*background: red;*/
+  overflow: hidden;
+}
+#mainFooter{
+  width:100%;
+  display: flex;
+  align-items: center;
+  background: white;
+}
+#mainContent{
+  height: stretch;
+  background: white;
+  overflow-y: auto;
+}
+#mainContent2{
+  display: none;
+  height: stretch;
+  justify-content: space-between;
+  /*align-items: center;*/
+  overflow-y: hidden;
+  padding: 20px;
+  gap: 10px;
+  /*padding: 20px 0;*/
+}
+
+.mainContentMenu{
+  height: stretch;
+  /*max-height: 1000px;*/
+  width: stretch;
+  /*max-width: 48%;*/
+  /*max-width: 700px;*/
+  /*border: solid 1px #2a4859;*/
+  /*box-shadow: 0 0 3px 1px #ddd;*/
+  border-radius: 10px;
+  padding: 0;
+  overflow-y: hidden;
+}
+.mainContentSubMenu{
+  /*width: stretch;*/
+  max-width: 40%;
+  /*background: red;*/
+  padding: 10px;
+  /*max-height: 80%;*/
+  box-shadow: 0 0 2px 0.5px #ddd;
+}
+.bloqueioItem{
+  width: stretch;
+  font-size: 15px;
+  font-weight: bold;
+  color: #2a4859;
+  padding: 7px;
+  background: white;
+  /*border-radius: 5px;
+  border: solid 1px #2a4859;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.bloqueioItem span{
+  display: none;
+}
+
+.bloqueioItem svg, .bloqueioItem img{
+  height: 25px;
+  width: 25px;
+}
+
+.bloqueioItemFocused{
+  /*background: #22caf7;*/
+  /*border-bottom: solid 4px #000;*/
+}
+
+.bloqueioItemFocused span{
+  display: inline;
+  font-size: 11px;
+  color:#358bff;
+}
+
+.bloqueioItemFocused svg{
+  fill: #358bff;
+}
+/*
+#main{
+ align-items: center;
+ justify-content: space-evenly;
+}
+.bloqueioItem{
+  width: fit-content;
+  flex-direction: column;
+  font-size: 11px;
+  font-weight: bold;
+  color: #2a4859;
+  padding: 7px;
+  border-radius: 5px;
+  border: solid 1px #2a4859;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bloqueioItem svg, .bloqueioItem img{
+  height: 90px;
+  width: 100px;
+}*/
+.menuItem{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+  padding: 10px;
+  gap: 15px;
+  overflow: auto;
+}
+.emptyMenu{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
+  background: white;
+  font-weight: 300;
+  color: gray;
+  width: stretch;
+}
+.add{
+  position: absolute;
+  right: 20px;
+  bottom: 60px;
+  border: solid 1px #ddd;
+  border-radius: 50px;
+  background: #358bff;
+}
+.menuItem div{
+
+}
+.app{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /*border: solid 1px #ddd;*/
+  box-shadow: 0 0 3px 1px #eee;
+  border-radius: 10px;
+  padding: 8px /*15px*/;
+}
+.app_child1{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.app_child1 svg{
+  background: #358bff22;
+  border-radius: 5px;
+  padding: 3px;
+}
+.app_child1 span{
+  font-size: 12px;
+  font-weight: bold;
+}
+.app_child1 div{
+  display: flex;
+  flex-direction: column;
+}
+
+.site{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /*border: solid 1px #ddd;*/
+  box-shadow: 0 0 3px 1px #eee;
+  border-radius: 10px;
+  padding: 8px /*15px*/;
+}
+.site_child1{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.site_child1 svg{
+  background: #358bff22;
+  border-radius: 5px;
+  padding: 3px;
+}
+.site_child1 span{
+  font-size: 12px;
+  font-weight: bold;
+}
+.site_child1 div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.outro{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /*border: solid 1px #ddd;*/
+  box-shadow: 0 0 3px 1px #eee;
+  border-radius: 10px;
+  padding: 8px /*15px*/;
+}
+.outro_child1{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.outro_child1 svg{
+  background: #358bff22;
+  border-radius: 5px;
+  padding: 3px;
+}
+.outro_child1 span{
+  font-size: 12px;
+  font-weight: bold;
+}
+/*
+.app_child1 div{
+  display: flex;
+  flex-direction: column;
+}*/
+
+.remIcon{
+  background: #ff808022;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.menuItem img, .menuItem svg{
+  height: 28px;
+  width: 28px;
+}
+
+#adicionarAplicativos input, #adicionarSites input{
+  outline: none;
+  height: 100%;
+  width: stretch;
+  border:none;
+}
+
+/*#adicionarAplicativos span{
+  font-size: 13px;
+}*/
+
+#adicionarAplicativos section, #adicionarSites section{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: stretch;
+}
+
+#adicionarSites section{
+  padding: 10px 0;
+}
+#adicionarSites .addSiteButton{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+  gap: 5px;
+}
+#adicionarSites .buttonDisabled{
+  color: gray;
+}
+#adicionarSites .buttonDisabled img{
+  opacity: 0.6;
+}
+#adicionarSites section span{
+  font-size: 14px;
+  font-weight: 300;
+}
+/*
+#menuOutros {
+  padding: 10px;
+  gap: 10px;
+}
+
+#menuOutros div{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: solid 1px #ddd;
+  border-radius: 5px;
+  padding: 7px;
+}
+#menuOutros img, #menuOutros svg{
+  height: 25px;
+  width: 25px;
+}
+*/
+
+/*
+#menuOutros section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+#menuOutros section div{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+}
+#menuOutros section div img{
+  height: 30px;
+  width: 30px;
+}
+.linha_horizontal{
+  width: 100%;
+  height: 1px;
+  background: #bbb;
+}
+
+#menuSites section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+
+.site{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site img{
+  height: 30px;
+  width: 30px;
+}
+
+#menuAplicativos section{
+  display: flex;
+  height: stretch;
+  width: 100%;
+  background: white;
+  flex-direction: column;
+}
+
+.app{
+  display: flex;
+  gap: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #2a4859;
+  padding: 10px 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app img{
+  height: 30px;
+  width: 30px;
+}
+
+
+.add_more{
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.add_more img, .add_more svg{
+  height: 25px;
+  width: 25px;
+}
+
+.closeButton{
+display: flex;
+justify-content: flex-end;
+width: 100%;
+
+}
+.closeButton img, .closeButton svg{
+  height: 30px;
+  width: 30px;
+}
+
+*/
+@media(min-width: 900px){
+  #mainContent{
+    display: none;
+  }
+  #mainContent2{
+    display: flex;
+  }/*
+  #mainFooter{
+    position: relative;
+    top: 5px;
+    left: 5px;
+    align-items: flex-start;
+    flex-direction: column;
+    background: transparent;
+    gap: 10px;
+    width: fit-content;
+  }*/
+  #mainFooter{
+    width: 300px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 3px 0 #ccc;
+    padding: 0 2px;
+  }
+  .bloqueioItem{
+    border-radius: 0;
+    padding: 10px;
+    border-bottom: solid 2px transparent;
+  }
+  .bloqueioItem svg{
+    display: none;
+  }
+  .bloqueioItem span{
+    display: inline;
+    /*opacity: 0;*/
+    /*background: #000;
+    color: red;*/
+    font-size: 15px;
+  }
+  .bloqueioItemFocused{
+    border-color:#358bff;
+  }
+  .bloqueioItemFocused span{
+    color: initial;
+  }
+  
+  .add{
+    display: none;
+  }
+  #main{
+    width: stretch;
+  }
+  .menuItem{
+    gap: 0;
+    padding: 2px;;
+  }
+  #adicionarAplicativos{
+    gap: 10px;
+  }
+  #adicionarAplicativos section{
+    gap: 0;
+  }
+  .app, .site, .outro{
+    box-shadow: none;
+    border-radius: 0;
+    /*border-bottom: solid 1px #ddd;*/
+    padding: 10px 10px 10px 0;
+  }
+}
+
+
+@keyframes girando{
+ 0%{
+   transform: rotateY(0deg);
+ }
+ 100%{
+   transform: rotateY(360deg);
+ }
+}

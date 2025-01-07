@@ -1,0 +1,11 @@
+.horizontal{
+  width: 98%;
+  height: 2px;
+  background: #eee;
+}
+
+.vertical{
+  width: 1px;
+  height: 98%;
+  background: #eee;
+}
