@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { adicionarSite, apagarSite, editarSite, pegarSite, pegaTodosSites } from "../../services/siteServices.js";
 
+
+
 export async function GET() {
     const todos_sites =  await pegaTodosSites()
     return NextResponse.json(todos_sites);

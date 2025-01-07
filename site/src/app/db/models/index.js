@@ -9,6 +9,7 @@ import localizacao from "./localizacao.js";
 
 
 import db from "./helpers/connection.js";
+import { tentativas_app } from "./tentativas_app.js";
 
 const aluno_teste = [
     {
@@ -117,60 +118,78 @@ const usuario_teste =[
     }
 ]
 
-
+const tentiva_app_teste = [
+    {
+        id_app:1,
+        id_aluno:1,
+        id_escola:1
+    },
+    {
+        id_app:1,
+        id_aluno:1,
+        id_escola:1
+    },
+]
 
 async function dadosTeste(){
-    await Promise.all(
-        aluno_teste.map(async aluno=>{
-            await alunos.create(aluno)
-        })
-    )
+    //await Promise.all(
+    //    aluno_teste.map(async aluno=>{
+    //        await alunos.create(aluno)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    apps_teste.map(async app=>{
+    //        await apps.create(app)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    conta_teste.map(async conta=>{
+    //        await contas.create(conta)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    dispositivo_teste.map(async dispositivo=>{
+    //        dispositivos.create(dispositivo)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    escola_teste.map(async escola=>{
+    //        await escolas.create(escola)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    localizacao_teste.map(async localizador=>{
+    //        await localizacao.create(localizador)
+    //    })
+    //)
+//
+    //await Promise.all( 
+    //    sites_teste.map(async site=>{
+    //        await sites.create(site)
+    //    })
+    //)
+//
+    //await Promise.all(
+    //    usuario_teste.map(async usuario=>{
+    //        usuarios.create(usuario)
+    //    })
+    //)
 
-    await Promise.all(
-        apps_teste.map(async app=>{
-            await apps.create(app)
+    const data_actual = new Date()
+        data_actual.setDate( data_actual.getDate() -5)
+        tentiva_app_teste.map(async tentativa=>{
+            await tentativas_app.create({...tentativa, teste_tentativas_data:data_actual})
         })
-    )
-
-    await Promise.all(
-        conta_teste.map(async conta=>{
-            await contas.create(conta)
-        })
-    )
-
-    await Promise.all(
-        dispositivo_teste.map(async dispositivo=>{
-            dispositivos.create(dispositivo)
-        })
-    )
-
-    await Promise.all(
-        escola_teste.map(async escola=>{
-            await escolas.create(escola)
-        })
-    )
-
-    await Promise.all(
-        localizacao_teste.map(async localizador=>{
-            await localizacao.create(localizador)
-        })
-    )
-
-    await Promise.all( 
-        sites_teste.map(async site=>{
-            await sites.create(site)
-        })
-    )
-
-    await Promise.all(
-        usuario_teste.map(async usuario=>{
-            usuarios.create(usuario)
-        })
-    )
+    
 
 }
 
-await db.sequelize.sync()
+await db.sequelize.sync({alter:true})
 await dadosTeste()
 
 

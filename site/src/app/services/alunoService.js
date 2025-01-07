@@ -29,8 +29,11 @@ export async function pegarAluno(aluno_nome){
             nome:aluno_nome
         }
     });
-    return aluno;
-}
+    if(aluno === null){
+        return new TypeError("Aluno inexistente");
+    }else{
+        return aluno;
+    }}
 
 export async function editarAluno(edicoes){
     const aluno_editado = alunos.update(edicoes,{

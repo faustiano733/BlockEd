@@ -11,26 +11,36 @@ export async function pegaTodosSites(){
 }
 
 export async function apagarSite(site){
+    const site_db = await pegarSite(site)
     await sites.destroy({
         where:{
-            [Op.and]:[{dominio:site.dominio},{escola_id:site.escola_id}]
+            [Op.and]:[{dominio:site_db.dominio},{escola_id:site_db.escola_id}]
         }
     });
+    return JSON.stringify(site)
 }
 
 export async function criarSite(site){
-    const novo_site = await sites.create(site)
+    const site_valido = await validarSite(site)
+    if(site_valido){
+    const novo_site = await sites.create({dominio:site, escola_id:1})
      return novo_site;
+    }else{
+        return new TypeError("URL invalida")
+    }
 }
 
-export async function editarSite(edicoes){
-    const site_editado = await sites.update(edicoes,{
-        where:{
-            dominio:edicoes.dominio
-        }
-    });
 
-    return site_editado;
+async function validarSite(url_site){
+    let valido = false
+    try{
+    const resposta = await fetch("https://"+url_site)
+    return true
+}catch(erro){
+    if(erro.message === "fetch failed"){
+        return false
+    }
+    }
 }
 
 export async function pegarSite(site_dominio) {
@@ -38,5 +48,11 @@ export async function pegarSite(site_dominio) {
         where:{dominio:site_dominio}
     });
 
-    return site;
+    if(site === null){
+        return new TypeError("dominio invalido")
+    }else{
+        return site
+    }
 }
+
+console.log(await apagarSite("www.teste0.com"))
