@@ -1,0 +1,212 @@
+#alunosPage, #alunosPageDesktop{
+  display: flex;
+  flex-direction: column;
+  height: stretch;
+  background: white;
+  overflow: hidden;
+  width: 100%;
+}
+#alunosPageDesktop{
+  display: none;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px 10px;
+}
+
+.menuAlunos{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.aluno{
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 0 2px 1px #eee;
+  border-radius: 5px;
+  align-items: center;
+  padding: 6px;
+  height: fit-content;
+  cursor: pointer;
+}
+
+.aluno svg{
+  height: 35px;
+  width: 35px;
+}
+.aluno span{
+  color: #606060;
+}
+
+.alunoInfo{
+  display: flex;
+  /*flex-direction: column;*/
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+.alunoInfo h5{
+  color: #606060;
+}
+.alunoInfo svg{
+  background: #e9e9e9;
+  border-radius: 30px;
+  padding: 2px;
+  border: solid 2px #65bbff;
+}
+.alunoInfo div{
+  
+}
+
+.alunoInfo span{
+  color: #ababab;
+}
+
+.searchAluno, .searchAlunoDesktop{
+  background: white;
+  padding: 6px;
+  box-shadow: 0 0 1px 1px #ddd;
+  border-radius: 100px;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 50px;
+  right: 15px;
+}
+
+.searchAluno svg{
+  height: 25px;
+  width: 25px;
+}
+
+.searchAluno input{
+  padding: 2px 4px;
+  outline: none;
+  border: none;
+  width: 150px;
+}
+.searchAlunoDesktop{
+  position: initial;
+  border-radius: 5px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.searchAlunoDesktop input{
+  border: none;
+  outline: none;
+  width: stretch;
+}
+.subMenuAluno{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  /*align-items: center;*/
+  width: stretch;
+  gap: 7px;
+  overflow-y: auto;
+}
+.subMenuAlunoIcon svg{
+  background: #e9e9e9;
+  border-radius: 30px;
+  padding: 2px;
+  border: solid 2px #65bbff;
+  height: 55px;
+  width: 55px;
+}
+.subMenuAluno h3, .subMenuAluno h5{
+  color: #404040;
+}
+.subMenuAluno h5{
+  text-align: center;
+  margin-top: 2px;
+}
+.subMenuAlunoInfo{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2px;
+}
+
+.subMenuAlunoInfo span{
+  color: #343434;
+  font-size: 13px;
+}
+
+.menuAlunosDesktop{
+  display: flex;
+  flex-direction: column;
+  width: stretch;
+  height: stretch;
+  /*max-width: 700px;*/
+}
+.subMenuAlunoDesktop{
+  display: flex;
+  width: stretch;
+  height: stretch;
+}
+.alunoDispositivo{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 1px 1px 3px 0 #e9e9e9;
+  margin-bottom: 3px;
+  padding: 8px;
+  border-radius: 5px;
+  width: 100%;
+}
+.alunoDispositivo h6{
+  display: flex;
+  align-items: center;
+  
+}
+
+.alunoDispositivo svg{
+  height: 25px;
+  width: 25px;
+  box-shadow: none;
+  background: white;
+  border: none;
+  padding: 0;
+}
+
+.closeButton{
+  /*background: red;*/
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px;
+}
+
+.closeButton svg{
+  height: 30px;
+  width: 30px;
+}
+
+
+@media(min-width: 900px){
+  #alunosPage{
+    display: none;
+  }
+  #alunosPageDesktop{
+    display: flex;
+  }
+  .closeButton{
+    display:  none;
+  }
+  .searchAluno{
+    display: none;
+  }
+  .searchAlunoDesktop{
+    box-shadow: 1px 1px 1px 0px #ddd;
+  }
+  .aluno{
+    box-shadow: none;
+    border-bottom: solid 1.5px #ddd;
+  }
+}

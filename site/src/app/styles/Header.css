@@ -1,0 +1,27 @@
+.Header{
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: solid 0.5px gray;
+}
+
+.Header img, .Header svg{
+  height: 35px;
+  width: 35px;
+}
+
+.headerConteiner{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+}
+.headerConteiner span{
+  font-weight: bold;
+}
+#headerMenuController{
+  justify-content: flex-end;
+
+}
