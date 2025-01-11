@@ -145,10 +145,10 @@
   /*justify-content: center;*/
   gap: 15px;
 }
-#senhaMenu h4{
-  text-align: center;
-  padding: 0 0 5px 0;
-  color: rgb(0,0,0, 0.7)
+#senhaMenu h5{
+  /*text-align: center;*/
+  color: rgb(0,0,0, 0.7);
+  border-bottom: solid 1px rgb(0,0,0,0.7);
 }
 .closeMenu{
   width: 100%;

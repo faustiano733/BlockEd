@@ -19,7 +19,7 @@ export function Aluno(props){
 	  </div>
 	</div>
 	{/*<small><span>há {props.ultimaConexao}</span></small>*/}
-	<small><span>{props.ultimaConexao}</span></small>
+	<span>{props.ultimaConexao}</span>
       </div>
     );
   }
@@ -42,8 +42,8 @@ export default function AlunosPage(){
   function Dispositivo(props){
     return(
       <div className="alunoDispositivo">
-	<h6><SmartPhoneIcon /> {props.modelo}</h6>
-	<small>{props.conexao}</small>
+	<span><SmartPhoneIcon color="#358bff"/> {props.modelo}</span>
+	<small><small>{props.conexao}</small></small>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function AlunosPage(){
     return (
       <div className="searchAluno">
         { searchingAluno && <input type="text" placeholder="Insira o nome do aluno"/> }
-	{ searchingAluno ? <CloseIcon onClick={() => setSearchingAluno(false)}/> : <StudentSearchIcon onClick={() => setSearchingAluno(true)}/> }
+	{ searchingAluno ? <CloseIcon color="#358bff" onClick={() => setSearchingAluno(false)}/> : <StudentSearchIcon color="#358bff" onClick={() => setSearchingAluno(true)}/> }
       </div>
     );
   }
@@ -107,12 +107,11 @@ export default function AlunosPage(){
 	</div>
 	<h3>{aluno[0].nome}</h3>
 	<div className="subMenuAlunoInfo">
-	  <span>Processo: {aluno[0].processo}</span>
 	  <span>Turma: {aluno[0].turma}</span>
 	  <span>Idade: {aluno[0].idade} anos</span>
-	  <span style={{color: (aluno[0].actividade.toLowerCase() == "normal" ? "#00bb00" : "#ff0000")}}>Actividade: {aluno[0].actividade}</span>
+	  <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
 	</div>
-	<h5>- Dispositivos -</h5>
+	<h5>Dispositivos</h5>
 	{
 	  aluno.map((elemento, index) => {
 	    if(index == 0) return null;

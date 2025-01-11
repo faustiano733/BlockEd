@@ -58,7 +58,7 @@ export default function Profile() {
     return(
       <>
       <div className="profileContent">
-	<ProfileOption text="Alterar senha" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
+	<ProfileOption text="Gerir senha e exceções" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
 	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />}/>
 	<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>
 	<ProfileOption id="logoutButton" text="Terminar sessão" icon={logoutLoading ? <PendingIcon color="#ff8080" /> : <LogoutIcon color="#ff8080" />} onClick={()=>{setLogoutLoading(true); logout()}}/>
@@ -78,12 +78,16 @@ export default function Profile() {
 
     return(
       <div className="profileSubMenu" id="senhaMenu">
-        <h4>Alterar senha</h4>
+        <h5>Alterar senha</h5>
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
         <Button onClick={() =>{setChangePassLoading(true); changePass()}} style={{border: "solid 1px #00b8f5", background: "white", color: "#00b8f5"}}>
 	  {changePassLoading ? <PendingIcon color="#00b8f5"/> : <><small>Confirmar</small></>}
 	</Button>
+	<h5>Exceções</h5>
+	<section className="excecoesSection">
+
+	</section>
       </div>
     );
   }
