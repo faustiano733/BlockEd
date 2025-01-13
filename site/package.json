@@ -9,20 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "chart.js": "^4.4.7",
     "dotenv": "^16.4.7",
     "google-play-scraper": "^10.0.1",
-    "mysql2": "^3.11.5",
-    "chart.js": "^4.4.7",
+    "mysql2": "^3.12.0",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-chartjs-2": "^5.2.0",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-google-charts": "^5.2.1",
     "recharts": "^2.15.0",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
     "sequelize": "^6.37.5"
   },
   "type": "module"
-    
-  }
-
+}

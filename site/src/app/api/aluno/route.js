@@ -1,10 +1,25 @@
 import { NextResponse } from "next/server";
-import { associarDispositivo, criarAluno, pegarAlunos } from "../../services/alunoService";
+import { associarDispositivo, criarAluno, pegaInformacoesAluno, pegarAlunos } from "../../services/alunoService";
 
 
-export async function GET(){
+export async function GET(req){
+    let resposta = ""
+    const url = new URL(req.url)
+    
+    
+    const aluno = url.searchParams.get("aluno")
+
+    if(!(!aluno)){
+        const informacoes_aluno = await pegaInformacoesAluno(aluno)
+        resposta = informacoes_aluno
+    }else{
+        const lista_alunos = await pegarAlunos()
+        resposta = lista_alunos
+    }
+
+
     const todos_alunos = await pegarAlunos()
-    return NextResponse.json(todos_alunos)
+    return NextResponse.json(resposta)
 }
 
 export async function POST(req){

@@ -55,4 +55,8 @@ export async function pegarSite(site_dominio) {
     }
 }
 
-console.log(await apagarSite("www.teste0.com"))
+export async function pegaTotalSites(){
+    const total_sites = await sites.count();
+    return total_sites;
+}
+//console.log(await apagarSite("www.teste0.com"))

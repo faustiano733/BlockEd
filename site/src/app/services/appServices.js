@@ -3,7 +3,7 @@ import apps from "../db/models/apps.js";
 import gplay from "google-play-scraper"
 
 export async function pegarTodosApps(){
-    const lista_apps = await apps.findAll({attributes:{exclude:"id"}})
+    const lista_apps = await apps.findAll()
     return lista_apps
 }
 
@@ -73,7 +73,12 @@ export async function deletarApp(app_nome){
     
 }
 
+
+export async function pegaTotalApps(){
+    const total_apps = await apps.count()
+    return total_apps
+}
 //const teste = await sugerirApps("whatsapp")
 //console.log(teste)
 
-await adicionarApp('WhatsApp Messenger')
+//await adicionarApp('WhatsApp Messenger')
