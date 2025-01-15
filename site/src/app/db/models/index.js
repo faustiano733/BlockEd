@@ -120,12 +120,12 @@ const usuario_teste =[
 
 const tentiva_app_teste = [
     {
-        id_app:3,
+        id_app:2,
         id_aluno:1,
         id_escola:1
     },
     {
-        id_app:3,
+        id_app:2,
         id_aluno:1,
         id_escola:1
     },
@@ -181,13 +181,14 @@ async function dadosTeste(){
     //)
 
     const data_actual = new Date()
-        data_actual.setDate( data_actual.getDate() -5)
+        data_actual.setDate( data_actual.getDate() - 0)
         tentiva_app_teste.map(async tentativa=>{
             await tentativas_app.create({...tentativa, teste_tentativas_data:data_actual})
         })
     
 
 }
+
 
 await db.sequelize.sync({alter:true})
 await dadosTeste()

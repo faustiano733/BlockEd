@@ -24,7 +24,8 @@ export async function PUT(request){
     return NextResponse.json(site_editado);
 }
 
-export async function POST(novo_site){
+export async function POST(req){
+    const novo_site = await req.json()
     const site_criado = await criarSite(novo_site);
     return NextResponse.json(site_criado);
     

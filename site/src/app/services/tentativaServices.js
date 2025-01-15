@@ -2,28 +2,39 @@ import { tentativas_app } from "../db/models/tentativas_app.js"
 import { Op } from "sequelize"
 import db from "../db/models/helpers/connection.js"
 import { pegarTodosApps } from "./appServices.js"
+import moment from "moment"
 
+export async function getBlocksWeek(){
 
-export async function pegaTotalTentivasSemana(){
+    let blocks_of_week = []
+    const date_now = new Date()
+    const day_x = new Date()
     
-    const data_actual = new Date()
-    const sete_dias_antes = new Date()
-    
-    sete_dias_antes.setDate(data_actual.getDate() - 20)
-    const tentativas_semana = await tentativas_app.findAll({
-        attributes:[
-            [db.sequelize.fn("Date",db.sequelize.col("teste_tentativas_data")),"Data"],
-            [db.sequelize.fn("COUNT", db.sequelize.col("id")), "tentivas"]
+    for(let i = 6;i>=0;i--){
 
-        ],
-        where:{
-            "teste_tentativas_data":{[Op.gte]:sete_dias_antes}
-        },
-        group:[db.sequelize.fn("Date", db.sequelize.col("teste_tentativas_data"))]
+        day_x.setDate(date_now.getDate() - i)
+        let formated_date = moment(day_x).format('YYYY-MM-DD')
+        
+        const blocks_of_day = await tentativas_app.findAll({
+            attributes:[
+                [db.sequelize.fn("Date",db.sequelize.col("teste_tentativas_data")),"Data"],
+                [db.sequelize.fn("COUNT", db.sequelize.col("id")), "tentivas"]
 
-    })
+            ],
+            where:db.sequelize.where(db.sequelize.fn("Date", db.sequelize.col("teste_tentativas_data")),"=",formated_date),
+            group:[db.sequelize.fn("Date", db.sequelize.col("teste_tentativas_data"))]
 
-    return tentativas_semana
+        })
+        if(blocks_of_day.length != 0){
+            blocks_of_week = [...blocks_of_week,...blocks_of_day,formated_date]
+        }else{
+            const empty_day = {'Data':formated_date,'tentativas':0};
+            blocks_of_week = [...blocks_of_week, empty_day]
+        }
+    }
+
+
+    return blocks_of_week
 }
 
 export async function pegaAppsTentados(){
@@ -58,4 +69,3 @@ export async function pegaAppsTentados(){
     
     return lista_apps_tentados
 }
-
