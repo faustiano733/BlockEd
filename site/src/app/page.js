@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 /*import { PieChart, Pie, Tooltip } from "recharts";*/
 import dynamic from 'next/dynamic';
 import 'chart.js/auto';
+import { getDayOfWeek } from "@lib/helpers.js";
 
 
 export default function Home() {
@@ -296,7 +297,7 @@ export default function Home() {
       responsive: true,
       maintainAspectRatio: false,
     };
-/*
+
   useEffect(()=>{
     async function fetchData(){
       let objecto = await fetch("/api/dashboard");
@@ -306,9 +307,8 @@ export default function Home() {
       setTotalDispositivos(resposta.dispositivos)
       setTotalApps(resposta.apps)
       setTotalSites(resposta.sites)
-      let data = new Date(resposta.semana[1].Data);
-      alert(data.getDay())
-
+      let data = new Date(resposta.semana[0].Data);
+      alert(getDayOfWeek(data.getDay()))
     }
 
     fetchData();

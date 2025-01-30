@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.7",
     "dotenv": "^16.4.7",
     "google-play-scraper": "^10.0.1",
+    "jose": "^5.9.6",
     "moment": "^2.30.1",
     "momment": "^0.0.1",
     "mysql2": "^3.12.0",

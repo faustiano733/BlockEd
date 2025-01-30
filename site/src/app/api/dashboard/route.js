@@ -1,4 +1,4 @@
-import { pegaInformacoesDashboard } from "@/app/services/dashboardService.js";
+import { pegaInformacoesDashboard } from "@/lib/services/dashboardService.js";
 import { NextResponse } from "next/server";
 
 
