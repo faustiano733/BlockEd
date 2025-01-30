@@ -170,6 +170,8 @@ export default function Home() {
     ]);*/
   const [overviewMenu, setOverviewMenu] = useState("tentativas");
   const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"},{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"},{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"},{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
+
+
   function HeaderCard(props){
     const [mostrarAlunos, setMostrarAlunos] = useState(false);
     const [alunosSuspeitos, setAlunosSuspeitos] = useState(0);
@@ -178,10 +180,10 @@ export default function Home() {
     
     return(
       <div className="headerCard" >
-	<div className="headerCardIconConteiner">
-	{props.icon}
+	     <div className="headerCardIconConteiner">
+        {props.icon}
         {props.value >= 1000 ? props.value : props.value >= 100 ? props.value : props.value >= 10 ? "0"+props.value : "00"+props.value}
-	</div>
+	     </div>
        	<span>{props.text}</span>
       </div>
     )

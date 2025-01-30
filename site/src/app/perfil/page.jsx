@@ -2,7 +2,7 @@
 import Image from "next/image";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
-import { LockIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon } from "@icon";
+import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon } from "@icon";
 import { useEffect, useState } from "react";
 import Button from "@components/Button.js";
 import Input from "@components/Input.js";
@@ -75,19 +75,38 @@ export default function Profile() {
         setChangePassLoading(false);
       }, 3000)
     }
+    function ExcecaoTit(){
+      return(
+        <div className="excecaoTit">
+          <h5>Exceções</h5>
+          <CalendarAddIcon color="#358bff"/>
+        </div>
+      );
+    }
 
+    function Excecao(props){
+      return(
+        <div className="excecao">
+          <CalendarIcon color="#358bff"/>
+          <span>{props.date}</span>
+          <DeleteIcon color="#ff8080" className="excecaoDelIcon"/>
+        </div>
+      );
+    }
     return(
       <div className="profileSubMenu" id="senhaMenu">
-        <h5>Alterar senha</h5>
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
-        <Button onClick={() =>{setChangePassLoading(true); changePass()}} style={{border: "solid 1px #00b8f5", background: "white", color: "#00b8f5"}}>
-	  {changePassLoading ? <PendingIcon color="#00b8f5"/> : <><small>Confirmar</small></>}
-	</Button>
-	<h5>Exceções</h5>
-	<section className="excecoesSection">
-
-	</section>
+        <Button onClick={() =>{setChangePassLoading(true); changePass()}}>
+	       {changePassLoading ? <PendingIcon color="#00b8f5"/> : <><small>Confirmar</small></>}
+        </Button>
+        <ExcecaoTit />
+        <section className="excecoesSection">
+          <Excecao date="Jan 25" />
+          <Excecao date="Jan 25" />
+          <Excecao date="Jan 25" />
+          <Excecao date="Jan 28" />
+        </section>
       </div>
     );
   }

@@ -5,7 +5,7 @@ import NavigationRoute from "@components/NavigationRoute.js";
 import { HorizontalLine, VerticalLine } from "@components/Lines.js";
 import Header from "@components/Header.js";
 import { StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon, CloseIcon, SmartPhoneIcon} from "../../Icons.jsx";
-import {EmptyMenu} from "../bloqueio/page.js";
+import {EmptyMenu} from "../bloqueio/page.jsx";
 //import { Metadata } from "next";
 
 export function Aluno(props){

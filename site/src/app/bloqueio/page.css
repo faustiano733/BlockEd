@@ -412,6 +412,7 @@ width: 100%;
   }
   #mainContent2{
     display: flex;
+    background: #f2f5f8;
   }/*
   #mainFooter{
     position: relative;
@@ -470,7 +471,8 @@ width: 100%;
   }
   .app, .site, .outro{
     box-shadow: none;
-    border-radius: 0;
+    background: white;
+    /*border-radius: 0;*/
     /*border-bottom: solid 1px #ddd;*/
     padding: 10px 10px 10px 0;
   }

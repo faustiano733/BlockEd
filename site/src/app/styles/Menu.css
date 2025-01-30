@@ -19,6 +19,7 @@
   display: flex;
   background: #f8f8f8;
   justify-content: center;
+  padding: 5px 10px;
 }
 
 .menu_item{
@@ -28,11 +29,13 @@
  text-decoration: none;
  color: #2f3429;
  font-weight: 400;
- padding: 10px 15px;
+ padding: 10px /*15px*/;
 }
 
 .menu_item_focused{
-  background: #fff;
+  /*background: #fff;*/
+  background: #358bff15;
+  border-radius: 100px;
 }
 .menu_item span{
   display: none;
@@ -63,6 +66,7 @@
     height: stretch;
     flex-direction: column;
     justify-content: flex-start;
+    background: white;
   }
   .menu_item{
     flex-direction: row;

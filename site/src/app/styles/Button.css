@@ -10,6 +10,7 @@
   /*padding: 10px;*/
   text-align: center;
   height: 40px;
+  min-height: 40px;
 }
 
 .button svg{

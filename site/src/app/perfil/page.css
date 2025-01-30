@@ -12,7 +12,7 @@
 .mainDesktop{
   display: none;
   height: stretch;
-  background: /*linear-gradient(90deg, white, #efefef)*/ white;
+  background: /*linear-gradient(90deg, white, #efefef)*/ #f2f5f8;
   /*justify-content: space-around;*/
   /*align-items: center;*/
   padding: 20px;
@@ -39,9 +39,11 @@
 }
 .profileScreenDesktop{
   width: stretch;
+  max-width: 45%;
   border-radius: 10px;
   padding: 10px;
-  box-shadow: 0 0 2px 0.5px #ddd;
+  /*box-shadow: 0 0 2px 0.5px #ddd;*/
+  background: white;
 }
 
 .profileHeader{
@@ -95,6 +97,7 @@
   border-radius: inherit;
   width: 50px;
   height: 50px;
+
 }
 
 .profileContent{
@@ -115,7 +118,7 @@
   height: stretch;
   max-height: 45px;
   /*border: solid 1px #00b8f5;*/
-  /*box-shadow: 0 0 1px 0.3px #ddd;*/
+  box-shadow: 0 0 1px 0.5px #eee;
   border-radius: 10px;
   padding: 5px;
   display:flex;
@@ -144,12 +147,67 @@
   flex-direction: column;
   /*justify-content: center;*/
   gap: 15px;
+  overflow-y: hidden;
+  padding: 3px;
 }
 #senhaMenu h5{
   /*text-align: center;*/
   color: rgb(0,0,0, 0.7);
-  border-bottom: solid 1px rgb(0,0,0,0.7);
+  /*border-bottom: solid 1px rgb(0,0,0,0.7);*/
+
 }
+
+.excecaoTit{
+  width: stretch;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  align-items: center;
+}
+.excecaoTit svg{
+  background: #358bff22;
+  border-radius: 30px;
+  padding: 3px;
+  width: 29px;
+  height: 29px;
+}
+
+.excecao{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  /*background: #f4f7fa;*/
+  border-radius: 10px;
+  box-shadow: 0 0 1px 0.5px #eee;
+}
+.excecao svg{
+  background: #358bff22;
+  padding: 3px;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+}
+.excecao span{
+  font-size: 12px;
+  font-weight: bold;
+  color: #121212;
+}
+
+.excecao .excecaoDelIcon{
+  background: #ff808022;
+}
+
+.excecoesSection{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: stretch;
+  /*background: red;*/
+  overflow-y: auto;
+  padding: 2px;
+}
+
 .closeMenu{
   width: 100%;
   height: fit-content;
@@ -165,8 +223,9 @@
     display: flex;
   }
   .profileHeader{
-    box-shadow: 0 0 2px 0.5px #ddd;
+    /*box-shadow: 0 0 2px 0.5px #ddd;*/
     border-radius: 10px;
+    background: white;
     padding: 10px;
     gap:0;
   }
@@ -184,12 +243,12 @@
   }
 
   .profileContent{
-    box-shadow: 0 0 2px 0.5px #ddd;
+    /*box-shadow: 0 0 2px 0.5px #ddd;*/
     border-radius: 10px;
-    gap: 10px;
+    gap: 15px;
     background: white;
   }
   .profileOption{
-    box-shadow: 0 0 2px 0.5px #ddd;
+    /*box-shadow: 0 0 2px 0.5px #eee;*/
   }
 }

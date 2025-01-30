@@ -204,6 +204,7 @@ export default function Bloqueios(){
       </div>
     )
   }
+
    function CloseMenu(){
      return(
        <nav className="closeButton" onClick={() => {setMenuActual(null); setDiretorios("")}}>
@@ -211,6 +212,7 @@ export default function Bloqueios(){
        </nav >
      );
    }
+
    function MainContent(){
      	if(subMenu == "adicionarAplicativos") return <AdicionarAplicativos />
      	if(subMenu == "adicionarSites") return <AdicionarSites />
@@ -218,6 +220,7 @@ export default function Bloqueios(){
       	if(menuActual == "sites") return <MenuSites />
       	if(menuActual == "outros") return <MenuOutros />
    }
+
   function MainContentMenu(){
     if(menuActual == "aplicativos") return <MenuAplicativos /> 
     if(menuActual == "sites") return <MenuSites />
@@ -227,16 +230,18 @@ export default function Bloqueios(){
       </div>
      )*/
    }
+
   function MainContentSubMenu(){
     if(menuActual == "aplicativos") return <AdicionarAplicativos />
     if(menuActual == "sites") return <AdicionarSites />
     if(menuActual == "outros") return <EmptyMenu text="BlockEd (^ v ^)"/>
    }
+
   return(
     <>
     <div id="main">
       <div id="mainContent">
-	<MainContent />
+        <MainContent />
       </div>
       <div id="mainFooter">
         <BloqueioItem icon={<AndroidIcon />} text="Aplicativos" menu="aplicativos"/>
@@ -245,9 +250,9 @@ export default function Bloqueios(){
       </div>
       {/*<HorizontalLine />*/}
       <div id="mainContent2">
-	<div className="mainContentMenu">
+        <div className="mainContentMenu">
        	  <MainContentMenu />
-	</div>
+        </div>
         {/*<VerticalLine />*/}
         <div className="mainContentMenu mainContentSubMenu">
        	  <MainContentSubMenu />
