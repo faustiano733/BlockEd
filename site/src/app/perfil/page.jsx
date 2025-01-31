@@ -98,7 +98,7 @@ export default function Profile() {
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
         <Button onClick={() =>{setChangePassLoading(true); changePass()}}>
-	       {changePassLoading ? <PendingIcon color="#00b8f5"/> : <><small>Confirmar</small></>}
+	       {changePassLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
         </Button>
         <ExcecaoTit />
         <section className="excecoesSection">
