@@ -92,7 +92,7 @@ export default function Bloqueios(){
   }
   function AdicionarAplicativos(){
     const [searchAppLoading, setSearchAppLoading] = useState(false);
-    const [searchedApps, setSearchedApps] = useState([]);
+    const [searchedApps, setSearchedApps] = useState(null);
     async function searchApp(){
       await sleep(1000);
       setSearchAppLoading(false);
@@ -107,10 +107,11 @@ export default function Bloqueios(){
         <Input placeholder="Insira o nome do aplicativo" icon={searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}/>
 	<small>Resultados</small>
 	<section>
-	  {(searchedApps.length < 1) && <EmptyMenu text="Nenhum app encontrado"/>}
-          {searchedApps.map((elemento, index)=>{
+	  {(searchedApps) ? (searchedApps.length < 1) && <EmptyMenu text="Nenhum app encontrado"/> : <EmptyMenu text="Pesquise o nome do app"/>}
+          
+      {searchedApps && searchedApps.map((elemento, index)=>{
 	    return <Aplicativo key={index} name={elemento.name} />
-          })}
+      })}
         </section>
       </div>
     );

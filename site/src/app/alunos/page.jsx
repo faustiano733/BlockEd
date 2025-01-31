@@ -25,7 +25,7 @@ export function Aluno(props){
   }
 export default function AlunosPage(){
   const [aluno, setAluno] = useState(null);
-  const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
+  const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
   const [loading, setLoading] = useState(false);
   const [searchAlunoLoading, setSearchAlunoLoading] = useState(false);
 
@@ -111,7 +111,8 @@ export default function AlunosPage(){
 	  <span>Idade: {aluno[0].idade} anos</span>
 	  <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
 	</div>
-	<h5>Dispositivos</h5>
+	<h5>- Dispositivos -</h5>
+  <section className="devicesList">
 	{
 	  aluno.map((elemento, index) => {
 	    if(index == 0) return null;
@@ -120,6 +121,7 @@ export default function AlunosPage(){
 	    );
 	  })
 	}
+  </section>
       </div>
       : <EmptyMenu text="Nenhum aluno seleccionado" />
       }
@@ -133,10 +135,9 @@ export default function AlunosPage(){
     </div>
     <div id="alunosPageDesktop">
       <div className="menuAlunosDesktop">
-	<SearchAlunoDesktop />
+	     <SearchAlunoDesktop />
         <MenuAlunos />
       </div>
-      <VerticalLine />
       <div className="subMenuAlunoDesktop">
 	<SubMenuAluno />
       </div>

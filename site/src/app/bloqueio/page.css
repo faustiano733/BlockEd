@@ -13,6 +13,7 @@
   background: white;
   /*background: red;*/
   overflow: hidden;
+  width: 100%;
 }
 #mainFooter{
   width:100%;
@@ -32,7 +33,7 @@
   /*align-items: center;*/
   overflow-y: hidden;
   padding: 20px;
-  gap: 10px;
+  gap: 20px;
   /*padding: 20px 0;*/
 }
 
@@ -50,11 +51,11 @@
 }
 .mainContentSubMenu{
   /*width: stretch;*/
-  max-width: 40%;
-  /*background: red;*/
+  max-width: 45%;
+  background: white;
   padding: 10px;
   /*max-height: 80%;*/
-  box-shadow: 0 0 2px 0.5px #ddd;
+  /*box-shadow: 0 0 2px 0.5px #ddd;*/
 }
 .bloqueioItem{
   width: stretch;
@@ -265,6 +266,7 @@
   flex-direction: column;
   gap: 15px;
   height: stretch;
+  overflow-y: auto;
 }
 
 #adicionarSites section{
@@ -407,6 +409,9 @@ width: 100%;
 
 */
 @media(min-width: 900px){
+  #main{
+    background: #f2f5f8;
+  }
   #mainContent{
     display: none;
   }
@@ -425,19 +430,23 @@ width: 100%;
     width: fit-content;
   }*/
   #mainFooter{
-    width: 300px;
+    width: fit-content;
     margin: 20px;
-    border-radius: 5px;
-    box-shadow: 1px 1px 3px 0 #ccc;
-    padding: 0 2px;
+    border-radius: 10px;
+    /*box-shadow: 1px 1px 3px 0 #ccc;*/
+    padding: 2px;
   }
   .bloqueioItem{
     border-radius: 0;
     padding: 10px;
     border-bottom: solid 2px transparent;
+    flex-direction: row;
   }
   .bloqueioItem svg{
-    display: none;
+    /*display: none;*/
+    box-shadow: 0 0 1px 1px #ccc;
+    border-radius: 30px;
+    padding: 3px;
   }
   .bloqueioItem span{
     display: inline;
@@ -450,14 +459,13 @@ width: 100%;
     border-color:#358bff;
   }
   .bloqueioItemFocused span{
-    color: initial;
+    color: #358bff;
   }
-  
+  .bloqueioItemFocused svg{
+    box-shadow: 0 0 1px 1px #358bff;
+  }
   .add{
     display: none;
-  }
-  #main{
-    width: stretch;
   }
   .menuItem{
     gap: 0;
@@ -468,13 +476,18 @@ width: 100%;
   }
   #adicionarAplicativos section{
     gap: 0;
+    background: white;
   }
   .app, .site, .outro{
     box-shadow: none;
     background: white;
     /*border-radius: 0;*/
     /*border-bottom: solid 1px #ddd;*/
-    padding: 10px 10px 10px 0;
+    
+  }
+  #menuOutros, #menuAplicativos, #menuSites{
+    background: #f2f5f8;
+    gap: 20px;
   }
 }
 

@@ -10,7 +10,8 @@
   display: none;
   flex-direction: row;
   gap: 20px;
-  padding: 20px 10px;
+  padding: 20px;
+  background: #f2f5f8;
 }
 
 .menuAlunos{
@@ -30,6 +31,7 @@
   padding: 6px;
   height: fit-content;
   cursor: pointer;
+  background: white;
 }
 
 .aluno svg{
@@ -109,8 +111,9 @@
   padding: 4px 10px 10px 10px;
   /*align-items: center;*/
   width: stretch;
-  gap: 8px;
+  gap: 10px;
   overflow-y: auto;
+  background: white;
 }
 .subMenuAlunoIcon svg{
   background: /*#e9e9e9*/ #ddd;
@@ -125,10 +128,8 @@
   color: #404040;
 }
 .subMenuAluno h5{
-  /*text-align: center;
-  margin-top: 2px;*/
-  color: #358bff;
-  border-bottom: solid 1px #358bff;
+  text-align: center;
+  color: #121212;
   padding: 5px 0;
 }
 .subMenuAlunoInfo{
@@ -148,7 +149,14 @@
   padding: 2px 4px;
   border-radius: 10px;
 }
-
+.devicesList{
+  display: flex;
+  flex-direction: column;
+  height: stretch;
+  overflow-y: auto;
+  padding: 2px;
+  gap: 8px;
+}
 
 .menuAlunosDesktop{
   display: flex;
@@ -156,11 +164,15 @@
   width: stretch;
   height: stretch;
   /*max-width: 700px;*/
+  gap: 20px;
 }
 .subMenuAlunoDesktop{
   display: flex;
   width: stretch;
   height: stretch;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
 }
 .alunoDispositivo{
   display: flex;
@@ -214,14 +226,17 @@
   .closeButton{
     display:  none;
   }
+  .menuAlunos{
+    padding: 0;
+  }
   .searchAluno{
     display: none;
   }
   .searchAlunoDesktop{
-    box-shadow: 1px 1px 1px 0px #ddd;
+    box-shadow: none;
+    border-radius: 10px;
   }
   .aluno{
     box-shadow: none;
-    border-bottom: solid 1.5px #ddd;
   }
 }

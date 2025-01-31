@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import "./page.css";
-import {Aluno} from "./alunos/page.js";
+import {Aluno} from "./alunos/page.jsx";
 import { ProfileIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon } from "../Icons.jsx";
 import { useEffect, useState } from "react";
 /*import { PieChart, Pie, Tooltip } from "recharts";*/
