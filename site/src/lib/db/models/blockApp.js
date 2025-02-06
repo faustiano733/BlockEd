@@ -6,19 +6,26 @@ import { blocks } from "./block.js";
 export const block_app = db.sequelize.define('blockApp',{
     idBlockApp:{
         type:db.Sequelize.UUID,
-        primaryKey:true
+        primaryKey:true,
+        defaultValue:db.Sequelize.UUIDV4
     },
     idStudent:{
-        type:db.Sequelize.INTEGER,
-        references:students.idStudent
+        type:db.Sequelize.UUID,
+        references:{
+            model:students,
+            key:'idStudent'}
     },
     idApp:{
         type:db.Sequelize.UUID,
-        references:apps.idApp
+        references:{
+            model:apps,
+            key:'idApp'}
     },
     idBlock:{
         type:db.Sequelize.UUID,
-        references:blocks.idBlock
+        references:{
+            model:blocks,
+            key:'idBlock'}
     }
 },{
     timestamps:true,

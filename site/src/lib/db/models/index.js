@@ -1,86 +1,70 @@
-import apps from "./apps.js";
-import sites from "./sites.js"
-import alunos from "./student.js";
-import escolas from "./school.js"
-import dispositivos from "./device.js"
-import usuarios from "./user.js"
-import contas from "./account.js"
-import localizacao from "./location.js";
+import {apps} from "./apps.js";
+import {sites} from "./sites.js"
+import {students } from "./student.js";
+import {school} from "./school.js"
+import {device} from "./device.js"
+import {user} from "./user.js"
+import {account } from "./account.js"
+import {location} from "./location.js";
 
 
 import db from "./helpers/connection.js";
-import { bloqueios } from "./block.js";
+import { blocks } from "./block.js";
+import { block_app } from "./blockApp.js";
+import { block_site } from "./blockSite.js";
 
-const aluno_teste = [
+
+
+const account_test = [
     {
-        nome:"Faustiano",
-        escola_id:1
+        email:'faustianoGeraldo@gmail.com',
+        password:'12345'
     },
     {
-        nome:"Hugo",
-        escola_id:2
+        email:'faustianoGeraldo@gmail.com',
+        password:'12345'
     }
 ]
 
 const apps_teste = [
     {
-        nome:"TikTok",
-        package_name:"tiktok.package",
-        escola_id:1
+        name:'whataspp',
+        active:0,
+        packageName:'whatsapp.com.moblie',
     },
     {
-        nome:"TikTok",
-        package_name:"tiktok.package",
-        escola_id:2
+        name:'whataspp',
+        active:1,
+        packageName:'whatsapp.com.moblie',
+    },
+    {
+        name:'whataspp',
+        active:1,
+        packageName:'whatsapp.com.moblie',
+    },
+]
+
+
+const school_test =[
+    {
+        name:'Dom Dãmiao Franklin',
+        blockSites:1,
+        blockApps:1,
+        blockInternet:1,
+        blockCam:1
+        
+    },
+    {
+        name:'Colegio Goft',
+        blockSites:1,
+        blockApps:1,
+        blockInternet:1,
+        blockCam:1
+        
     }
 ]
 
-const conta_teste = [
-    {
-        email:"teste@gmail.com",
-        password:"sajsjalksj"
-    },
-    {
-        email:"teste2@gmail.com",
-        password:"sajsjalksj"
-    }
-]
-
-const dispositivo_teste = [
-    {
-        aluno_id:1,
-        mac_adrress:"122345",
-        ultima_conexao:"10 DIAS"
-    },
-    {
-        aluno_id:2,
-        mac_adrress:"122345",
-        ultima_conexao:"12 DIAS"
-    }
-]
-
-const escola_teste = [
-    {
-        nome:"DDF",
-        block_sites:1,
-        block_apps:1,
-        block_internet:1,
-        block_cam:1,
-        user_id:1,
-        localizacao_id:1
-    },
-    {
-        nome:"Girassol",
-        block_sites:1,
-        block_apps:2,
-        block_internet:1,
-        block_cam:1,
-        user_id:1,
-        localizacao_id:2
-    }
-]
-
-const localizacao_teste = [
+const location_tes = [
     {
         longitude:10.234,
         latitude:10.256
@@ -94,104 +78,71 @@ const localizacao_teste = [
 
 const sites_teste = [
     {
-    dominio:"www.teste.com",
-    escola_id:1
+    domine:"www.teste.com"
     },
     {
-        dominio:"www.teste2.com",
-        escola_id:1
+        domine:"www.teste2.com"
     },
     {
-        dominio:"www.teste3.com",
-        escola_id:1
+        domine:"www.teste3.com",
     },
 ]
 
-const usuario_teste =[
+const user_test =[
     {
-        user_name:"faustiano",
-        conta_id:1
+        name:"faustiano",
+        
     },
     {
-        user_name:"faustiano",
-        conta_id:2
+        name:"Carlos",
+        
     }
 ]
 
-const tentiva_app_teste = [
+const student_test = [
     {
-        id_app:2,
-        id_aluno:1,
-        id_escola:1
+        name:'Faustiano'
     },
     {
-        id_app:2,
-        id_aluno:1,
-        id_escola:1
-    },
+        name:'Carlos'
+    }
 ]
 
-async function dadosTeste(){
-    //await Promise.all(
-    //    aluno_teste.map(async aluno=>{
-    //        await alunos.create(aluno)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    apps_teste.map(async app=>{
-    //        await apps.create(app)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    conta_teste.map(async conta=>{
-    //        await contas.create(conta)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    dispositivo_teste.map(async dispositivo=>{
-    //        dispositivos.create(dispositivo)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    escola_teste.map(async escola=>{
-    //        await escolas.create(escola)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    localizacao_teste.map(async localizador=>{
-    //        await localizacao.create(localizador)
-    //    })
-    //)
-//
-    //await Promise.all( 
-    //    sites_teste.map(async site=>{
-    //        await sites.create(site)
-    //    })
-    //)
-//
-    //await Promise.all(
-    //    usuario_teste.map(async usuario=>{
-    //        usuarios.create(usuario)
-    //    })
-    //)
+const device_test = [
+    {
+        mac_adrress:'13hbdsbdbfsmc'
+    },
+    {
+        mac_adrress:'13hbd1bdbfsms'
+    }
+]
 
-    const data_actual = new Date()
-        data_actual.setDate( data_actual.getDate() - 0)
-        tentiva_app_teste.map(async tentativa=>{
-            await tentativas_app.create({...tentativa, teste_tentativas_data:data_actual})
-        })
+
+async function insertTestData(){
+    let i = 0
+    const db_accounts = await Promise.all( account_test.map(async (account_db)=> await account.create(account_db) ))
+
+    const db_users = await Promise.all(user_test.map(async (user_db)=> await user.create({...user_db, idAccount:db_accounts[0].idAccount})))
+
+    const db_location = await Promise.all(location_tes.map(async location_db=> await location.create(location_db)))
     
+    const db_schools = await Promise.all(school_test.map(async school_db=> {
+        const test_school = await school.create({...school_db, idLocation:db_location[i].idLocation, idUser:db_users[i].idUser})
+        i += 1
+        return test_school
+    }))
+
+    const db_apps = await Promise.all(apps_teste.map(async app_db=> await apps.create({...app_db, idSchool:db_schools[0].idSchool})))
+
+    const db_site = await Promise.all(sites_teste.map(async site_db=> await sites.create({...site_db, idSchool:db_schools[0].idSchool})))
+
+    const db_student = await Promise.all(student_test.map(async student_db=> await students.create({...student_db, idSchool:db_schools[0].idSchool})))
+
+    const db_device = await Promise.all(device_test.map(async device_db=> await device.create({...device_test, idStudent:db_student[0].idStudent})))
 
 }
 
 
-await db.sequelize.sync({alter:true})
-//await dadosTeste()
-
-
+//await db.sequelize.sync({alter:true})
+await insertTestData()
 //db.sequelize.drop()

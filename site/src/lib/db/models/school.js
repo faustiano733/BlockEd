@@ -5,7 +5,8 @@ import { user } from "./user.js"
 export const school = db.sequelize.define("school",{
     idSchool:{
         type:db.Sequelize.UUID,
-        primaryKey:true
+        primaryKey:true,
+        defaultValue:db.Sequelize.UUIDV4
     },
     name:{
         type:db.Sequelize.STRING
@@ -24,13 +25,17 @@ export const school = db.sequelize.define("school",{
     },
     idUser:{
         type:db.Sequelize.UUID,
-        references:user.idUser,
+        references:{
+            model:user,
+            key:"idUser"
+        },
         foreignKey:true
     },
     idLocation:{
         type:db.Sequelize.UUID,
-        references:location.idLocation,
-        foreignKey:true
+        references:{
+            model:location, 
+            key:"idLocation"},
     }
 },{
     timestamps:true,

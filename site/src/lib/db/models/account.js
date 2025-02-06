@@ -3,7 +3,8 @@ import db from "./helpers/connection.js";
 export const account = db.sequelize.define("account",{
     idAccount:{
         type:db.Sequelize.UUID,
-        primaryKey:true
+        primaryKey:true,
+        defaultValue:db.Sequelize.UUIDV4
     },
     email:{
         type:db.Sequelize.STRING

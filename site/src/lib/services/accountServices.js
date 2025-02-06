@@ -6,7 +6,6 @@ import { createSession } from "../session.js";
 import { getSchool } from "./escolaService.js";
 
 async function createAccount(new_account){
-
    
     if(new_account.email != undefined && new_account.password != undefined){
         
@@ -60,7 +59,7 @@ export async function siggin(account, user, school,location){
     try{
         const new_account = await createAccount(account)
         const new_user = await createUser({name:user,idConta:new_account.idAccount})
-        const school_location = await createLocation(localizacao)
+        const school_location = await createLocation(location)
         const new_school = await createSchool({name:school, idLocation:school_location.idLocation, idUser:new_user.idUser})
         return {message:"success"}
     }catch(error){
@@ -92,6 +91,9 @@ export async function login(user_email, user_password){
     const user = await getAccount(user_email)
     if(user.email === user_email && user.password === user_password ){
         createSession(user.idUsuario)
+        return true
+    }else{
+        return false
     }
 }
 

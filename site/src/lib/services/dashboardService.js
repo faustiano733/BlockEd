@@ -10,7 +10,7 @@ async function getNumberOfDevices(){
     return tot_devices
 }
 
-export async function pegaInformacoesDashboard(){
+export async function getDashboard(){
 
 
     const blocks_week = await getBlocksWeek()
