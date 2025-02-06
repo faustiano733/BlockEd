@@ -24,7 +24,8 @@ export const block_site = db.sequelize.define('blockSite',{
         type:db.Sequelize.UUID,
         references:{
             model:blocks,
-            key:'idBlock'}
+            key:'idBlock'
+        }
     }
 },{
     timestamps:true,

@@ -143,6 +143,7 @@ async function insertTestData(){
 }
 
 
-//await db.sequelize.sync({alter:true})
-await insertTestData()
+await db.sequelize.sync()
+
+//await insertTestData()
 //db.sequelize.drop()

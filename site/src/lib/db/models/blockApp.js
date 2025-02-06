@@ -13,19 +13,22 @@ export const block_app = db.sequelize.define('blockApp',{
         type:db.Sequelize.UUID,
         references:{
             model:students,
-            key:'idStudent'}
+            key:'idStudent'
+        }
     },
     idApp:{
         type:db.Sequelize.UUID,
         references:{
             model:apps,
-            key:'idApp'}
+            key:'idApp'
+        }
     },
     idBlock:{
         type:db.Sequelize.UUID,
         references:{
             model:blocks,
-            key:'idBlock'}
+            key:'idBlock'
+        }
     }
 },{
     timestamps:true,
