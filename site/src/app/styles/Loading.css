@@ -1,0 +1,25 @@
+.LoadingComponent{
+	display: flex;
+	height: 100%;
+	height: stretch;
+	width: 100%;
+	width: stretch;
+	background: white;
+	align-items: center;
+	justify-content: center;
+}
+
+.LoadingComponent svg{
+	height: 40px;
+	width: 40px;
+	animation: rotating infinite 1s linear;
+}
+
+@keyframes rotating{
+	0%{
+		transform: rotate(0deg);
+	}
+	100%{
+		transform: rotate(360deg);
+	}
+}

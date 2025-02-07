@@ -2,6 +2,8 @@
 import "./page.css";
 import {useEffect, useState} from "react";
 import NavigationRoute from "@components/NavigationRoute.js";
+import Loading from "@components/Loading";
+
 import { HorizontalLine, VerticalLine } from "@components/Lines.js";
 import Header from "@components/Header.js";
 import { StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon, CloseIcon, SmartPhoneIcon} from "../../Icons.jsx";
@@ -33,9 +35,29 @@ export function Aluno(props){
 
 export default function AlunosPage(){
   const [aluno, setAluno] = useState(null);
-  const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
-  const [loading, setLoading] = useState(false);
+  const [alunos, setAlunos] = useState(null);
+  //const [loading, setLoading] = useState(false);
   const [searchAlunoLoading, setSearchAlunoLoading] = useState(false);
+  const [studentLoading, setStudentLoading] = useState(false);
+
+  useEffect(()=>{
+    async function fetchData(){
+      let obj = await fetch("/api/student");
+      let resp = await obj.json();
+
+      setAlunos(resp);
+    }
+
+    fetchData()
+  }, []);
+
+  async function selectStudent(studentName){
+    let obj = await fetch(`/api/student?student=${studentName}`);
+    let resp = await obj.json();
+    setStudentLoading(false);
+
+    setAluno(resp)
+  }
 
   function CloseMenu(props){
     return(
@@ -89,7 +111,7 @@ export default function AlunosPage(){
         <Aluno nome="Joaquim de Andrade" dispositivos={2} ultimaConexao="há 4 dias" />*/}
         {
         alunos.map((entidade, index) => (
-          <Aluno key={`aluno-${index}`} nome={entidade.nome} dispositivos={entidade.dispositivos} ultimaConexao={entidade.ultimaConexao} onClick={() => setAluno([{nome: "Carlos Chagas Bastos Santos", turma: "TI13B", idade:19, processo: "00578", actividade: "Normal"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "Samsung A13", last_connection:"há 1 dia"}])}/>
+          <Aluno key={`aluno-${index}`} nome={entidade.name} dispositivos={entidade.tot_devices} ultimaConexao={"há 7 dias"/*entidade.ultimaConexao*/} onClick={()=>{setStudentLoading(true); selectStudent(entidade.name)}}/>
         ))
         }
         <SearchAluno />
@@ -98,6 +120,7 @@ export default function AlunosPage(){
   }
 
   function SubMenuAluno(){
+    if(studentLoading) return <Loading />
     return(
       <>
       <CloseMenu onClick={() => setAluno(null)}/>
@@ -106,19 +129,18 @@ export default function AlunosPage(){
           <div className="subMenuAlunoIcon">
             <StudentIcon color="white" fill={true}/>
           </div>
-          <h3>{aluno[0].nome}</h3>
-          <div className="subMenuAlunoInfo">
+          <h3>{aluno.name}</h3>
+          {/*<div className="subMenuAlunoInfo">
             <span>Turma: {aluno[0].turma}</span>
             <span>Idade: {aluno[0].idade} anos</span>
             <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
-          </div>
+          </div>*/}
           <h5>- Dispositivos -</h5>
           <section className="devicesList">
             {
-            aluno.map((elemento, index) => {
-              if(index == 0) return null;
-              else return(
-                <Dispositivo key={"dispositivo"+index} modelo={elemento.modelo} conexao={elemento.last_connection} />
+            aluno.devices.map((elemento, index) => {
+              return(
+                <Dispositivo key={"dispositivo"+index} modelo={"Iphone"/*elemento.modelo*/} conexao={elemento.createdAt} />
               );
             })
             }
@@ -129,7 +151,7 @@ export default function AlunosPage(){
       </>
     );
   }
-
+  if(!alunos) return <Loading />
   return(
     <>
     <div id="alunosPage">

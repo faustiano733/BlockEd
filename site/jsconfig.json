@@ -4,7 +4,10 @@
       "@/*": ["./src/*"],
       "@components/*": ["./src/app/components/*"],
       "@styles/*": ["./src/app/styles/*"],
-      "@icon": ["./src/Icons.jsx"]
+      "@icon": ["./src/Icons.jsx"],
+      "@lib/*": ["./src/lib/*"],
+      "@services/*":["./src/lib/services/"],
+      "models/*":["./src/lib/db/models/*"]
     }
   }
 }

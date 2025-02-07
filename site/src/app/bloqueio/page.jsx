@@ -8,22 +8,44 @@ import Input from "@components/Input.js";
 import Button from "@components/Button.js";
 import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "../../Icons.jsx";
 import { Metadata } from "next";
+import Loading from "@components/Loading";
 
 export function EmptyMenu({text}){
-    return(
-      <section className="emptyMenu">
-	{ text }
-      </section>
-    );
-  }
+  return(
+    <section className="emptyMenu">
+      { text }
+    </section>
+  );
+}
 
 export default function Bloqueios(){
   const [menuActual, setMenuActual] = useState("aplicativos");
   const [subMenu, setSubMenu] = useState(null);
   const [diretorios, setDiretorios] = useState("");
-  const [sites, setSites] = useState([{domain: "facebook.com", tentativas: 10}, {domain: "tiktok.com", tentativas: 2}]);
-  const [apps, setApps] = useState([{name: "Facebook", tentativas: 3}, {name: "TikTok", tentativas: 4}]);
+  const [sites, setSites] = useState(null);
+  const [apps, setApps] = useState(null);
   
+  useEffect(()=>{
+    async function fetchData(){
+      let obj = await fetch("/api/bloqueios/app");
+      let resp = await obj.json();
+
+      setApps(resp);
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(()=>{
+    async function fetchData(){
+      let obj = await fetch("/api/bloqueios/site");
+      let resp = await obj.json();
+
+      setSites(resp);
+    }
+
+    fetchData()
+  }, [])
   const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
   function BloqueioItem(props){
@@ -44,15 +66,17 @@ export default function Bloqueios(){
 
  
   function MenuAplicativos(){
-/*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
+    /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
+    if(!apps) return <Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuAplicativos">
-	{apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
+        {apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
         {apps.map((elemento, index)=>{
-	  return <Aplicativo key={index} name={elemento.name} loaded={true} tentativas={elemento.tentativas}/>
+          if(!elemento.active) return null;
+          return <Aplicativo key={index} name={elemento.name} loaded={true} tentativas={4/*elemento.tentativas*/}/>
         }
         )}
-	<Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
+        <Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
       </div>
     );
   }
@@ -119,11 +143,12 @@ export default function Bloqueios(){
 
 
   function MenuSites(){
+    if(!sites) return <Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuSites">
         {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
 	{sites.map((elemento, index)=>{
-          return <Site key={index} domain={elemento.domain} tentativas={elemento.tentativas}/> 
+          return <Site key={index} domain={elemento.domine/*domain*/} tentativas={4/*elemento.tentativas*/}/> 
          }
         )}
 	<Add onClick={()=>{setSubMenu("adicionarSites")}}/>
@@ -157,15 +182,22 @@ export default function Bloqueios(){
     const [searchedSiteData, setSearchedSiteData] = useState(null);
     //const [searchedApps, setSearchedApps] = useState([]);
     async function searchSite(){
-      await sleep(1000);
-      setSearchSiteLoading(false);
+      //await sleep(1000);
+      //setSearchSiteLoading(false);
       setSearchedSiteData({status: 200, domain: "Twitter.com", added: false, allowed: true});
-      //setSearchedApps([{name: "Whatsapp"}, {name: "Instagram"}])
+      let obj = await fetch("/api/bloqueios/site", {
+        method: "POST",
+        "Content-Type": "application/json",
+        body: JSON.stringify({domain: inputSearchSite.value})
+      })
+      let resp = await obj.json();
+      console.log(resp)
+      setSearchSiteLoading(false);
     }
     return(
       <div className="menuItem" id="adicionarSites">
 	<div>
-	  <Input placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
+	  <Input id="inputSearchSite" placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
 	</div>
 	{ searchedSiteData && <> 
 	{/*<small>Resultados</small>*/}
