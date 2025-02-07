@@ -2,7 +2,7 @@
 import Image from "next/image";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
-import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon } from "@icon";
+import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon, AddIcon } from "@icon";
 import { useEffect, useState } from "react";
 import Button from "@components/Button.js";
 import Input from "@components/Input.js";
@@ -69,7 +69,8 @@ export default function Profile() {
   }
   function SenhaMenu(){
     const [changePassLoading, setChangePassLoading] = useState(false);
-    
+    const [showAddExcecao, setShowAddExcecao] = useState(false);
+
     async function changePass(){
       setTimeout(()=>{
         setChangePassLoading(false);
@@ -79,11 +80,69 @@ export default function Profile() {
       return(
         <div className="excecaoTit">
           <h5>Exceções</h5>
-          <CalendarAddIcon color="#358bff"/>
+          {
+          showAddExcecao ?
+          <CalendarIcon color="#358bff" onClick={()=>setShowAddExcecao(false)}/>
+          :
+          <CalendarAddIcon color="#358bff" onClick={()=>setShowAddExcecao(true)}/>
+          }
         </div>
       );
     }
+    function AddExcecaoSection(){
+      const[mes, setMes] = useState(0);
+      const[maxDia, setMaxDia] = useState(31);
+      const[dia, setDia] = useState(31);
+      const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+      const limites = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+      function changeMes(subir){
+        if(subir){
+          if(mes <= 10){
+            setMes(mes+1)
+            setMaxDia(limites[mes+1])
+            if(dia > limites[mes+1])
+              setDia(limites[mes+1])
+          }
+        }
+        else{
+          if(mes > 0){
+            setMes(mes-1)
+            setMaxDia(limites[mes-1])
+            if(dia > limites[mes-1])
+              setDia(limites[mes-1])
+          }
+        }
+      }
+
+      function changeDia(subir){
+        if(subir){
+          if(dia < maxDia){
+            setDia(dia+1);
+          }
+        }
+        else{
+          if(dia > 1){
+            setDia(dia-1)
+          }
+        }
+      }
+      return(
+        <div className="addExcecaoSection">
+          <div className="addExcecaoEl">
+            <big onClick={()=>changeMes(false)}>-</big>
+            <span>{meses[mes]}</span>
+            <big onClick={()=>changeMes(true)}>+</big>
+          </div>
+          <div className="addExcecaoEl" >
+            <big onClick={()=>changeDia(false)}>-</big>
+            <span>{dia}</span>
+            <big onClick={()=>changeDia(true)}>+</big>
+          </div>
+          <CalendarAddIcon color="#358bff" />
+        </div>
+      );
+    }
     function Excecao(props){
       return(
         <div className="excecao">
@@ -93,6 +152,8 @@ export default function Profile() {
         </div>
       );
     }
+
+
     return(
       <div className="profileSubMenu" id="senhaMenu">
         <Input type="password" label="Senha antiga"/>
@@ -101,12 +162,17 @@ export default function Profile() {
 	       {changePassLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
         </Button>
         <ExcecaoTit />
+        {
+        showAddExcecao ?
+        <AddExcecaoSection />
+        :
         <section className="excecoesSection">
           <Excecao date="Jan 25" />
           <Excecao date="Jan 25" />
           <Excecao date="Jan 25" />
           <Excecao date="Jan 28" />
         </section>
+      }
       </div>
     );
   }
@@ -136,7 +202,7 @@ export default function Profile() {
     </div>
     <div className="mainDesktop">
       <div className="profileSettingsDesktop">
-	<Header />
+        <Header />
         <Content />
       </div>
       <div className="profileScreenDesktop">

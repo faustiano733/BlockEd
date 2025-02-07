@@ -12,8 +12,8 @@
   gap: 8px;*/
   background: white;
   /*background: red;*/
-  overflow: hidden;
-  width: 100%;
+  overflow-y: hidden;
+  width: stretch;
 }
 #mainFooter{
   width:100%;
@@ -32,8 +32,9 @@
   justify-content: space-between;
   /*align-items: center;*/
   overflow-y: hidden;
-  padding: 20px;
+  padding: 0px 20px 20px;
   gap: 20px;
+  width: stretch;
   /*padding: 20px 0;*/
 }
 
@@ -138,6 +139,7 @@
   font-weight: 300;
   color: gray;
   width: stretch;
+  border-radius: 10px;
 }
 .add{
   position: absolute;
@@ -410,14 +412,14 @@ width: 100%;
 */
 @media(min-width: 900px){
   #main{
-    background: #f2f5f8;
+    background: /*#f2f5f8*/#eceff8;
   }
   #mainContent{
     display: none;
   }
   #mainContent2{
     display: flex;
-    background: #f2f5f8;
+    background: /*#f2f5f8*/#eceff8;
   }/*
   #mainFooter{
     position: relative;
@@ -486,7 +488,7 @@ width: 100%;
     
   }
   #menuOutros, #menuAplicativos, #menuSites{
-    background: #f2f5f8;
+    background: /*#f2f5f8*/#eceff8;
     gap: 20px;
   }
 }

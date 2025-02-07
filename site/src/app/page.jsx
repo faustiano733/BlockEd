@@ -297,18 +297,18 @@ export default function Home() {
       <HomePageHeader />
       <Overview />
       <div id="homePageContent">
-	<MainGraphConteiner />
+        <MainGraphConteiner />
       </div>
     </div>
     <div className="homePageDesktop">
       <HomePageHeader />
       <div className="desktopGraphConteiner">
-	<section> <TentativasMenu /> </section>
-	<section> <AppsMenu /> </section>
+        <section> <TentativasMenu /> </section>
+        <section> <AppsMenu /> </section>
       </div>
       <div className="othersConteiner">
-	<section className="section1"><AlunosMenu /></section>
-	<section className="section2"><DetalhesMenu /></section>
+        <section className="section1"><AlunosMenu /></section>
+        <section className="section2"><DetalhesMenu /></section>
       </div>
     </div>
     </>

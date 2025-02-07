@@ -9,20 +9,28 @@ import {EmptyMenu} from "../bloqueio/page.jsx";
 //import { Metadata } from "next";
 
 export function Aluno(props){
-    return(
-      <div className="aluno" onClick={props.onClick && props.onClick}>
-        <div className="alunoInfo">
-          <StudentIcon color="white" fill={true}/>
-          <div>
-	    <h5>{props.nome}</h5>
-	    <small><small><span>{props.dispositivos}{props.dispositivos > 1 ? " dispositivos" : " dispositivo"}</span></small></small>
-	  </div>
-	</div>
-	{/*<small><span>há {props.ultimaConexao}</span></small>*/}
-	<span>{props.ultimaConexao}</span>
+  return(
+    <div className="aluno" onClick={props.onClick && props.onClick}>
+      <div className="alunoInfo">
+        <StudentIcon color="white" fill={true}/>
+        <div>
+          <h5>{props.nome}</h5>
+          <small>
+            <small>
+              <span>
+                {props.dispositivos}
+                {props.dispositivos > 1 ? " dispositivos" : " dispositivo"}
+              </span>
+            </small>
+          </small>
+        </div>
       </div>
-    );
-  }
+      {/*<small><span>há {props.ultimaConexao}</span></small>*/}
+      <span>{props.ultimaConexao}</span>
+    </div>
+  );
+}
+
 export default function AlunosPage(){
   const [aluno, setAluno] = useState(null);
   const [alunos, setAlunos] = useState([{nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}, {nome: "Carlos Chagas Bastos Santos", dispositivos: 3, ultimaConexao: "há 7 dias"}]);
@@ -42,14 +50,16 @@ export default function AlunosPage(){
   function Dispositivo(props){
     return(
       <div className="alunoDispositivo">
-	<span><SmartPhoneIcon color="#358bff"/> {props.modelo}</span>
-	<small><small>{props.conexao}</small></small>
+        <span><SmartPhoneIcon color="#358bff"/> {props.modelo}</span>
+        <small><small>{props.conexao}</small></small>
       </div>
     );
   }
+
   function pesquisarAluno(nomeDoAluno){
     setTimeout(()=> setSearchAlunoLoading(false), 3000);
   }
+
   function SearchAluno(props){
     const [searchingAluno, setSearchingAluno] = useState(false);
     return (
@@ -70,28 +80,19 @@ export default function AlunosPage(){
   function MenuAlunos(){
     return(
       <div className="menuAlunos">
-	{/*<Aluno nome="Joaquim de Andrade" dispositivos={1} ultimaConexao="há 35 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Joaquim de Andrade" dispositivos={2} ultimaConexao="há 4 dias" />
-	<Aluno nome="Joaquim de Andrade" dispositivos={2} ultimaConexao="há 4 dias" />*/}
+        {/*<Aluno nome="Joaquim de Andrade" dispositivos={1} ultimaConexao="há 35 dias" />
+        <Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
+        <Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
+        <Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
+        <Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
+        <Aluno nome="Carlos Chagas Bastos Santos" dispositivos={2} ultimaConexao="há 4 dias" />
+        <Aluno nome="Joaquim de Andrade" dispositivos={2} ultimaConexao="há 4 dias" />*/}
         {
-	alunos.map((entidade, index) => (
-	  <Aluno key={`aluno-${index}`} nome={entidade.nome} dispositivos={entidade.dispositivos} ultimaConexao={entidade.ultimaConexao} onClick={() => setAluno([{nome: "Carlos Chagas Bastos Santos", turma: "TI13B", idade:19, processo: "00578", actividade: "Normal"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "Samsung A13", last_connection:"há 1 dia"}])}/>
-	))
-	}
-	<SearchAluno />
+        alunos.map((entidade, index) => (
+          <Aluno key={`aluno-${index}`} nome={entidade.nome} dispositivos={entidade.dispositivos} ultimaConexao={entidade.ultimaConexao} onClick={() => setAluno([{nome: "Carlos Chagas Bastos Santos", turma: "TI13B", idade:19, processo: "00578", actividade: "Normal"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "IPhone 12", last_connection:"há 12 dias"}, {modelo: "Samsung A13", last_connection:"há 1 dia"}])}/>
+        ))
+        }
+        <SearchAluno />
       </div>
     );
   }
@@ -101,33 +102,34 @@ export default function AlunosPage(){
       <>
       <CloseMenu onClick={() => setAluno(null)}/>
       { aluno ? 
-      <div className="subMenuAluno">
-	<div className="subMenuAlunoIcon">
-	  <StudentIcon color="white" fill={true}/>
-	</div>
-	<h3>{aluno[0].nome}</h3>
-	<div className="subMenuAlunoInfo">
-	  <span>Turma: {aluno[0].turma}</span>
-	  <span>Idade: {aluno[0].idade} anos</span>
-	  <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
-	</div>
-	<h5>- Dispositivos -</h5>
-  <section className="devicesList">
-	{
-	  aluno.map((elemento, index) => {
-	    if(index == 0) return null;
-	    else return(
-	      <Dispositivo key={"dispositivo"+index} modelo={elemento.modelo} conexao={elemento.last_connection} />
-	    );
-	  })
-	}
-  </section>
-      </div>
-      : <EmptyMenu text="Nenhum aluno seleccionado" />
+        <div className="subMenuAluno">
+          <div className="subMenuAlunoIcon">
+            <StudentIcon color="white" fill={true}/>
+          </div>
+          <h3>{aluno[0].nome}</h3>
+          <div className="subMenuAlunoInfo">
+            <span>Turma: {aluno[0].turma}</span>
+            <span>Idade: {aluno[0].idade} anos</span>
+            <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
+          </div>
+          <h5>- Dispositivos -</h5>
+          <section className="devicesList">
+            {
+            aluno.map((elemento, index) => {
+              if(index == 0) return null;
+              else return(
+                <Dispositivo key={"dispositivo"+index} modelo={elemento.modelo} conexao={elemento.last_connection} />
+              );
+            })
+            }
+          </section>
+        </div>
+        : <EmptyMenu text="Nenhum aluno seleccionado" />
       }
       </>
     );
   }
+
   return(
     <>
     <div id="alunosPage">
@@ -135,13 +137,13 @@ export default function AlunosPage(){
     </div>
     <div id="alunosPageDesktop">
       <div className="menuAlunosDesktop">
-	     <SearchAlunoDesktop />
+        <SearchAlunoDesktop />
         <MenuAlunos />
       </div>
       <div className="subMenuAlunoDesktop">
-	<SubMenuAluno />
+        <SubMenuAluno />
       </div>
     </div>
     </>
-    );
+  );
 }

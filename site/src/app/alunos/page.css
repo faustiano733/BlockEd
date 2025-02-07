@@ -11,7 +11,7 @@
   flex-direction: row;
   gap: 20px;
   padding: 20px;
-  background: #f2f5f8;
+  background: /*#f2f5f8*/ #eceff8;
 }
 
 .menuAlunos{

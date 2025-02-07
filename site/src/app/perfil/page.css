@@ -12,7 +12,7 @@
 .mainDesktop{
   display: none;
   height: stretch;
-  background: /*linear-gradient(90deg, white, #efefef)*/ #f2f5f8;
+  background: /*linear-gradient(90deg, white, #efefef)*/ /*#f2f5f8*/#eceff8;
   /*justify-content: space-around;*/
   /*align-items: center;*/
   padding: 20px;
@@ -63,6 +63,8 @@
   padding: 30px 10px 5px;
   background: #f2f5f8;
   width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .profileHeaderTxt h6{
   font-size: 11px;
@@ -127,6 +129,7 @@
   font-size: 13px;
   color: #555/*#00a8f5*/;
   gap: 3px;
+  cursor: pointer;
 }
 .profileOption svg{
   height: 25px;
@@ -170,6 +173,7 @@
   padding: 3px;
   width: 29px;
   height: 29px;
+  cursor: pointer;
 }
 
 .excecao{
@@ -207,7 +211,31 @@
   overflow-y: auto;
   padding: 2px;
 }
-
+.addExcecaoSection{
+  display: flex;
+  gap: 10px;
+  height: fit-content;
+}
+.addExcecaoSection svg{
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+.addExcecaoEl{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 0 1px 0.5px #ddd;
+  /*padding: 0 10px;*/
+  user-select: none;
+}
+.addExcecaoEl big{
+  cursor: pointer;
+  padding: 7px;
+}
 .closeMenu{
   width: 100%;
   height: fit-content;
@@ -215,6 +243,7 @@
   justify-content: flex-end;
   align-items: center;
 }
+
 @media(min-width: 900px){
   .main{
     display: none;

@@ -34,7 +34,7 @@
 
 .menu_item_focused{
   /*background: #fff;*/
-  background: #358bff15;
+  background: #358bff22;
   border-radius: 100px;
 }
 .menu_item span{
@@ -67,6 +67,7 @@
     flex-direction: column;
     justify-content: flex-start;
     background: white;
+    padding: 10px;
   }
   .menu_item{
     flex-direction: row;
