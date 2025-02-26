@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+C:\Users\Rui Chimuco\Documents\app.zip# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 site/node_modules
@@ -112,3 +112,5 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+app/app/build
