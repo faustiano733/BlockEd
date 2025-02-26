@@ -1,6 +1,5 @@
 package com.blocked;
 
-
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
 import android.app.Notification;
@@ -9,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,6 +18,13 @@ import android.view.WindowManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -28,13 +35,14 @@ public class AppMonitorService extends Service {
 	private WindowManager windowManager;
 	private View overlayView;
 	private Handler handler = new Handler();
-	private String[] blockedApps = {"com.whatsapp", "com.facebook.katana", "com.facebook.lite"};
+	private String[] blockedApps;
 	private boolean isOverlayVisible = false;
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		startForegroundService();
+		blockedApps = loadBlockedAppsFromExternalStorage();
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 		startMonitoring();
 	}
@@ -64,7 +72,7 @@ public class AppMonitorService extends Service {
             .build();
 
     startForeground(1, notification);
-}
+	}
 
 	
 	private Runnable monitorRunnable = new Runnable() {
@@ -140,7 +148,7 @@ public class AppMonitorService extends Service {
 
         overlayView.setOnTouchListener((v, event) -> true); // Ignorar interações
     }
-}
+	}
 
 	
 	private void removeOverlay() {
@@ -154,7 +162,39 @@ public class AppMonitorService extends Service {
         overlayView = null;
         isOverlayVisible = false;
     }
-}
+	}
+
+	private String[] loadBlockedAppsFromExternalStorage() {
+    //File documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+	File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
+    File jsonFile = new File(documentsDir, "blocked_apps.json");
+
+    if (!jsonFile.exists()) {
+        Log.e(TAG, "Arquivo blocked_apps.json não encontrado!");
+        return new String[0];
+    }
+
+    StringBuilder jsonString = new StringBuilder();
+    try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonString.append(line);
+        }
+
+        JSONObject jsonObject = new JSONObject(jsonString.toString());
+        JSONArray blockedAppsArray = jsonObject.getJSONArray("blocked_apps");
+
+        String[] blockedApps = new String[blockedAppsArray.length()];
+        for (int i = 0; i < blockedAppsArray.length(); i++) {
+            blockedApps[i] = blockedAppsArray.getString(i);
+        }
+
+        return blockedApps;
+    } catch (Exception e) {
+        Log.e(TAG, "Erro ao ler o arquivo JSON: " + e.getMessage());
+        return new String[0];
+    }
+	}
 
 	
 	@Override

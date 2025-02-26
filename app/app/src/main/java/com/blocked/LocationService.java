@@ -1,5 +1,6 @@
 package com.blocked;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,8 +15,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ActivityCompat;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class LocationService extends Service {
@@ -24,9 +28,12 @@ public class LocationService extends Service {
     private static final int NOTIFICATION_ID = 2;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    public static final String ACTION_LOCATION_UPDATE = "com.exemplo.meuapp.ACTION_LOCATION_UPDATE";
+    public static final String ACTION_LOCATION_UPDATE = "com.blocked.ACTION_LOCATION_UPDATE";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
+    private static final double SCHOOL_LATITUDE = -8.857856; // Latitude da escola
+    private static final double SCHOOL_LONGITUDE = 13.279720; // Longitude da escola
+    private static final double RADIUS_METERS = 2; // Raio em metros
 
     @Override
     public void onCreate() {
@@ -37,7 +44,6 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Criar a notificação
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Monitorando Localização")
                 .setContentText("Obtendo coordenadas em tempo real")
@@ -45,7 +51,7 @@ public class LocationService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
 
-        // Iniciar como Foreground Service
+        
         startForeground(NOTIFICATION_ID, notification);
 
         return START_STICKY;
@@ -74,8 +80,38 @@ public class LocationService extends Service {
         }
     }
 
+    private void showNotification(String message) {
+    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+    String channelId = "location_service_channel";
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(
+            channelId,
+            "Location Service",
+            NotificationManager.IMPORTANCE_DEFAULT
+        );
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    Notification notification = new NotificationCompat.Builder(this, channelId)
+        .setContentTitle("Localização")
+        .setContentText(message)
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .build();
+
+    notificationManager.notify(1, notification);
+    }
+
     private void startLocationUpdates() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Se a permissão foi revogada, pare o serviço
+            stopSelf();
+            return;
+        }
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -87,6 +123,14 @@ public class LocationService extends Service {
                 intent.putExtra(EXTRA_LATITUDE, latitude);
                 intent.putExtra(EXTRA_LONGITUDE, longitude);
                 LocalBroadcastManager.getInstance(LocationService.this).sendBroadcast(intent);
+
+                double distance = calculateDistance(latitude, longitude, SCHOOL_LATITUDE, SCHOOL_LONGITUDE) * 1000; // Converter para metros
+                // Verificar se o dispositivo está dentro do raio
+                if (distance <= RADIUS_METERS) {
+                    showNotification("Você está na área da escola!:"+distance+"m");
+                } else {
+                    showNotification("Você saiu da área da escola!:"+distance+"m");
+                }
             }
 
             @Override
@@ -104,7 +148,7 @@ public class LocationService extends Service {
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, // Usar GPS
-                        1000, // Intervalo de atualização em milissegundos (1 segundo)
+                        10000, // Intervalo de atualização em milissegundos (1 segundo)
                         1, // Distância mínima em metros
                         locationListener,
                         Looper.getMainLooper()
@@ -119,5 +163,19 @@ public class LocationService extends Service {
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+    }
+
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double EARTH_RADIUS = 6371;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return EARTH_RADIUS * c; // Distância em quilômetros
     }
 }
