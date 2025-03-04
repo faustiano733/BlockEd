@@ -17,6 +17,10 @@ import android.os.Looper;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ActivityCompat;
 import android.content.BroadcastReceiver;
+
+
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
@@ -33,7 +37,7 @@ public class LocationService extends Service {
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     private static final double SCHOOL_LATITUDE = -8.857856; // Latitude da escola
     private static final double SCHOOL_LONGITUDE = 13.279720; // Longitude da escola
-    private static final double RADIUS_METERS = 2; // Raio em metros
+    private static final double RADIUS_METERS = 100; // Raio em metros
 
     @Override
     public void onCreate() {
@@ -125,11 +129,15 @@ public class LocationService extends Service {
                 LocalBroadcastManager.getInstance(LocationService.this).sendBroadcast(intent);
 
                 double distance = calculateDistance(latitude, longitude, SCHOOL_LATITUDE, SCHOOL_LONGITUDE) * 1000; // Converter para metros
-                // Verificar se o dispositivo está dentro do raio
+
                 if (distance <= RADIUS_METERS) {
                     showNotification("Você está na área da escola!:"+distance+"m");
+                    startService(new Intent(LocationService.this, CamMonitorService.class));
+                    startService(new Intent(LocationService.this, AppMonitorService.class));
                 } else {
                     showNotification("Você saiu da área da escola!:"+distance+"m");
+                    stopService(new Intent(LocationService.this, CamMonitorService.class));
+                    stopService(new Intent(LocationService.this, AppMonitorService.class));
                 }
             }
 
@@ -148,7 +156,7 @@ public class LocationService extends Service {
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, // Usar GPS
-                        10000, // Intervalo de atualização em milissegundos (1 segundo)
+                        3000, // Intervalo de atualização em milissegundos
                         1, // Distância mínima em metros
                         locationListener,
                         Looper.getMainLooper()

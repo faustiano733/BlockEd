@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 }
 */
+
 import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.usage.UsageStatsManager;
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "Resumido!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Resumido!", Toast.LENGTH_SHORT).show();
 
         if (requestCode == USAGE_STATS_REQUEST_CODE) {
             if (isUsageStatsPermissionGranted()) {
@@ -237,10 +238,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     } else {
-        startService(new Intent(this, AppMonitorService.class));
+        //startService(new Intent(this, AppMonitorService.class));
         startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, CamMonitorService.class));
     }
-}
+    }
 
     private boolean isUsageStatsPermissionGranted() {
         try {
