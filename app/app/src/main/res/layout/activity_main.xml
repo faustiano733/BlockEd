@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical|center|center_horizontal"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,5 +13,91 @@
         android:layout_height="wrap_content"
         android:text="Aguardando coordenadas..."
         android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BlockED"
+        android:textColor="#358bff"
+        android:textSize="40px"
+        android:textStyle="bold"
+        android:layout_marginTop="40px"
+        android:layout_marginBottom="40px" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Token de acesso"
+        android:textSize="28px" />
+    <EditText
+        android:id="@+id/token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Token de acesso"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="25px"
+        android:textSize="30px"
+        android:maxLines="1"
+        android:inputType="text"
+        android:scrollHorizontally="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nome do aluno"
+        android:textSize="28px" />
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nome do aluno"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="25px"
+        android:textSize="30px" 
+        android:maxLines="1"
+        android:inputType="text"
+        android:scrollHorizontally="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data de nascimento"
+        android:textSize="28px" />
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Data de nascimento"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="40px"
+        android:textSize="30px"
+        android:maxLines="1"
+        android:inputType="text"
+        android:scrollHorizontally="true"
+        android:maxLength="10" />
+
+    <!--
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Token de acesso"
+        android:textSize="28px" />
+    <EditText
+        android:id="@+id/edit4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Campo 4"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="40px"
+        android:textSize="30px" />
+    -->
+    <Button
+        android:id="@+id/buttonSave"
+        android:background="@drawable/button_background"
+        android:textColor="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salvar" />
 
 </LinearLayout>

@@ -93,7 +93,7 @@ public class AppMonitorService extends Service {
 	};
 
 	private void startMonitoring() {
-    	handler.removeCallbacks(monitorRunnable); // Garante que o Runnable anterior seja cancelado
+    	handler.removeCallbacks(monitorRunnable);
     	handler.post(monitorRunnable);
 	}
 
@@ -156,7 +156,6 @@ public class AppMonitorService extends Service {
         try {
             windowManager.removeView(overlayView);
         } catch (IllegalArgumentException e) {
-            // Evitar exceções se o overlay já foi removido
             e.printStackTrace();
         }
         overlayView = null;

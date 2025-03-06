@@ -1,88 +1,4 @@
 package com.blocked;
-/*
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.app.usage.UsageStatsManager;
-import android.content.Intent;
-import android.net.VpnService;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.TextView;
-
-
-public class MainActivity extends AppCompatActivity {
-
-    private TextView tvCoordinates;
-    private BroadcastReceiver locationReceiver;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        tvCoordinates = findViewById(R.id.tvCoordinates);
-
-        // Registrar o BroadcastReceiver
-        locationReceiver = new BroadcastReceiver() {
-            @Override 
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(LocationService.ACTION_LOCATION_UPDATE)) {
-                    double latitude = intent.getDoubleExtra(LocationService.EXTRA_LATITUDE, 0);
-                    double longitude = intent.getDoubleExtra(LocationService.EXTRA_LONGITUDE, 0);
-
-                    // Atualizar a TextView com as coordenadas
-                    tvCoordinates.setText("Latitude: " + latitude + "\nLongitude: " + longitude);
-                }
-            }
-        };
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                locationReceiver,
-                new IntentFilter(LocationService.ACTION_LOCATION_UPDATE)
-        );
-        
-        if (!Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            startActivity(intent);
-        }
-
-        // Verificar se a permissão de UsageStats está habilitada
-        if (!isUsageStatsPermissionGranted()) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
-            Toast.makeText(this, "Permita o acesso a dados de uso", Toast.LENGTH_SHORT).show();
-        }
-
-        // Iniciar o serviço de monitoramento
-        startService(new Intent(this, AppMonitorService.class));
-        startService(new Intent(this, LocationService.class));
-    }
-
-    private boolean isUsageStatsPermissionGranted() {
-        try {
-            UsageStatsManager usageStatsManager = (UsageStatsManager) getSystemService(USAGE_STATS_SERVICE);
-            long currentTime = System.currentTimeMillis();
-            usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, currentTime - 1000, currentTime);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Desregistrar o BroadcastReceiver
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
-    }
-
-}
-*/
 
 import android.Manifest;
 import android.app.AppOpsManager;
@@ -107,6 +23,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+
+import android.content.ComponentName;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import org.json.JSONObject;
+import java.io.File;
+import java.io.FileWriter;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 456;
@@ -114,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 1;
     private static final int REQUEST_CODE_MANAGE_STORAGE = 1234;
     private TextView tvCoordinates;
+    private EditText token;
+    private EditText name;
+    private EditText date;
+    private Button btnSave;
     private BroadcastReceiver locationReceiver;
 
     @Override
@@ -121,21 +50,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        token = findViewById(R.id.token);
+        name = findViewById(R.id.name);
+        date = findViewById(R.id.date);
+        //editText4 = findViewById(R.id.editText4);
+        btnSave = findViewById(R.id.buttonSave);
+
+         btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveConfig();
+            }
+        });
+
         tvCoordinates = findViewById(R.id.tvCoordinates);
 
-        // Verificar permissões de overlay e usage stats primeiro
         if (!Settings.canDrawOverlays(this)) {
             Intent overlayIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             startActivity(overlayIntent);
         }
 
-        if (!Environment.isExternalStorageManager()) {
+        else if (!Environment.isExternalStorageManager()) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
             //Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE);
         }
 
-        if (!isUsageStatsPermissionGranted()) {
+        else if (!isUsageStatsPermissionGranted()) {
             Intent usageStatsIntent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivityForResult(usageStatsIntent, USAGE_STATS_REQUEST_CODE);
             Toast.makeText(this, "Ative o acesso a dados de uso para o app", Toast.LENGTH_LONG).show();
@@ -144,6 +85,54 @@ public class MainActivity extends AppCompatActivity {
         }
 
         registerLocationReceiver();
+    }
+
+    private void saveConfig() {
+        if(token.getText().toString().equals("") || name.getText().toString().equals("") || date.getText().toString().equals("")){
+            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            try {
+                // Criando um JSON com os valores das EditText
+                JSONObject config = new JSONObject();
+                config.put("nomeDoAluno", name.getText().toString());
+                config.put("data", date.getText().toString());
+                config.put("token", token.getText().toString());
+                //config.put("campo4", editText4.getText().toString());
+
+                File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
+                //    if (!documentsDir.exists()) {
+                //    documentsDir.mkdirs();  // Criar se não existir
+                //}
+
+                // Criando o arquivo no diretório
+                File configFile = new File(documentsDir, "blocked_config.json");
+                FileWriter writer = new FileWriter(configFile);
+                writer.write(config.toString());
+                writer.flush();
+                writer.close();
+
+                //Toast.makeText(this, "Configuração salva em " + configFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+                //hideApp();
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void hideApp() {
+        PackageManager pm = getPackageManager();
+        ComponentName componentName = new ComponentName(this, MainActivity.class);
+
+        // Oculta o ícone do app na lista de apps
+        pm.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
+        Toast.makeText(this, "App oculto", Toast.LENGTH_SHORT).show();
     }
 
     private void checkLocationPermissions() {
@@ -164,6 +153,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
             startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE);
         }*/
+        else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this, 
+                new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 
+                LOCATION_PERMISSION_REQUEST_CODE
+            );
+        }
         else {
             startServices(); // Iniciar serviços se todas as permissões estiverem OK
         }
@@ -219,10 +215,29 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this, "Resumido!", Toast.LENGTH_SHORT).show();
 
         // Verificar permissão de Usage Stats ao retomar a Activity
-        if (isUsageStatsPermissionGranted()) {
-            startServices();
+        // if (isUsageStatsPermissionGranted()) {
+        //     startServices();
+        // } else {
+        //     Toast.makeText(this, "Permissão de dados de uso ainda não concedida!", Toast.LENGTH_SHORT).show();
+        // }
+
+        if (!Settings.canDrawOverlays(this)) {
+            Intent overlayIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            startActivity(overlayIntent);
+        }
+
+        else if (!Environment.isExternalStorageManager()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            //Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE);
+        }
+
+        else if (!isUsageStatsPermissionGranted()) {
+            Intent usageStatsIntent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(usageStatsIntent, USAGE_STATS_REQUEST_CODE);
+            Toast.makeText(this, "Ative o acesso a dados de uso para o app", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Permissão de dados de uso ainda não concedida!", Toast.LENGTH_SHORT).show();
+            checkLocationPermissions(); // Verificar permissões de localização
         }
     }
 
