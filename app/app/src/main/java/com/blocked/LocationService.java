@@ -35,8 +35,8 @@ public class LocationService extends Service {
     public static final String ACTION_LOCATION_UPDATE = "com.blocked.ACTION_LOCATION_UPDATE";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-    private static final double SCHOOL_LATITUDE = -8.857856; // Latitude da escola
-    private static final double SCHOOL_LONGITUDE = 13.279720; // Longitude da escola
+    private static final double SCHOOL_LATITUDE = -8.855405; // Latitude da escola
+    private static final double SCHOOL_LONGITUDE = 13.28312833333; // Longitude da escola
     private static final double RADIUS_METERS = 100; // Raio em metros
 
     @Override
