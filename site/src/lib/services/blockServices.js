@@ -19,7 +19,7 @@ export async function getBlocksWeek(){
         const blocks_of_day = await blocks.findAll({
             attributes:[
                 [db.sequelize.fn("Date",db.sequelize.col("createdAt")),"Date"],
-                [db.sequelize.fn("COUNT", db.sequelize.col("id")), "blocks"]
+                [db.sequelize.fn("COUNT", db.sequelize.col("idBlock")), "blocks"]
 
             ],
             where:db.sequelize.where(db.sequelize.fn("Date", db.sequelize.col("createdAt")),"=",formated_date),
@@ -41,7 +41,7 @@ export async function getBlocksWeek(){
 export async function getBlockedApps(){
     let blocked_apps = [];
     const all_apps = await getAllApps();
-    const id_apps = lista_apps.map(app=>app.idApp);
+    const id_apps = all_apps.map(app=>app.idApp);
 
     const all_blocks = await block_app.findAll({
         attributes:[

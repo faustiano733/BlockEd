@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server.js"
-import {getApp, activeApp, getAllApps} from "@lib/services/appServices.js"
+import {getApp, activeApp, addApp, getAllApps} from "@lib/services/appServices.js"
 
 export async function GET(req){
     let response = ""
@@ -22,8 +22,9 @@ export async function POST(req){
     const request = await req.json()
 
     const app_name = request.name
+    const app_package = request.package
 
-    const app = await addApp(app_name)
+    const app = await addApp(app_name, app_package)
 
     return NextResponse.json(app)
 
@@ -33,9 +34,10 @@ export async function PUT(req){
 
     const request = await req.json()
 
-    const app_name = request.name
+    const app_name = request.name;
+    //const app_package = request.package
 
-    const changed_app = await activeApp(app_name)
+    const changed_app = await activeApp(app_name);
     
     return changed_app
 }

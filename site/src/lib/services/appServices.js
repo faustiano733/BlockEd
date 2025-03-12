@@ -21,17 +21,17 @@ export async function getApp(app_name){
 }
 
 
-export async function sugestApps(app_name){
+export async function suggestApps(app_name){
     const suggest_apps_list = await gplay.search({term:app_name, num:5})
     const apps_name = suggest_apps_list.map((app)=>{
         return {name:app.title}
     })
-    return apps_name
+    return suggest_apps_list;
 }
 
-export async function addApp(app_name){
+export async function addApp(app_name, app_package){
    
-    const gplay_apps = await gplay.search({term:app_name,num:3})
+    /*const gplay_apps = await gplay.search({term:app_name,num:3})
    
     let selected_gplay_app = gplay_apps.filter((app_gplay)=>app_gplay.title===nome_app)
    
@@ -44,7 +44,10 @@ export async function addApp(app_name){
         return added_app
     }else{
          throw new Error("impossible add app")
-    }
+    }*/
+
+    const added_app = await apps.create({name:app_name, package_name:app_package, idSchool:1})
+    return added_app;
 }
 
 export async function activeApp(app_name){

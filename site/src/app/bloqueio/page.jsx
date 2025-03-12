@@ -10,6 +10,9 @@ import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, Sea
 import { Metadata } from "next";
 import Loading from "@components/Loading";
 
+
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+
 export function EmptyMenu({text}){
   return(
     <section className="emptyMenu">
@@ -17,69 +20,6 @@ export function EmptyMenu({text}){
     </section>
   );
 }
-
-export default function Bloqueios(){
-  const [menuActual, setMenuActual] = useState("aplicativos");
-  const [subMenu, setSubMenu] = useState(null);
-  const [diretorios, setDiretorios] = useState("");
-  const [sites, setSites] = useState(null);
-  const [apps, setApps] = useState(null);
-  
-  useEffect(()=>{
-    async function fetchData(){
-      let obj = await fetch("/api/bloqueios/app");
-      let resp = await obj.json();
-
-      setApps(resp);
-    }
-
-    fetchData()
-  }, [])
-
-  useEffect(()=>{
-    async function fetchData(){
-      let obj = await fetch("/api/bloqueios/site");
-      let resp = await obj.json();
-
-      setSites(resp);
-    }
-
-    fetchData()
-  }, [])
-  const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-
-  function BloqueioItem(props){
-    return(
-      <div className={props.menu == menuActual ? "bloqueioItem bloqueioItemFocused" : "bloqueioItem"} onClick={() => {setMenuActual(props.menu); setSubMenu(null)}}>
-        {props.icon}
-        <span>{props.text}</span>
-       </div>
-    );
-  }
-  
-  function Add(props){
-    return(
-	<AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/>
-    );
-  }
-    
-
- 
-  function MenuAplicativos(){
-    /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
-    if(!apps) return <Loading bg="transparent" />
-    return(
-      <div className="menuItem" id="menuAplicativos">
-        {apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
-        {apps.map((elemento, index)=>{
-          if(!elemento.active) return null;
-          return <Aplicativo key={index} name={elemento.name} loaded={true} tentativas={4/*elemento.tentativas*/}/>
-        }
-        )}
-        <Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
-      </div>
-    );
-  }
 
   function Aplicativo(props){
     const [appLoading, setAppLoading] = useState(false);
@@ -92,69 +32,69 @@ export default function Bloqueios(){
       setAppAccepted(true);
     }
     async function remApp(app){
-      await sleep(1000);
+      await sleep(10000);
       setRemAppLoading(false);
     }
 
     return(
       <div className="app">
-	<div className="app_child1">
+  <div className="app_child1">
           <AndroidIcon color="#358bff"/>
-	  <div>
+    <div>
             <span>{props.name}</span>
-	    {props.loaded ? <small><small>{props.tentativas} tentativas</small></small> : ""}
-	  </div>
-	</div>
+      {props.loaded ? <small><small>{props.tentativas} tentativas</small></small> : ""}
+    </div>
+  </div>
         {
-	props.loaded ?
-	(remAppLoading ? <PendingIcon className="remIcon" color="#ff8080"/> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemAppLoading(true); remApp("bruh")}}/>) 
-	:
+  props.loaded ?
+  (remAppLoading ? <PendingIcon className="remIcon" color="#ff8080"/> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemAppLoading(true); remApp("bruh")}}/>) 
+  :
         (appLoading ? <PendingIcon /> : appAccepted ? <CheckIcon /> : <AddIcon onClick={()=>{setAppLoading(true); addApp(props.name)}}/>)
-	}
+  }
       </div>
     );
   }
+
   function AdicionarAplicativos(){
     const [searchAppLoading, setSearchAppLoading] = useState(false);
     const [searchedApps, setSearchedApps] = useState(null);
+    const [input, setInput] = useState(null);
+
     async function searchApp(){
-      await sleep(1000);
+      //await sleep(1000);
+      if(!input){ 
+        alert("Digite alguma coisa")
+        setSearchAppLoading(false);
+        return;
+      }
+      //alert(input.target.value);
+      //console.log(value.target.value);
+      let obj = await fetch("/api/bloqueios/app/search?term="+input.target.value);
+      let res = await obj.json();
+      setSearchedApps(res);
+
       setSearchAppLoading(false);
-      setSearchedApps([{name: "Whatsapp"}, {name: "Instagram"}])
+      //setSearchedApps([{title: "Whatsapp"}, {title: "Instagram"}])
     }
     return(
       <div className="menuItem" id="adicionarAplicativos">
-	{/*<div>
-	  <input type="text" placeholder="Insira o nome do aplicativo"/>
+  {/*<div>
+    <input type="text" placeholder="Insira o nome do aplicativo"/>
           { }
-	</div>*/}
-        <Input placeholder="Insira o nome do aplicativo" icon={searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}/>
-	<small>Resultados</small>
-	<section>
-	  {(searchedApps) ? (searchedApps.length < 1) && <EmptyMenu text="Nenhum app encontrado"/> : <EmptyMenu text="Pesquise o nome do app"/>}
+  </div>*/}
+        <Input onChange={setInput} placeholder="Insira o nome do aplicativo" icon={searchAppLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchAppLoading(true); searchApp()}}/>}/>
+  <small>Resultados</small>
+  <section>
+    {(searchedApps) ? (searchedApps.length < 1) && <EmptyMenu text="Nenhum app encontrado"/> : <EmptyMenu text="Pesquise o nome do app"/>}
           
       {searchedApps && searchedApps.map((elemento, index)=>{
-	    return <Aplicativo key={index} name={elemento.name} />
+      return <Aplicativo key={index} name={elemento.title} />
       })}
         </section>
       </div>
     );
   }
 
-
-  function MenuSites(){
-    if(!sites) return <Loading bg="transparent" />
-    return(
-      <div className="menuItem" id="menuSites">
-        {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
-	{sites.map((elemento, index)=>{
-          return <Site key={index} domain={elemento.domine/*domain*/} tentativas={4/*elemento.tentativas*/}/> 
-         }
-        )}
-	<Add onClick={()=>{setSubMenu("adicionarSites")}}/>
-      </div>
-    );
-  }
   function Site(props){
     const [remSiteLoading, setRemSiteLoading] = useState(false);
     
@@ -165,13 +105,13 @@ export default function Bloqueios(){
 
     return(
       <div className="site">
-	<div className="site_child1">
+  <div className="site_child1">
           <SiteIcon color="#358bff"/>
-	  <div>
+    <div>
             <span>{props.domain}</span>
-	    <small><small>{props.tentativas} tentativas</small></small> 
-	  </div>
-	</div>
+      <small><small>{props.tentativas} tentativas</small></small> 
+    </div>
+  </div>
           {remSiteLoading ? <PendingIcon className="remIcon" color="#ff8080" /> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemSiteLoading(true); remSite("")}}/>}
         </div>
      );
@@ -196,22 +136,59 @@ export default function Bloqueios(){
     }
     return(
       <div className="menuItem" id="adicionarSites">
-	<div>
-	  <Input id="inputSearchSite" placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
-	</div>
-	{ searchedSiteData && <> 
-	{/*<small>Resultados</small>*/}
-	<section>
-	  <span>Status: {searchedSiteData.status}</span>
-	  <span>Domínio: {searchedSiteData.domain}</span>
-	  <span>Já adicionado: {searchedSiteData.added ? "Sim" : "Não"}</span>
-	  <span>Elegível: {searchedSiteData.allowed ? "Sim" : "Não"}</span>
-	  {/*<span></span>
-	  <span></span>
-	  <span></span>*/}
+  <div>
+    <Input id="inputSearchSite" placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
+  </div>
+  { searchedSiteData && <> 
+  {/*<small>Resultados</small>*/}
+  <section>
+    <span>Status: {searchedSiteData.status}</span>
+    <span>Domínio: {searchedSiteData.domain}</span>
+    <span>Já adicionado: {searchedSiteData.added ? "Sim" : "Não"}</span>
+    <span>Elegível: {searchedSiteData.allowed ? "Sim" : "Não"}</span>
+    {/*<span></span>
+    <span></span>
+    <span></span>*/}
         </section>
-	<Button className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site {/*<AddIcon />*/}</Button>
+  <Button className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site {/*<AddIcon />*/}</Button>
         </>}
+      </div>
+    );
+  }
+
+    function Add(props){
+    return(
+  <AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/>
+    );
+  }
+    
+ 
+  function MenuAplicativos({apps, setSubMenu}){
+    /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
+    if(!apps) return <Loading bg="transparent" />
+    return(
+      <div className="menuItem" id="menuAplicativos">
+        {apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
+        {apps.map((elemento, index)=>{
+          if(!elemento.active) return null;
+          return <Aplicativo key={"app"+index} name={elemento.name} loaded={true} tentativas={4/*elemento.tentativas*/}/>
+        }
+        )}
+        <Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
+      </div>
+    );
+  }
+
+  function MenuSites({sites, setSubMenu}){
+    if(!sites) return <Loading bg="transparent" />
+    return(
+      <div className="menuItem" id="menuSites">
+        {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
+  {sites.map((elemento, index)=>{
+          return <Site key={index} domain={elemento.domine/*domain*/} tentativas={4/*elemento.tentativas*/}/> 
+         }
+        )}
+  <Add onClick={()=>{setSubMenu("adicionarSites")}}/>
       </div>
     );
   }
@@ -219,9 +196,9 @@ export default function Bloqueios(){
   function MenuOutros(){
     return(
       <div className="menuItem" id="menuOutros">
-	<MenuOutrosServico icon={<InternetIcon color="#358bff"/>} text="Internet" />
-	<MenuOutrosServico icon={<CameraIcon color="#358bff"/>} text="Câmera" />
-	{/*<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />*/}
+  <MenuOutrosServico icon={<InternetIcon color="#358bff"/>} text="Internet" />
+  <MenuOutrosServico icon={<CameraIcon color="#358bff"/>} text="Câmera" />
+  {/*<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />*/}
       </div>
     );
   }
@@ -229,14 +206,95 @@ export default function Bloqueios(){
   function MenuOutrosServico(props){
     return(
       <div className="outro">
-	<div className="outro_child1">
+  <div className="outro_child1">
           {props.icon}
           <span>{props.text}</span>
-	</div>
+  </div>
         <input type="checkbox" />
       </div>
     )
   }
+
+   function MainContent({menuActual, subMenu, apps, sites, setSubMenu}){
+      if(subMenu == "adicionarAplicativos") return <AdicionarAplicativos />
+      if(subMenu == "adicionarSites") return <AdicionarSites />
+        if(menuActual == "aplicativos") return <MenuAplicativos apps={apps} setSubMenu={setSubMenu}/>
+        if(menuActual == "sites") return <MenuSites sites={sites} setSubMenu={setSubMenu}/>
+        if(menuActual == "outros") return <MenuOutros />
+   }
+
+  function MainContentMenu({menuActual, apps, sites, setSubMenu}){
+    if(menuActual == "aplicativos") return <MenuAplicativos apps={apps} setSubMenu={setSubMenu}/> 
+    if(menuActual == "sites") return <MenuSites sites={sites} setSubMenu={setSubMenu}/>
+    if(menuActual == "outros") return <MenuOutros />
+    /*return(
+      <div className="menuContentMenu">
+      </div>
+     )*/
+   }
+
+  function MainContentSubMenu({menuActual}){
+    if(menuActual == "aplicativos") return <AdicionarAplicativos />
+    if(menuActual == "sites") return <AdicionarSites />
+    if(menuActual == "outros") return <EmptyMenu text="BlockEd (^ v ^)"/>
+  }
+
+
+export default function Bloqueios(){
+  const [menuActual, setMenuActual] = useState("aplicativos");
+  const [subMenu, setSubMenu] = useState(null);
+  const [diretorios, setDiretorios] = useState("");
+  const [sites, setSites] = useState(null);
+  const [apps, setApps] = useState(null);
+  
+  useEffect(()=>{
+    async function fetchData(){
+      let obj = await fetch("/api/bloqueios/app");
+      let resp = await obj.json();
+
+      setApps(resp);
+    }
+
+    fetchData()
+    const interval = setInterval(()=>{
+      fetchData();
+    }, 3000)
+
+    return ()=>clearInterval(interval);
+  }, [])
+
+  useEffect(()=>{
+    async function fetchData(){
+      let obj = await fetch("/api/bloqueios/site");
+      let resp = await obj.json();
+
+      setSites(resp);
+    }
+
+    fetchData()
+    const interval = setInterval(()=>{
+      fetchData();
+    }, 3000)
+
+    return ()=>clearInterval(interval);
+  }, [])
+ 
+
+  function BloqueioItem(props){
+    return(
+      <div className={props.menu == menuActual ? "bloqueioItem bloqueioItemFocused" : "bloqueioItem"} onClick={() => {setMenuActual(props.menu); setSubMenu(null)}}>
+        {props.icon}
+        <span>{props.text}</span>
+       </div>
+    );
+  }
+
+
+
+
+
+
+
 
    function CloseMenu(){
      return(
@@ -246,35 +304,11 @@ export default function Bloqueios(){
      );
    }
 
-   function MainContent(){
-     	if(subMenu == "adicionarAplicativos") return <AdicionarAplicativos />
-     	if(subMenu == "adicionarSites") return <AdicionarSites />
-      	if(menuActual == "aplicativos") return <MenuAplicativos />
-      	if(menuActual == "sites") return <MenuSites />
-      	if(menuActual == "outros") return <MenuOutros />
-   }
-
-  function MainContentMenu(){
-    if(menuActual == "aplicativos") return <MenuAplicativos /> 
-    if(menuActual == "sites") return <MenuSites />
-    if(menuActual == "outros") return <MenuOutros />
-    /*return(
-      <div className="menuContentMenu">
-      </div>
-     )*/
-   }
-
-  function MainContentSubMenu(){
-    if(menuActual == "aplicativos") return <AdicionarAplicativos />
-    if(menuActual == "sites") return <AdicionarSites />
-    if(menuActual == "outros") return <EmptyMenu text="BlockEd (^ v ^)"/>
-   }
-
   return(
     <>
     <div id="main">
       <div id="mainContent">
-        <MainContent />
+        <MainContent menuActual={menuActual} subMenu={subMenu} apps={apps} sites={sites} setSubMenu={setSubMenu}/>
       </div>
       <div id="mainFooter">
         <BloqueioItem icon={<AndroidIcon />} text="Aplicativos" menu="aplicativos"/>
@@ -284,11 +318,11 @@ export default function Bloqueios(){
       {/*<HorizontalLine />*/}
       <div id="mainContent2">
         <div className="mainContentMenu">
-       	  <MainContentMenu />
+       	  <MainContentMenu menuActual={menuActual} apps={apps} sites={sites} setSubMenu={setSubMenu}/>
         </div>
         {/*<VerticalLine />*/}
         <div className="mainContentMenu mainContentSubMenu">
-       	  <MainContentSubMenu />
+       	  <MainContentSubMenu menuActual={menuActual}/>
         </div>
       </div>
     </div>

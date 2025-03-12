@@ -68,7 +68,7 @@ export async function deleteStudent(student){
     })
 }
 
-export async function getNumberOftudents(){
+export async function getNumberOfStudents(){
     const number_of_students = await students.count()
     return number_of_students
 }
