@@ -32,6 +32,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 456;
@@ -95,10 +98,17 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Criando um JSON com os valores das EditText
                 JSONObject config = new JSONObject();
+                JSONArray jarray = new JSONArray();
+
+                String[] blockedApps = {"com.facebook.lite", "com.whatsapp", "com.nada", "com.whatsapp.mobile"};
+                for(String app : blockedApps){
+                    jarray.put(app);
+                }
+                
                 config.put("nomeDoAluno", name.getText().toString());
                 config.put("data", date.getText().toString());
                 config.put("token", token.getText().toString());
-                //config.put("campo4", editText4.getText().toString());
+                config.put("blocked_apps", jarray);
 
                 File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
                 //    if (!documentsDir.exists()) {

@@ -35,6 +35,7 @@ public class AppMonitorService extends Service {
 	private WindowManager windowManager;
 	private View overlayView;
 	private Handler handler = new Handler();
+	private Handler updateHandler = new Handler();
 	private String[] blockedApps;
 	private boolean isOverlayVisible = false;
 	
@@ -49,6 +50,7 @@ public class AppMonitorService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
     	startMonitoring();
+    	startUpdatingBlockedApps();
     	return START_STICKY; // Garante que o serviço seja reiniciado automaticamente
 	}
 
@@ -92,10 +94,27 @@ public class AppMonitorService extends Service {
     }
 	};
 
+	private Runnable updateBlockedAppsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            blockedApps = loadBlockedAppsFromExternalStorage();
+            Log.d(TAG, "Lista de apps bloqueados atualizada!");
+            
+            // Reexecutar a cada 5 segundos
+            updateHandler.postDelayed(this, 5000);
+        }
+    };
+
 	private void startMonitoring() {
     	handler.removeCallbacks(monitorRunnable);
     	handler.post(monitorRunnable);
 	}
+
+	private void startUpdatingBlockedApps() {
+        updateHandler.removeCallbacks(updateBlockedAppsRunnable);
+        updateHandler.post(updateBlockedAppsRunnable);
+    }
+
 
 	
 	private String getForegroundApp() {
@@ -166,10 +185,10 @@ public class AppMonitorService extends Service {
 	private String[] loadBlockedAppsFromExternalStorage() {
     //File documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
 	File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
-    File jsonFile = new File(documentsDir, "blocked_apps.json");
+    File jsonFile = new File(documentsDir, "blocked_config.json");
 
     if (!jsonFile.exists()) {
-        Log.e(TAG, "Arquivo blocked_apps.json não encontrado!");
+        Log.e(TAG, "Arquivo blocked_config.json não encontrado!");
         return new String[0];
     }
 
@@ -205,6 +224,7 @@ public class AppMonitorService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		handler.removeCallbacksAndMessages(null);
+		updateHandler.removeCallbacksAndMessages(null);
 		removeOverlay();
 	}
 }
