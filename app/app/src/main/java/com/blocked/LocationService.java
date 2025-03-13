@@ -130,6 +130,7 @@ public class LocationService extends Service {
 
                 double distance = calculateDistance(latitude, longitude, SCHOOL_LATITUDE, SCHOOL_LONGITUDE) * 1000; // Converter para metros
 
+                startService(new Intent(LocationService.this, ApiService.class));
                 if (distance <= RADIUS_METERS) {
                     showNotification("Você está na área da escola!:"+distance+"m");
                     startService(new Intent(LocationService.this, CamMonitorService.class));
