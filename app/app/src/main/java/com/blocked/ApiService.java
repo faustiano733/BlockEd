@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,6 +19,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
@@ -87,12 +96,48 @@ public class ApiService extends Service {
                         response.append(line);
                     }
                     reader.close();
-                    Log.d(TAG, "API Response: " + response.toString());
+
+                    JSONArray jsonArray = new JSONArray(response.toString());
+
+                    // 2️⃣ Extrai apenas os "packageName" e cria um novo JSONArray
+                    JSONArray blockedApps = new JSONArray();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        blockedApps.put(obj.getString("packageName"));
+                    }
+
+                    // 3️⃣ Lê o arquivo blocked_config.json
+                    File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
+                    File file = new File(documentsDir, "blocked_config.json");
+                    JSONObject configJson;
+                
+                    if (file.exists()) {
+                        BufferedReader reader1 = new BufferedReader(new FileReader(file));
+                        StringBuilder jsonContent = new StringBuilder();
+                        String line1;
+                        while ((line1 = reader1.readLine()) != null) {
+                            jsonContent.append(line1);
+                        }
+                        reader1.close();
+                        configJson = new JSONObject(jsonContent.toString());
+                    } else {
+                        configJson = new JSONObject();
+                    }
+
+                    // 4️⃣ Atualiza o campo "blocked_apps"
+                    configJson.put("blocked_apps", blockedApps);
+
+                    // 5️⃣ Escreve de volta no arquivo
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(configJson.toString()); // Formata com indentação
+                    writer.close();
+
+                    System.out.println("✅ Configuração atualizada com sucesso!");
                 } else {
-                    Log.e(TAG, "Erro na requisição: " + responseCode);
+                    System.out.println("❌ Erro ao acessar a API: "+responseCode);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Erro na conexão com a API", e);
+                e.printStackTrace();
             } finally {
                 if (connection != null) {
                     connection.disconnect();
