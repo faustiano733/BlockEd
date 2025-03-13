@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
-    private static final String API_URL = "http://192.168.105.31:3000/api/app"; // Altere conforme necessário
+    private static final String API_URL = "http://192.168.105.13:3000/api/app"; // Altere conforme necessário
     private static final int INTERVAL_MS = 500; // 10 segundos
 
     private final Handler handler = new Handler();
