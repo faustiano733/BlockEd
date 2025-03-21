@@ -35,9 +35,9 @@ public class LocationService extends Service {
     public static final String ACTION_LOCATION_UPDATE = "com.blocked.ACTION_LOCATION_UPDATE";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-    private static final double SCHOOL_LATITUDE = -8.857401666;
-    private static final double SCHOOL_LONGITUDE = 13.280418333;
-    private static final double RADIUS_METERS = 100; // metros
+    private static final double SCHOOL_LATITUDE = -8.856175;
+    private static final double SCHOOL_LONGITUDE = 13.283878;
+    private static final double RADIUS_METERS = 1000; // metros
 
     @Override
     public void onCreate() {
@@ -130,15 +130,17 @@ public class LocationService extends Service {
 
                 double distance = calculateDistance(latitude, longitude, SCHOOL_LATITUDE, SCHOOL_LONGITUDE) * 1000; // Converter para metros
 
-                startService(new Intent(LocationService.this, ApiService.class));
+                //startService(new Intent(LocationService.this, ApiService.class));
                 if (distance <= RADIUS_METERS) {
                     showNotification("Você está na área da escola!:"+distance+"m");
                     startService(new Intent(LocationService.this, CamMonitorService.class));
                     startService(new Intent(LocationService.this, AppMonitorService.class));
+                    startService(new Intent(LocationService.this, SiteBlockerService.class));
                 } else {
                     showNotification("Você saiu da área da escola!:"+distance+"m");
                     stopService(new Intent(LocationService.this, CamMonitorService.class));
                     stopService(new Intent(LocationService.this, AppMonitorService.class));
+                    stopService(new Intent(LocationService.this, SiteBlockerService.class));
                 }
             }
 

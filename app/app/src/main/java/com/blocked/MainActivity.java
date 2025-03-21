@@ -10,7 +10,9 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.VpnService;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText date;
     private Button btnSave;
     private BroadcastReceiver locationReceiver;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
          btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveConfig();
+                //saveConfig();
+                //hideApp();
             }
         });
 
@@ -83,6 +87,18 @@ public class MainActivity extends AppCompatActivity {
             Intent usageStatsIntent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivityForResult(usageStatsIntent, USAGE_STATS_REQUEST_CODE);
             Toast.makeText(this, "Ative o acesso a dados de uso para o app", Toast.LENGTH_LONG).show();
+        }
+        else if(VpnService.prepare(this) != null){
+            Intent VpnIntent = VpnService.prepare(this);
+            startActivityForResult(VpnIntent, 100);
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                this, 
+                new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+            checkLocationPermissions();
         } else {
             checkLocationPermissions(); // Verificar permissões de localização
         }
@@ -246,6 +262,19 @@ public class MainActivity extends AppCompatActivity {
             Intent usageStatsIntent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivityForResult(usageStatsIntent, USAGE_STATS_REQUEST_CODE);
             Toast.makeText(this, "Ative o acesso a dados de uso para o app", Toast.LENGTH_LONG).show();
+        }
+        else if(VpnService.prepare(this) != null){
+            Intent VpnIntent = VpnService.prepare(this);
+            startActivityForResult(VpnIntent, 100);
+        }
+
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                this, 
+                new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+            checkLocationPermissions();
         } else {
             checkLocationPermissions(); // Verificar permissões de localização
         }
@@ -264,7 +293,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     } else {
         //startService(new Intent(this, AppMonitorService.class));
-        startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, HttpProxyService.class));
+        //startService(new Intent(this, InternetBlockerService.class));
+        startService(new Intent(this, SiteBlockerService.class));
+        //startService(new Intent(this, DnsFilterService.class));
+        //startService(new Intent(this, DnsVpnService.class));
         //startService(new Intent(this, CamMonitorService.class));
     }
     }

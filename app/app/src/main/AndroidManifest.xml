@@ -13,8 +13,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.BIND_VPN_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
-
+    
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,30 +27,52 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
         >
-	<service
+	   <service
             android:name=".AppMonitorService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaProjection"
             android:permission="android.permission.FOREGROUND_SERVICE" >
-    </service>
-    <service
-        android:name=".LocationService"
-        android:enabled="true"
-        android:exported="false" />
-    <service
-        android:name=".CamMonitorService"
-        android:foregroundServiceType="camera"
-        android:exported="false"/>
-	<service
+        </service>
+        <service
+            android:name=".LocationService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".CamMonitorService"
+            android:foregroundServiceType="camera"
+            android:exported="false"/>
+	   <service
     	    android:name=".BlockedService"
     	    android:enabled="true"
     	    android:exported="false" />
-    <service
-    android:name=".ApiService"
-    android:foregroundServiceType="dataSync"
-    android:exported="false"/>
+        <service
+            android:name=".ApiService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false"/>
+        <service
+            android:name=".SiteBlockerService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
 
+        <service
+            android:name=".HttpProxyService"
+            android:foregroundServiceType="mediaProjection"
+            android:exported="false"/>
+
+        <service
+            android:name=".InternetBlockerService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".MainActivity"
