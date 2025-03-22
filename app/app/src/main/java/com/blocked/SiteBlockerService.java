@@ -1008,10 +1008,11 @@ public class SiteBlockerService extends VpnService {
 }
 */
 
-import android.net.VpnService;
+/*import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.net.Inet4Address;
 import java.nio.ByteBuffer;
@@ -1020,9 +1021,9 @@ import android.content.Intent;
 
 public class SiteBlockerService extends VpnService {
 
-    private static final String TAG = "FocusedVPN";
+    private static final String TAG = "SiteBlockerService";
     private ParcelFileDescriptor vpnInterface;
-    private String targetDomain = "www.facebook.com"; // Domínio alvo
+    private String targetDomain = "instagram.com"; // Domínio alvo
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -1035,7 +1036,7 @@ public class SiteBlockerService extends VpnService {
                        .addAddress("10.0.0.2", 24)
                        .addDnsServer("8.8.8.8");
 
-                // Adiciona rotas para o domínio desejado (ex: example.com)
+                // Adiciona rotas apenas para o domínio desejado
                 InetAddress[] ips = InetAddress.getAllByName(targetDomain);
                 for (InetAddress ip : ips) {
                     String ipStr = ip.getHostAddress();
@@ -1052,6 +1053,114 @@ public class SiteBlockerService extends VpnService {
 
                 Log.d(TAG, "VPN ativa. Interface: " + vpnInterface.getFileDescriptor());
 
+                // Capturar e reencaminhar tráfego
+                captureAndForwardTraffic();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Erro na VPN: " + e.getMessage());
+                stopSelf();
+            }
+        }).start();
+
+        return START_STICKY;
+    }
+
+    private void captureAndForwardTraffic() {
+        try (FileInputStream in = new FileInputStream(vpnInterface.getFileDescriptor());
+             FileOutputStream out = new FileOutputStream(vpnInterface.getFileDescriptor())) {
+
+            ByteBuffer packet = ByteBuffer.allocate(32767);
+
+            while (true) {
+                int length = in.read(packet.array());
+                if (length > 0) {
+                    packet.limit(length);
+                    Log.d(TAG, "Pacote capturado (tamanho: " + length + " bytes)");
+
+                    // Escrever os pacotes de volta para o sistema para evitar bloqueio
+                    out.write(packet.array(), 0, length);
+                    out.flush();
+
+                    packet.clear();
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Erro na captura: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (vpnInterface != null) {
+                vpnInterface.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Erro ao fechar VPN: " + e.getMessage());
+        }
+    }
+}
+
+*/
+
+/*
+import android.net.VpnService;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
+import java.io.FileInputStream;
+import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.nio.ByteBuffer;
+import java.io.IOException;
+import android.content.Intent;
+
+public class SiteBlockerService extends VpnService {
+
+    private static final String TAG = "SiteBlockerService";
+    private ParcelFileDescriptor vpnInterface;
+    
+    // Lista de sites que serão redirecionados para a VPN
+    private final String[] targetDomains = {
+            "www.instagram.com",
+            "m.youtube.com",
+            "www.tiktok.com",
+            "www.netflix.com"
+    }; 
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "Serviço VPN iniciado");
+
+        new Thread(() -> {
+            try {
+                // Configuração da VPN
+                Builder builder = new Builder();
+                builder.setSession("SelectiveVPN")
+                        .addAddress("10.0.0.2", 24);  // IP virtual da VPN
+
+                // Adiciona rotas APENAS para os domínios que devem ser interceptados
+                for (String domain : targetDomains) {
+                    InetAddress[] ips = InetAddress.getAllByName(domain);
+                    for (InetAddress ip : ips) {
+                        String ipStr = ip.getHostAddress();
+                        int mask = (ip instanceof Inet4Address) ? 32 : 128;
+                        builder.addRoute(ipStr, mask);  // APENAS esses IPs passarão pela VPN
+                        Log.d(TAG, "Rota adicionada: " + ipStr + "/" + mask);
+                    }
+                }
+
+                vpnInterface = builder.establish();
+                if (vpnInterface == null) {
+                    Log.e(TAG, "Falha ao estabelecer a VPN");
+                    return;
+                }
+
+                Log.d(TAG, "VPN ativa. Interface: " + vpnInterface.getFileDescriptor());
+
+                // Inicia a captura do tráfego SOMENTE para os IPs interceptados
+                captureTraffic();
+
             } catch (Exception e) {
                 Log.e(TAG, "Erro na VPN: " + e.getMessage());
                 stopSelf();
@@ -1065,7 +1174,6 @@ public class SiteBlockerService extends VpnService {
         try (FileInputStream in = new FileInputStream(vpnInterface.getFileDescriptor())) {
             ByteBuffer packet = ByteBuffer.allocate(32767);
 
-            // Só receberá pacotes destinados aos IPs do domínio
             while (true) {
                 int length = in.read(packet.array());
                 if (length > 0) {
@@ -1088,6 +1196,185 @@ public class SiteBlockerService extends VpnService {
             }
         } catch (IOException e) {
             Log.e(TAG, "Erro ao fechar VPN: " + e.getMessage());
+        }
+    }
+}*/
+
+
+import android.net.VpnService;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import android.content.Intent;
+//import java.util.Thread;
+
+
+public class SiteBlockerService extends VpnService {
+
+    private static final String TAG = "SiteBlockerService";
+    private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_sites.txt"; // Caminho do ficheiro
+    private static final long IP_UPDATE_INTERVAL = 1; // Intervalo para atualizar IPs (em minutos)
+    private static final long DOMAIN_UPDATE_INTERVAL = 1; // Intervalo para atualizar domínios (em minutos)
+
+    private ParcelFileDescriptor vpnInterface;
+    private Set<String> domains = new HashSet<>(); // Conjunto de domínios
+    private Set<String> ips = new HashSet<>(); // Conjunto de IPs
+    private ScheduledExecutorService scheduler;
+    private boolean isRunning = false; // Flag para verificar se o serviço já está em execução
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // Verifica se o serviço já está em execução
+        if (isRunning) {
+            Log.d(TAG, "Serviço já está em execução. Ignorando nova inicialização.");
+            return START_STICKY;
+        }
+
+        // Marca o serviço como em execução
+        isRunning = true;
+
+        try{
+            Thread.sleep(2000);    
+        } catch(InterruptedException e){
+            
+        }
+        
+
+        // Passo 1: Ler o ficheiro de domínios
+        readDomainsFromFile();
+
+        // Passo 2: Resolver os domínios e configurar a VPN
+        resolveDomainsAndSetupVPN();
+
+        // Passo 3: Iniciar as threads de atualização
+        startUpdateThreads();
+
+        return START_STICKY;
+    }
+
+    // Ler o ficheiro de domínios
+    private void readDomainsFromFile() {
+        domains.clear(); // Limpa o conjunto atual
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            Log.e(TAG, "Ficheiro não encontrado: " + FILE_PATH);
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                domains.add(line.trim()); // Adiciona cada domínio ao conjunto
+            }
+            Log.d(TAG, "Domínios lidos: " + domains.size());
+        } catch (IOException e) {
+            Log.e(TAG, "Erro ao ler ficheiro: " + e.getMessage());
+        }
+    }
+
+    // Resolver os domínios e configurar a VPN
+    private void resolveDomainsAndSetupVPN() {
+        ips.clear(); // Limpa o conjunto atual de IPs
+        for (String domain : domains) {
+            try {
+                InetAddress[] addresses = InetAddress.getAllByName(domain);
+                for (InetAddress address : addresses) {
+                    ips.add(address.getHostAddress().toString()); // Adiciona cada IP ao conjunto
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Erro ao resolver domínio: " + domain);
+            }
+        }
+
+        /*for (String domain : targetDomains) {
+                    InetAddress[] ips = InetAddress.getAllByName(domain);
+                    for (InetAddress ip : ips) {
+                        String ipStr = ip.getHostAddress();
+                        int mask = (ip instanceof Inet4Address) ? 32 : 128;
+                        builder.addRoute(ipStr, mask);  // APENAS esses IPs passarão pela VPN
+                        Log.d(TAG, "Rota adicionada: " + ipStr + "/" + mask);
+                    }
+                }*/
+
+        Log.d(TAG, "IPs resolvidos: " + ips.size());
+
+        // Configurar a VPN com os IPs resolvidos
+        setupVPN();
+    }
+
+    // Configurar a VPN
+    private void setupVPN() {
+        Builder builder = new Builder()
+            .setSession("DynamicVPN")
+            .addAddress("10.0.0.2", 24);
+
+        // Adicionar rotas para os IPs
+        for (String ip : ips) {
+            builder.addRoute(ip, 32);
+        }
+
+        // Estabelecer a VPN
+        if (vpnInterface != null) {
+            try {
+                vpnInterface.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Erro ao fechar VPN: " + e.getMessage());
+            }
+        }
+
+        vpnInterface = builder.establish();
+        if (vpnInterface == null) {
+            Log.e(TAG, "Falha ao estabelecer a VPN");
+            stopSelf();
+        }
+    }
+
+    // Iniciar as threads de atualização
+    private void startUpdateThreads() {
+        scheduler = Executors.newScheduledThreadPool(2);
+
+        // Thread 1: Atualizar IPs periodicamente
+        scheduler.scheduleAtFixedRate(() -> {
+            Log.d(TAG, "Atualizando IPs...");
+            resolveDomainsAndSetupVPN();
+        }, IP_UPDATE_INTERVAL, IP_UPDATE_INTERVAL, TimeUnit.MINUTES);
+
+        // Thread 2: Atualizar domínios periodicamente
+        scheduler.scheduleAtFixedRate(() -> {
+            Log.d(TAG, "Atualizando domínios...");
+            readDomainsFromFile();
+            resolveDomainsAndSetupVPN();
+        }, DOMAIN_UPDATE_INTERVAL, DOMAIN_UPDATE_INTERVAL, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Marca o serviço como parado
+        isRunning = false;
+
+        // Encerra as threads ao parar o serviço
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
+
+        // Fecha a VPN
+        if (vpnInterface != null) {
+            try {
+                vpnInterface.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Erro ao fechar VPN: " + e.getMessage());
+            }
         }
     }
 }

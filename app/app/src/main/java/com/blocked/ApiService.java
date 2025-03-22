@@ -30,8 +30,8 @@ import org.json.JSONArray;
 
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
-    private static final String API_URL = "http://172.20.10.5:3000/api/app"; // Altere conforme necessário
-    private static final int INTERVAL_MS = 5000; // 10 segundos
+    private static final String API_URL = "http://172.20.10.5:3000/api/app";
+    private static final int INTERVAL_MS = 5000; 
 
     private final Handler handler = new Handler();
     private Runnable apiRequestRunnable;
