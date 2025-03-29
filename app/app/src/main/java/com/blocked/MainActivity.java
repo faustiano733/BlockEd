@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Functions.createAttempt("cam", "cam");
+
         tvCoordinates = findViewById(R.id.tvCoordinates);
 
         if (!Settings.canDrawOverlays(this)) {
@@ -292,11 +294,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     } else {
-        //startService(new Intent(this, AppMonitorService.class));
+        startService(new Intent(this, AppMonitorService.class));
         //startService(new Intent(this, LocationService.class));
         //startService(new Intent(this, HttpProxyService.class));
         //startService(new Intent(this, InternetBlockerService.class));
-        startService(new Intent(this, SiteBlockerService.class));
+        //startService(new Intent(this, SiteBlockerService.class));
         //startService(new Intent(this, DnsFilterService.class));
         //startService(new Intent(this, DnsVpnService.class));
         //startService(new Intent(this, CamMonitorService.class));

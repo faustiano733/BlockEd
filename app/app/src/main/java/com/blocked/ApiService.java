@@ -30,7 +30,7 @@ import org.json.JSONArray;
 
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
-    private static final String API_URL = "http://172.20.10.5:3000/api/app";
+    private static String API_URL = "http://172.20.10.5:3000/api/app";
     private static final int INTERVAL_MS = 5000; 
 
     private final Handler handler = new Handler();
@@ -59,7 +59,7 @@ public class ApiService extends Service {
         Notification notification = new Notification.Builder(this, channelId)
                 .setContentTitle("API Service")
                 .setContentText("Consultando API periodicamente")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .build();
 
         startForeground(1, notification);
@@ -129,7 +129,7 @@ public class ApiService extends Service {
 
                     // 5️⃣ Escreve de volta no arquivo
                     FileWriter writer = new FileWriter(file);
-                    writer.write(configJson.toString()); // Formata com indentação
+                    writer.write(configJson.toString());
                     writer.close();
 
                     System.out.println("✅ Configuração atualizada com sucesso!");

@@ -26,24 +26,29 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class AppMonitorService extends Service {
 	
 	private static final String TAG = "AppMonitorService";
+	private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_apps.txt";
 	private WindowManager windowManager;
 	private View overlayView;
 	private Handler handler = new Handler();
 	private Handler updateHandler = new Handler();
-	private String[] blockedApps;
+	//private Set blockedApps;
+	private Set<String> blockedApps = new HashSet<>();
 	private boolean isOverlayVisible = false;
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		startForegroundService();
-		blockedApps = loadBlockedAppsFromExternalStorage();
+		//blockedApps = loadBlockedAppsFromExternalStorage();
+		loadBlockedAppsFromExternalStorage();
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 		startMonitoring();
 	}
@@ -97,7 +102,8 @@ public class AppMonitorService extends Service {
 	private Runnable updateBlockedAppsRunnable = new Runnable() {
         @Override
         public void run() {
-            blockedApps = loadBlockedAppsFromExternalStorage();
+            //blockedApps = loadBlockedAppsFromExternalStorage();
+            loadBlockedAppsFromExternalStorage();
             Log.d(TAG, "Lista de apps bloqueados atualizada!");
             
             // Reexecutar a cada 5 segundos
@@ -138,11 +144,15 @@ public class AppMonitorService extends Service {
 	}
 	
 	private boolean isAppBlocked(String packageName) {
-		for (String blockedApp : blockedApps) {
-			if (blockedApp.equals(packageName)) {
-				return true;
-			}
+		//for (String blockedApp : blockedApps) {
+		//	if (blockedApp.equals(packageName)) {
+		//		return true;
+		//	}
+		//}
+		if(blockedApps.contains(packageName)){
+			return true;
 		}
+
 		return false;
 	}
 	
@@ -165,6 +175,7 @@ public class AppMonitorService extends Service {
         windowManager.addView(overlayView, params);
         isOverlayVisible = true;
 
+        Functions.createAttempt("app", getForegroundApp());
         overlayView.setOnTouchListener((v, event) -> true); // Ignorar interações
     }
 	}
@@ -182,35 +193,37 @@ public class AppMonitorService extends Service {
     }
 	}
 
-	private String[] loadBlockedAppsFromExternalStorage() {
+	private void loadBlockedAppsFromExternalStorage() {
     //File documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-	File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
-    File jsonFile = new File(documentsDir, "blocked_config.json");
+	//File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
+	blockedApps.clear();
+    File file = new File(FILE_PATH);
 
-    if (!jsonFile.exists()) {
-        Log.e(TAG, "Arquivo blocked_config.json não encontrado!");
-        return new String[0];
+    if (!file.exists()) {
+        Log.e(TAG, "Arquivo blocked_apps.txt não encontrado!");
+        //return new String[0];
     }
 
-    StringBuilder jsonString = new StringBuilder();
-    try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+    //StringBuilder jsonString = new StringBuilder();
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
         String line;
         while ((line = reader.readLine()) != null) {
-            jsonString.append(line);
+            //jsonString.append(line);
+            blockedApps.add(line.trim());
         }
 
-        JSONObject jsonObject = new JSONObject(jsonString.toString());
-        JSONArray blockedAppsArray = jsonObject.getJSONArray("blocked_apps");
+        //JSONObject jsonObject = new JSONObject(jsonString.toString());
+        //JSONArray blockedAppsArray = jsonObject.getJSONArray("blocked_apps");
 
-        String[] blockedApps = new String[blockedAppsArray.length()];
-        for (int i = 0; i < blockedAppsArray.length(); i++) {
-            blockedApps[i] = blockedAppsArray.getString(i);
-        }
+        //String[] blockedApps = new String[blockedAppsArray.length()];
+        //for (int i = 0; i < blockedAppsArray.length(); i++) {
+        //    blockedApps[i] = blockedAppsArray.getString(i);
+        //}
 
-        return blockedApps;
+        //return blockedApps;
     } catch (Exception e) {
-        Log.e(TAG, "Erro ao ler o arquivo JSON: " + e.getMessage());
-        return new String[0];
+        Log.e(TAG, "Erro ao ler o arquivo blocked_apps.txt: " + e.getMessage());
+        //return new String[0];
     }
 	}
 
