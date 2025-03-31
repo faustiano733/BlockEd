@@ -74,7 +74,7 @@ public class Functions {
 				System.err.println(e);
 			}
 
-			System.out.println("Data: " + day + "/" + (month < 10 ? "0" + month  : month) + "/" + year);	
+			//System.out.println("Data: " + day + "/" + (month < 10 ? "0" + month  : month) + "/" + year);	
 		}).start();
 	}
 

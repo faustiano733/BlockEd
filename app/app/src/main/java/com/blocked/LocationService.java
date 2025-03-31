@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
@@ -25,6 +26,12 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public class LocationService extends Service {
 
@@ -35,15 +42,23 @@ public class LocationService extends Service {
     public static final String ACTION_LOCATION_UPDATE = "com.blocked.ACTION_LOCATION_UPDATE";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-    private static final double SCHOOL_LATITUDE = -8.856175;
-    private static final double SCHOOL_LONGITUDE = 13.283878;
-    private static final double RADIUS_METERS = 1000; // metros
+    private static double SCHOOL_LATITUDE;
+    private static double SCHOOL_LONGITUDE;
+    private static double RADIUS_METERS;
+    private static boolean block_internet;
+    private static boolean block_cam;
+    private static boolean block_sites;
+    private static boolean block_apps;
+    private Handler updateHandler = new Handler();
+    private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_config.json";
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        updateInfo();
         startLocationUpdates();
+        
     }
 
     @Override
@@ -57,7 +72,7 @@ public class LocationService extends Service {
 
         
         startForeground(NOTIFICATION_ID, notification);
-
+        startUpdatingInfo();
         return START_STICKY;
     }
 
@@ -65,6 +80,7 @@ public class LocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+        updateHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -133,9 +149,24 @@ public class LocationService extends Service {
                 //startService(new Intent(LocationService.this, ApiService.class));
                 if (distance <= RADIUS_METERS) {
                     showNotification("Você está na área da escola!:"+distance+"m");
-                    startService(new Intent(LocationService.this, CamMonitorService.class));
-                    startService(new Intent(LocationService.this, AppMonitorService.class));
-                    startService(new Intent(LocationService.this, SiteBlockerService.class));
+
+                    if(block_cam)
+                        startService(new Intent(LocationService.this, CamMonitorService.class));
+                    else
+                        stopService(new Intent(LocationService.this, CamMonitorService.class));
+
+                    if(block_apps)
+                        startService(new Intent(LocationService.this, AppMonitorService.class));
+                    else
+                        stopService(new Intent(LocationService.this, AppMonitorService.class));
+
+                    if(block_sites)
+                        startService(new Intent(LocationService.this, SiteBlockerService.class));
+                    else{
+                        Intent stopIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                        stopIntent.setAction("STOP_VPN");
+                        startService(stopIntent);
+                    }
                 } else {
                     showNotification("Você saiu da área da escola!:"+distance+"m");
                     stopService(new Intent(LocationService.this, CamMonitorService.class));
@@ -188,5 +219,67 @@ public class LocationService extends Service {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c; // Distância em quilômetros
+    }
+
+    private void updateInfo(){
+        File file = new File(FILE_PATH);
+
+        if(!file.exists()){
+            try{
+                Thread.sleep(10000);
+                updateInfo();
+
+                return;
+            } catch(Exception e){
+
+            }
+        }
+
+        StringBuilder content = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+                //blockedApps.add(line.trim());
+            }
+
+            JSONObject jsonObject = new JSONObject(content.toString());
+
+            RADIUS_METERS = Double.parseDouble(jsonObject.getString("raio"));
+            SCHOOL_LATITUDE = Double.parseDouble(jsonObject.getString("latitude"));
+            SCHOOL_LONGITUDE = Double.parseDouble(jsonObject.getString("longitude"));
+
+            block_cam = jsonObject.getString("block_cam").equals("1");
+            block_internet = jsonObject.getString("block_internet").equals("1");
+            block_apps = jsonObject.getString("block_apps").equals("1");
+            block_sites = jsonObject.getString("block_sites").equals("1");
+
+            //System.out.println(block_cam);
+            //System.out.println(block_internet);
+            //System.out.println(block_apps);
+            //System.out.println(block_sites);
+            //System.out.println(SCHOOL_LATITUDE);
+            //System.out.println(SCHOOL_LONGITUDE);
+            //System.out.println(RADIUS_METERS);
+        
+        } catch (Exception e) {
+            //return new String[0];
+        }
+
+    }
+
+    private Runnable updateInfoRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateInfo();
+
+            updateHandler.postDelayed(this, 5000);
+        }
+    };
+
+    private void startUpdatingInfo(){
+        updateHandler.removeCallbacks(updateInfoRunnable);
+        updateHandler.post(updateInfoRunnable);
     }
 }

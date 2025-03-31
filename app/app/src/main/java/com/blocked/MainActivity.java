@@ -62,15 +62,18 @@ public class MainActivity extends AppCompatActivity {
         //editText4 = findViewById(R.id.editText4);
         btnSave = findViewById(R.id.buttonSave);
 
-         btnSave.setOnClickListener(new View.OnClickListener() {
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //saveConfig();
                 //hideApp();
+                /*Intent stopIntent = new Intent(MainActivity.this, InternetBlockerService.class);
+                stopIntent.setAction("STOP_VPN");
+                startService(stopIntent);*/
             }
         });
 
-        Functions.createAttempt("cam", "cam");
+        //Functions.createAttempt("cam", "cam");
 
         tvCoordinates = findViewById(R.id.tvCoordinates);
 
@@ -294,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     } else {
-        startService(new Intent(this, AppMonitorService.class));
-        //startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, AppMonitorService.class));
+        startService(new Intent(this, LocationService.class));
         //startService(new Intent(this, HttpProxyService.class));
         //startService(new Intent(this, InternetBlockerService.class));
         //startService(new Intent(this, SiteBlockerService.class));

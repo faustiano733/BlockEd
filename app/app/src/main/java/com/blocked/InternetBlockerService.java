@@ -35,6 +35,19 @@ public class InternetBlockerService extends VpnService implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent != null){
+            //stopSelf();
+            //return START_NOT_STICKY;
+            String intentAction = (String) intent.getAction();
+
+            if("STOP_VPN".equals(intentAction)){
+                System.out.println("Tentando parar");
+                this.onDestroy();
+                this.stopForeground(true);
+                return START_NOT_STICKY;
+            }
+        }
+
         startForegroundNotification(); // Certifique-se que a notificação está ativa
 
         if (vpnInterface == null) {
@@ -181,6 +194,7 @@ public void run() {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         isRunning = false;
         if (vpnInterface != null) {
             try {

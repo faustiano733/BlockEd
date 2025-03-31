@@ -386,6 +386,19 @@ public class SiteBlockerService extends VpnService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        
+        if(intent != null){
+            //stopSelf();
+            //return START_NOT_STICKY;
+            String intentAction = (String) intent.getAction();
+
+            if("STOP_VPN".equals(intentAction)){
+                System.out.println("Tentando parar");
+                this.onDestroy();
+                return START_NOT_STICKY;
+            }
+        }
+
         // Verifica se o serviço já está em execução
         if (isRunning) {
             Log.d(TAG, "Serviço já está em execução. Ignorando nova inicialização.");
@@ -394,12 +407,6 @@ public class SiteBlockerService extends VpnService {
 
         // Marca o serviço como em execução
         isRunning = true;
-
-        try{
-            Thread.sleep(2000);    
-        } catch(InterruptedException e){
-            
-        }
         
 
         // Passo 1: Ler o ficheiro de domínios
@@ -513,6 +520,7 @@ public class SiteBlockerService extends VpnService {
     public void onDestroy() {
         super.onDestroy();
         // Marca o serviço como parado
+        System.out.println("Parando VPN...");
         isRunning = false;
 
         // Encerra as threads ao parar o serviço
@@ -524,6 +532,7 @@ public class SiteBlockerService extends VpnService {
         if (vpnInterface != null) {
             try {
                 vpnInterface.close();
+                System.out.println("Parado de facto");
             } catch (IOException e) {
                 Log.e(TAG, "Erro ao fechar VPN: " + e.getMessage());
             }
