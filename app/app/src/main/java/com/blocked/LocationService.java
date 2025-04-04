@@ -51,6 +51,7 @@ public class LocationService extends Service {
     private static boolean block_apps;
     private Handler updateHandler = new Handler();
     private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_config.json";
+    private static final String EX_FILE_PATH = "/storage/emulated/0/Documents/blocked_exceptions.txt";
 
     @Override
     public void onCreate() {
@@ -160,18 +161,34 @@ public class LocationService extends Service {
                     else
                         stopService(new Intent(LocationService.this, AppMonitorService.class));
 
-                    if(block_sites)
-                        startService(new Intent(LocationService.this, SiteBlockerService.class));
+
+                    if(block_internet)
+                        startService(new Intent(LocationService.this, InternetBlockerService.class));
                     else{
-                        Intent stopIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                        Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
                         stopIntent.setAction("STOP_VPN");
                         startService(stopIntent);
+
+                        if(block_sites)
+                            startService(new Intent(LocationService.this, SiteBlockerService.class));
+                        else{
+                            Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                            stopSiteIntent.setAction("STOP_VPN");
+                            startService(stopSiteIntent);
+                        }
                     }
                 } else {
                     showNotification("Você saiu da área da escola!:"+distance+"m");
                     stopService(new Intent(LocationService.this, CamMonitorService.class));
                     stopService(new Intent(LocationService.this, AppMonitorService.class));
-                    stopService(new Intent(LocationService.this, SiteBlockerService.class));
+                    
+                    Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+                    stopIntent.setAction("STOP_VPN");
+                    startService(stopIntent);
+
+                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                    stopSiteIntent.setAction("STOP_VPN");
+                    startService(stopSiteIntent);
                 }
             }
 
@@ -274,7 +291,7 @@ public class LocationService extends Service {
         public void run() {
             updateInfo();
 
-            updateHandler.postDelayed(this, 5000);
+            updateHandler.postDelayed(this, 10000);
         }
     };
 
