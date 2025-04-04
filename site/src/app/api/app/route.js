@@ -5,6 +5,7 @@ export async function GET(req){
     let response = ""
 
     const url = new URL(req.url)
+    
     const param = url.searchParams.get("app")
     if(!(!param)){
         const app = await getApp(param)

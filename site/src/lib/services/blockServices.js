@@ -1,7 +1,6 @@
-import { blocks } from "../db/models//block.js"
-import { block_app } from "../db/models/blockApp.js"
+import { blocks } from "../db/models.js"
 import { Op } from "sequelize"
-import db from "../db/models//helpers/connection.js"
+import db from "../db/connection.js"
 import { getAllApps } from "./appServices.js"
 import moment from "moment"
 
@@ -36,35 +35,4 @@ export async function getBlocksWeek(){
 
 
     return blocks_of_week
-}
-
-export async function getBlockedApps(){
-    let blocked_apps = [];
-    const all_apps = await getAllApps();
-    const id_apps = all_apps.map(app=>app.idApp);
-
-    const all_blocks = await block_app.findAll({
-        attributes:[
-            "idApp",
-            [db.sequelize.fn("COUNT",db.sequelize.col("idBlock")),"blocks"]
-        ],
-        where:{
-            idApp:id_apps
-        },
-        group:["idApp"],
-    })
-     all_blocks.forEach(blocked_app=>{
-        all_apps.forEach(app=>{
-            if(blocked_app.id_app === app.id){
-                blocked_apps = [...blocked_apps,
-                    {
-                      name:app.name,
-                      blocks:blocked_app.tentativas
-                    }
-                ]
-            }
-        })
-     })
-    
-    return all_blocks
 }

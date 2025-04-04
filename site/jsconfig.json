@@ -2,7 +2,7 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@components/*": ["./src/app/components/*"],
+      "@components/*": ["src/components/*"],
       "@styles/*": ["./src/app/styles/*"],
       "@icon": ["./src/Icons.jsx"],
       "@lib/*": ["./src/lib/*"],

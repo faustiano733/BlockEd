@@ -1,10 +1,11 @@
-import { Op } from "sequelize";
-import {students} from "../db/models/student.js";
-import { device } from "../db/models/device.js";
+import {students} from "../db/models.js";
+import { studentSchema } from "../validators/authValidator.js";
+import { getAllDevices } from "./deviceServices.js";
 
-export async function createStudent(new_student){
-    const added_student = await students.create({...new_student});
-    return added_student;
+export async function createStudent(new_student, transaction){
+    const {error} = studentSchema.validate(new_student)
+    if(error) throw new TypeError(error)
+    return await students.create(new_student, transaction);
 }
 
 export async function createDevice(new_device){
@@ -17,32 +18,28 @@ export async function linkDevice(student,device){
     return linked_device
 }
 
-export async function getAllStudents(){
+export async function getAllStudents(idSchool){
     
-    const db_students = await students.findAll();
-    /*let list_students = []
-
-    db_students.forEach(async student=>{
-        
-        const student_information = await pegaInformacoesAluno(student.name)
-        list_students = [...list_students, student_information]
-        
-    })
-    */
-    let list_students = db_students;
-    for(let i = 0; i<list_students.length;i++){
-        list_students[i] = await getStudentInformation(list_students[i].name);
+    const db_students = await students.findAll({where:{idSchool:idSchool}});
+    if(!db_students){
+        return []
     }
+    
+    const list_students = await Promise.all(db_students.map(async student=>{
+        const devices = await getAllDevices(student.id)
+        return {id:student.id, name:student.name, devices:devices}
+    }))
+
     return list_students
 }
 
-async function getStudent(student_name){
+async function getStudent(student_id){
     const student = await students.findOne({
         where:{
-            name:student_name
+            id:student_id
         }
     });
-    if(student === null){
+    if(student){
         throw new Error('student not found')
     }else{
         return student;
@@ -73,20 +70,11 @@ export async function getNumberOfStudents(){
     return number_of_students
 }
 
-async function getAllDevices(idStudent_list){
-    const all_devices_list = await device.findAll({
-        where:{
-            idStudent:idStudent_list
-        }
-    })
-    return all_devices_list
-}
-
-export async function getStudentInformation(student_name){
+export async function getStudentInformation(student_id){
     
-    const student = await getStudent(student_name);
-
-    const student_devices = await getAllDevices(student.idStudent);
+    const student = await getStudent(student_id);
+    console.log(student)
+    const student_devices = await getAllDevices(student.id);
 
     const student_information = {
         name:student.name,

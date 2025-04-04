@@ -1,0 +1,36 @@
+.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #eceff8;
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+  }
+  
+  /* Responsive padding */
+  @media (min-width: 640px) {
+    .layout {
+      padding: 32px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .layout {
+      padding: 40px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .layout {
+      padding: 48px;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .layout {
+      padding: 80px;
+    }
+  }

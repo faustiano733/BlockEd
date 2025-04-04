@@ -1,0 +1,40 @@
+.homeDoughnut{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: stretch;
+    height: fit-content;
+    flex-wrap: wrap;
+    /*background: green;*/
+  }
+  .homeDoughnut h5{
+    width: 100%;
+    text-align: center;
+  }
+  
+  .homeDoughnutConteiner{
+    width: 35%;
+    height: fit-content;
+    /*background: blue;*/
+  }
+  .homeDoughnutTits{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    /*background: yellow;*/
+    width: 50%;
+  }
+  .homeDoughnutTit{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #404040;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .homeDoughnutTit .quad{
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+  }

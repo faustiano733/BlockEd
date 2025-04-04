@@ -1,0 +1,128 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  .card {
+    width: 100%;
+    max-width: 28rem;
+    padding: 2.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    color: #162938;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .error {
+    color: #ef4444;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #2a4859;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #358bff;
+    box-shadow: 0 0 0 1px #358bff;
+  }
+  
+  .rememberContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #2a4859;
+  }
+  
+  .rememberCheckbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .checkbox {
+    margin-right: 0.5rem;
+    accent-color: #358bff;
+  }
+  
+  .forgotPassword {
+    color: #358bff;
+    text-decoration: none;
+  }
+  
+  .forgotPassword:hover {
+    text-decoration: underline;
+  }
+  
+  .submitButton {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #358bff;
+    color: white;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+    border: none;
+  }
+  
+  .submitButton:hover {
+    background-color: #2a7ae9;
+  }
+  
+  .submitButton:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .registerText {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #2a4859;
+  }
+  
+  .registerLink {
+    color: #358bff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .registerLink:hover {
+    text-decoration: underline;
+  }

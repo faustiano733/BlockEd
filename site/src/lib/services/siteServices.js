@@ -1,4 +1,4 @@
-import {sites} from "../db/models/sites.js";
+import {sites} from "../db/models.js";
 import { Op } from "sequelize";
 
 
