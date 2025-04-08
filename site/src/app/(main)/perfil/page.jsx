@@ -25,8 +25,8 @@ function ExceptionSection(){
     }
 
     fetchData()
-    const interval = setInterval(()=>fetchData(),2500)
-    return ()=>clearInterval(interval)
+    //const interval = setInterval(()=>fetchData(),2500)
+    //return ()=>clearInterval(interval)
   },[])
  if(!(exceptions.length >= 1)) return <EmptyMenu text='Nenhuma Excepção Adicionada'/>
  return (<section className="excecoesSection">
@@ -201,8 +201,16 @@ export default function Profile() {
   function SenhaMenu(){
     const [changePassLoading, setChangePassLoading] = useState(false);
     const [showAddExcecao, setShowAddExcecao] = useState(false);
-
+    const [nameInput, setNameInput] = useState('')
     async function changePass(){
+      const response = await fetch('/api/user',{
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        method:'PUT',
+        body:JSON.stringify({name:nameInput.trim()})
+      })
       setTimeout(()=>{
         setChangePassLoading(false);
       }, 3000)
@@ -222,9 +230,13 @@ export default function Profile() {
       );
     }
 
+    function handlechangeName(e){
+      setNameInput(e.target.value)
+    }
+
     return(
       <div className="profileSubMenu" id="senhaMenu">
-        <Input type='text' label='nome do usuario'></Input>
+        <Input onChange={handlechangeName} type='text' label='nome do usuario'></Input>
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
         <Button onClick={() =>{setChangePassLoading(true); changePass()}}>

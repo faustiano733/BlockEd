@@ -1,8 +1,16 @@
 'use client';
-
+import 'leaflet/dist/leaflet.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Cadastro.module.css';
+import dynamic from 'next/dynamic';
+const MapaComRaio = dynamic(
+  () => import('@/components/MapaComRaio'),
+  { 
+    ssr: false,
+    loading: () => <p>Carregando mapa...</p>
+  }
+);
 
 export default function Cadastro() {
   const router = useRouter();
@@ -12,8 +20,9 @@ export default function Cadastro() {
     password: '',
     username: '',
     schoolName: '',
-    longitude: '',
-    latitude: '',
+    longitude: -8.8383, // Valores iniciais de Luanda
+    latitude: 13.2344,
+    radius: 500, // Raio em metros
     blockCam: false,
     blockInternet: false,
     blockApps: false,
@@ -30,38 +39,60 @@ export default function Cadastro() {
     }));
   };
 
-  const handleNextStep = (e) => {
-    e.preventDefault();
-    if (step === 1) {
+  const handleLocationChange = ({ lat, lng, radius }) => {
+    setFormData(prev => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+      radius: radius
+    }));
+  };
+
+  const validateStep = (currentStep) => {
+    setError('');
+    
+    if (currentStep === 1) {
       if (!formData.email || !formData.password || !formData.username) {
         setError('Por favor, preencha todos os campos');
-        return;
+        return false;
       }
       if (formData.password.length < 6) {
         setError('A senha deve ter pelo menos 6 caracteres');
-        return;
+        return false;
       }
     }
+
+    if (currentStep === 2) {
+      if (!formData.schoolName) {
+        setError('Por favor, informe o nome da escola');
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleNextStep = (e) => {
+    e.preventDefault();
+    if (!validateStep(step)) return;
     setStep(step + 1);
-    setError('');
   };
 
   const handlePreviousStep = (e) => {
     e.preventDefault();
     setStep(step - 1);
-    setError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validateStep(3)) return;
+    
     setLoading(true);
-    setError('');
     try {
       const response = await fetch('/api/siggin/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify({
           accountData: {
@@ -79,19 +110,19 @@ export default function Cadastro() {
             blockApps: formData.blockApps
           },
           locationData: {
-            longitude: formData.longitude,
-            latitude: formData.latitude
+            longitude:formData.longitude.toString(),
+            latitude: formData.latitude.toString(),
+            radius: formData.radius
           }
         })
       });
 
-      if (response.status != 200) {
+      if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error);
+        throw new Error(data.error || 'Erro no cadastro');
       }
 
-      router.push(response.url);
-
+      router.push('/login');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -99,25 +130,22 @@ export default function Cadastro() {
     }
   };
 
-  const handleRedirectLogin = (event) => {
-    event.preventDefault();
+  const handleRedirectLogin = (e) => {
+    e.preventDefault();
     router.push('/login');
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h2 className={styles.title}>Cadastro ({step}/2)</h2>
+        <h2 className={styles.title}>Cadastro ({step}/3)</h2>
 
-        {error && (
-          <div className={styles.error}>
-            {error}
-          </div>
-        )}
+        {error && <div className={styles.error}>{error}</div>}
 
-        <form onSubmit={step === 2 ? handleSubmit : handleNextStep}>
+        <form onSubmit={step === 3 ? handleSubmit : handleNextStep}>
+          {/* Passo 1: Dados da Conta */}
           {step === 1 && (
-            <div className={styles.formGroup}>
+            <div className={styles.formSection}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Email</label>
                 <input
@@ -143,7 +171,7 @@ export default function Cadastro() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Password</label>
+                <label className={styles.label}>Senha</label>
                 <input
                   type="password"
                   name="password"
@@ -155,17 +183,15 @@ export default function Cadastro() {
                 />
               </div>
 
-              <button
-                type="submit"
-                className={styles.button}
-              >
+              <button type="submit" className={styles.button}>
                 Próximo
               </button>
             </div>
           )}
 
+          {/* Passo 2: Localização da Escola */}
           {step === 2 && (
-            <div className={styles.formGroup}>
+            <div className={styles.formSection}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Nome da Escola</label>
                 <input
@@ -178,89 +204,105 @@ export default function Cadastro() {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Longitude</label>
-                <input
-                  type="text"
-                  name="longitude"
-                  value={formData.longitude}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
+              <div className={styles.mapContainer}>
+                <h3 className={styles.subtitle}>Marque a localização da escola</h3>
+                <MapaComRaio 
+                  onChange={handleLocationChange}
+                  initialPosition={{
+                    lat: Number(formData.latitude),
+                    lng: Number(formData.longitude)
+                  }}
+                  initialRadius={Number(formData.radius)}
                 />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Latitude</label>
-                <input
-                  type="text"
-                  name="latitude"
-                  value={formData.latitude}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
-                />
-              </div>
-
-              <div className={styles.checkboxGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    name="blockCam"
-                    checked={formData.blockCam}
-                    onChange={handleChange}
-                    className={styles.checkbox}
-                  />
-                  Bloquear Câmera
-                </label>
-
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    name="blockInternet"
-                    checked={formData.blockInternet}
-                    onChange={handleChange}
-                    className={styles.checkbox}
-                  />
-                  Bloquear Internet
-                </label>
-
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    name="blockApps"
-                    checked={formData.blockApps}
-                    onChange={handleChange}
-                    className={styles.checkbox}
-                  />
-                  Bloquear Apps
-                </label>
-
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    name="blockSites"
-                    checked={formData.blockSites}
-                    onChange={handleChange}
-                    className={styles.checkbox}
-                  />
-                  Bloquear Sites
-                </label>
               </div>
 
               <div className={styles.buttonGroup}>
                 <button
                   type="button"
                   onClick={handlePreviousStep}
-                  className={`${styles.button} ${styles.buttonSecondary} ${styles.buttonFlex}`}
+                  className={`${styles.button} ${styles.buttonSecondary}`}
                 >
                   Voltar
                 </button>
+                <button type="submit" className={styles.button}>
+                  Próximo
+                </button>
+              </div>
+            </div>
+          )}
 
+          {/* Passo 3: Configurações */}
+          {step === 3 && (
+            <div className={styles.formSection}>
+              <div className={styles.formGroup}>
+                <h3 className={styles.subtitle}>Configurações de Bloqueio</h3>
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      name="blockCam"
+                      checked={formData.blockCam}
+                      onChange={handleChange}
+                      className={styles.checkbox}
+                    />
+                    Bloquear Câmera
+                  </label>
+
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      name="blockInternet"
+                      checked={formData.blockInternet}
+                      onChange={handleChange}
+                      className={styles.checkbox}
+                    />
+                    Bloquear Internet
+                  </label>
+
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      name="blockApps"
+                      checked={formData.blockApps}
+                      onChange={handleChange}
+                      className={styles.checkbox}
+                    />
+                    Bloquear Aplicativos
+                  </label>
+
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      name="blockSites"
+                      checked={formData.blockSites}
+                      onChange={handleChange}
+                      className={styles.checkbox}
+                    />
+                    Bloquear Sites
+                  </label>
+                </div>
+              </div>
+
+              <div className={styles.locationPreview}>
+                <h3 className={styles.subtitle}>Localização Definida</h3>
+                <p>Escola: {formData.schoolName}</p>
+                <p>Latitude: {parseFloat(formData.latitude).toFixed(6)}</p>
+                <p>Longitude: {parseFloat(formData.longitude).toFixed(6)}</p>
+                <p>Raio de Atuação: {formData.radius} metros</p>
+              </div>
+
+              <div className={styles.buttonGroup}>
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className={`${styles.button} ${styles.buttonSecondary}`}
+                >
+                  Voltar
+                </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`${styles.button} ${styles.buttonFlex} ${loading ? styles.disabled : ''}`}
+                  className={`${styles.button} ${loading ? styles.disabled : ''}`}
                 >
                   {loading ? 'Cadastrando...' : 'Finalizar Cadastro'}
                 </button>
@@ -269,13 +311,9 @@ export default function Cadastro() {
           )}
         </form>
 
-        <div className={styles.textCenter}>
+        <div className={styles.loginRedirect}>
           Já tem uma conta?{' '}
-          <a
-            href="#"
-            onClick={handleRedirectLogin}
-            className={styles.link}
-          >
+          <a href="#" onClick={handleRedirectLogin} className={styles.link}>
             Faça login
           </a>
         </div>

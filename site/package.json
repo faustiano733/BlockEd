@@ -13,6 +13,7 @@
     "chart.js": "^4.4.7",
     "dotenv": "^16.4.7",
     "google-play-scraper": "^10.0.1",
+    "joi": "^17.13.3",
     "jose": "^5.9.6",
     "moment": "^2.30.1",
     "momment": "^0.0.1",
@@ -21,7 +22,9 @@
     "react": "^19.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^19.0.0",
-    "sequelize": "^6.37.5"
+    "react-leaflet": "^5.0.0",
+    "sequelize": "^6.37.5",
+    "tldts": "^6.1.85"
   },
   "type": "module"
 }

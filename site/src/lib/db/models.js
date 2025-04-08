@@ -87,6 +87,9 @@ export const location = db.sequelize.define("localization",{
     latitude:{
         type:db.Sequelize.STRING
     },
+    radius:{
+        type:db.Sequelize.INTEGER
+    },
     idSchool:{
         type:db.Sequelize.UUID
     }
@@ -147,7 +150,7 @@ export const sites = db.sequelize.define("site",{
         primaryKey:true,
         defaultValue:db.Sequelize.UUIDV4
     },
-    domine:{
+    domain:{
         type:db.Sequelize.STRING
     },
     idSchool:{

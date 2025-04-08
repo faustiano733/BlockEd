@@ -117,51 +117,86 @@ export function EmptyMenu({text}){
      );
   }
 
-  function AdicionarSites(){
+  function AdicionarSites() {
     const [searchSiteLoading, setSearchSiteLoading] = useState(false);
-    const [searchedSiteData, setSearchedSiteData] = useState(null);
-    //const [searchedApps, setSearchedApps] = useState([]);
-    async function searchSite(){
-      //await sleep(1000);
-      //setSearchSiteLoading(false);
-      setSearchedSiteData({status: 200, domain: "Twitter.com", added: false, allowed: true});
-      let obj = await fetch("/api/bloqueios/site", {
-        method: "POST",
-        "Content-Type": "application/json",
-        body: JSON.stringify({domain: inputSearchSite.value})
-      })
-      let resp = await obj.json();
-      console.log(resp)
-      setSearchSiteLoading(false);
+    const [addedSiteData, setaddedSiteData] = useState(null);
+    const [url, setURL] = useState('');
+    
+    async function addSite() {
+      if (!url.trim()) return; // Não permite URLs vazias
+      
+      setSearchSiteLoading(true);
+      
+      try {
+        const response = await fetch("/api/bloqueios/site", {
+          headers: {
+            "Content-Type": "application/json",
+            'Accept': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({ url: url.trim() }) // Envia apenas a string
+        });
+        
+        if (response.status != 200) {
+          const {error } = await response.json()
+          throw new Error(error)
+        }
+        
+        const data = await response.json();
+        setaddedSiteData({});
+      } catch (error) {
+        setaddedSiteData({status:error.message,domain:url})
+      } finally {
+        setSearchSiteLoading(false);
+      }
     }
-    return(
+
+    // Função para lidar com mudanças no input
+    const handleInputChange = (e) => {
+      setURL(e.target.value); // Extrai apenas o valor do input
+    };
+
+    // Função para lidar com o clique no ícone ou pressionar Enter
+    const handleSearch = () => {
+      if (url.trim()) {
+        setSearchSiteLoading(true);
+        addSite();
+      }
+    };
+
+    return (
       <div className="menuItem" id="adicionarSites">
-  <div>
-    <Input id="inputSearchSite" placeholder="Insira o domínio do site" icon={searchSiteLoading ? <PendingIcon /> : <SearchIcon onClick={()=>{setSearchSiteLoading(true); searchSite()}} />}/>
-  </div>
-  { searchedSiteData && <> 
-  {/*<small>Resultados</small>*/}
-  <section>
-    <span>Status: {searchedSiteData.status}</span>
-    <span>Domínio: {searchedSiteData.domain}</span>
-    <span>Já adicionado: {searchedSiteData.added ? "Sim" : "Não"}</span>
-    <span>Elegível: {searchedSiteData.allowed ? "Sim" : "Não"}</span>
-    {/*<span></span>
-    <span></span>
-    <span></span>*/}
-        </section>
-  <Button className={searchedSiteData.allowed ? "addSiteButton" : "addSiteButton buttonDisabled"}> Adicionar site {/*<AddIcon />*/}</Button>
-        </>}
+        <div>
+          <Input 
+            value={url}
+            onChange={handleInputChange}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            id="inputSearchSite" 
+            placeholder="Insira o domínio do site" 
+            icon={searchSiteLoading ? 
+              <PendingIcon /> : 
+              <SearchIcon onClick={handleSearch} />
+            }
+          />
+        </div>
+        
+        {addedSiteData && (
+          <>
+            <section>
+              <span>Status: {addedSiteData.status}</span>
+              <span>Domínio: {addedSiteData.domain}</span>
+            </section>
+          </>
+        )}
       </div>
     );
-  }
+}
     function Add(props){
     return(
   <AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/>
     );
   }
-    
- 
+  
   function MenuAplicativos({apps, setSubMenu}){
     /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
     if(!apps) return <Loading bg="transparent" />
@@ -245,7 +280,7 @@ export default function Bloqueios(){
   const [diretorios, setDiretorios] = useState("");
   const [sites, setSites] = useState(null);
   const [apps, setApps] = useState(null);
-  
+  /*
   useEffect(()=>{
     async function fetchData(){
       let obj = await fetch("/api/bloqueios/app");
@@ -276,7 +311,7 @@ export default function Bloqueios(){
     }, 3000)
 
     return ()=>clearInterval(interval);
-  }, [])
+  }, []) */
 
   function BloqueioItem(props){
     return(

@@ -14,7 +14,9 @@ export const getUser = async (idAccount)=>{
 }
 
 export async function getUserById(id) {
-
   return await user.findByPk(id)
-  
+}
+
+export async function updateName({name,id}, transaction){
+  return await user.update({name:name},{where:{id:id}},transaction)
 }

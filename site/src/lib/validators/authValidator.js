@@ -13,6 +13,7 @@ export const userSchema = Joi.object({
 export const locationSchema = Joi.object({
     longitude:Joi.string().required(),
     latitude:Joi.string().required(),
+    radius:Joi.number().integer().required(),
     idSchool:Joi.string().max(36).required()
 });
 
@@ -37,5 +38,10 @@ export const deviceSchema = Joi.object({
 
 export const exceptionSchema = Joi.object({
   date:Joi.date().required(),
+  idSchool:Joi.string().max(36).required()
+})
+
+export const siteSchema = Joi.object({
+  domain:Joi.string().required(),
   idSchool:Joi.string().max(36).required()
 })

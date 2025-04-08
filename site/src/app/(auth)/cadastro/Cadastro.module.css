@@ -57,6 +57,40 @@
   box-shadow: 0 0 0 1px #358bff;
 }
 
+.mapContainer {
+  margin: 1.5rem 0;
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  background: #f9f9f9;
+  height: 400px;
+  width: 100%;
+  border-radius: 8px
+}
+
+.subtitle {
+  margin-bottom: 1rem;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.locationPreview {
+  background: #f0f0f0;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.locationPreview p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .button {
   width: 100%;
   background-color: #358bff;
