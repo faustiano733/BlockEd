@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Functions.createAttempt("cam", "cam");
-
+        System.out.println(Functions.isException(this));
         tvCoordinates = findViewById(R.id.tvCoordinates);
 
         if (!Settings.canDrawOverlays(this)) {

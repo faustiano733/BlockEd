@@ -16,17 +16,24 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import android.provider.Settings;
+import android.content.Context;
+import android.widget.Toast;
 
 public class Functions {
 	private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_attempts.json";
 
 	public static void createAttempt(String type, String value){
 		new Thread(() -> {
-			try{
-				Thread.sleep(10000);
+			/*try{
+				Thread.sleep(1000);
 			} catch(Exception e){
 
-			}
+			}*/
+
 			Date now = new Date();
 			int day = now.getDate();
 			int month = (now.getMonth() + 1);
@@ -81,4 +88,32 @@ public class Functions {
 	//private void attemptCriation(String type, String value){
 		
 	//}	
+
+	public static boolean isException(Context context){
+		String EXCEPTION_PATH = "/storage/emulated/0/Documents/blocked_exceptions.txt";
+		File file = new File(EXCEPTION_PATH);
+		Set<String> exceptions = new HashSet<>();
+		Date now = new Date();
+		int day = now.getDate();
+		int month = (now.getMonth() + 1);
+		boolean isAutoTime = Settings.Global.getInt(context.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
+
+		if(!isAutoTime){
+			Toast.makeText(context, "Data incorrecta, redefina", Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                exceptions.add(line.trim());
+            }
+        
+        } catch (Exception e) {
+            //return new String[0];
+        }
+        String cmp = (day < 10 ? "0"+day : day) + "/" + (month < 10 ? "0"+month : month);
+        System.out.println(cmp);
+        return exceptions.contains(cmp) && isAutoTime;
+	}
 }

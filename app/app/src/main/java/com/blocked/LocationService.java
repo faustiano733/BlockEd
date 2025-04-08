@@ -18,10 +18,9 @@ import android.os.Looper;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ActivityCompat;
 import android.content.BroadcastReceiver;
+import android.net.Uri;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
@@ -50,16 +49,18 @@ public class LocationService extends Service {
     private static boolean block_sites;
     private static boolean block_apps;
     private Handler updateHandler = new Handler();
+    private Handler permissionHandler = new Handler();
+    private boolean resetUpdates = false;
     private static final String FILE_PATH = "/storage/emulated/0/Documents/blocked_config.json";
-    private static final String EX_FILE_PATH = "/storage/emulated/0/Documents/blocked_exceptions.txt";
+    //private static final String EX_FILE_PATH = "/storage/emulated/0/Documents/blocked_exceptions.txt";
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
         updateInfo();
-        startLocationUpdates();
         
+        startLocationUpdates();
     }
 
     @Override
@@ -74,6 +75,8 @@ public class LocationService extends Service {
         
         startForeground(NOTIFICATION_ID, notification);
         startUpdatingInfo();
+        startPermissionUpdates();
+
         return START_STICKY;
     }
 
@@ -81,7 +84,9 @@ public class LocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
+        showNotification("LocationService destruído");
         updateHandler.removeCallbacksAndMessages(null);
+        permissionHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -125,17 +130,45 @@ public class LocationService extends Service {
     }
 
     private void startLocationUpdates() {
+        stopLocationUpdates(); // <- Garante que não vai acumular listeners
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Se a permissão foi revogada, pare o serviço
-            stopSelf();
+
+            /*Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            */
+            showNotification("Permissão revogada");
+            //stopSelf();
             return;
         }
 
         locationListener = new LocationListener() {
-            @Override
+            /*@Override
             public void onLocationChanged(Location location) {
+                if (location == null) {
+                    showNotification("Erro: localização nula recebida");
+                    return;
+                }
+
+                if(Functions.isException(LocationService.this)){
+                    stopService(new Intent(LocationService.this, CamMonitorService.class));
+                    stopService(new Intent(LocationService.this, AppMonitorService.class));
+                    
+                    Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+                    stopIntent.setAction("STOP_VPN");
+                    startService(stopIntent);
+
+                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                    stopSiteIntent.setAction("STOP_VPN");
+                    startService(stopSiteIntent);
+                    return;
+                }
+
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
 
@@ -191,6 +224,88 @@ public class LocationService extends Service {
                     startService(stopSiteIntent);
                 }
             }
+            */
+
+            @Override
+public void onLocationChanged(Location location) {
+    try {
+        if (location == null) {
+            showNotification("Erro: localização nula recebida");
+            return;
+        }
+
+        if (Functions.isException(LocationService.this)) {
+            stopService(new Intent(LocationService.this, CamMonitorService.class));
+            stopService(new Intent(LocationService.this, AppMonitorService.class));
+            
+            Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+            stopIntent.setAction("STOP_VPN");
+            startService(stopIntent);
+
+            Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+            stopSiteIntent.setAction("STOP_VPN");
+            startService(stopSiteIntent);
+            return;
+        }
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        Intent intent = new Intent(ACTION_LOCATION_UPDATE);
+        intent.putExtra(EXTRA_LATITUDE, latitude);
+        intent.putExtra(EXTRA_LONGITUDE, longitude);
+        LocalBroadcastManager.getInstance(LocationService.this).sendBroadcast(intent);
+
+        double distance = calculateDistance(latitude, longitude, SCHOOL_LATITUDE, SCHOOL_LONGITUDE) * 1000;
+
+        if (distance <= RADIUS_METERS) {
+            showNotification("Você está na área da escola!:" + distance + "m");
+
+            if (block_cam)
+                startService(new Intent(LocationService.this, CamMonitorService.class));
+            else
+                stopService(new Intent(LocationService.this, CamMonitorService.class));
+
+            if (block_apps)
+                startService(new Intent(LocationService.this, AppMonitorService.class));
+            else
+                stopService(new Intent(LocationService.this, AppMonitorService.class));
+
+            if (block_internet)
+                startService(new Intent(LocationService.this, InternetBlockerService.class));
+            else {
+                Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+                stopIntent.setAction("STOP_VPN");
+                startService(stopIntent);
+
+                if (block_sites)
+                    startService(new Intent(LocationService.this, SiteBlockerService.class));
+                else {
+                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                    stopSiteIntent.setAction("STOP_VPN");
+                    startService(stopSiteIntent);
+                }
+            }
+        } else {
+            showNotification("Você saiu da área da escola!:" + distance + "m");
+            stopService(new Intent(LocationService.this, CamMonitorService.class));
+            stopService(new Intent(LocationService.this, AppMonitorService.class));
+            
+            Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+            stopIntent.setAction("STOP_VPN");
+            startService(stopIntent);
+
+            Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+            stopSiteIntent.setAction("STOP_VPN");
+            startService(stopSiteIntent);
+        }
+    } catch (SecurityException e) {
+        showNotification("Permissão foi revogada em tempo real.");
+        stopLocationUpdates();
+    } catch (Exception e) {
+        showNotification("Erro inesperado: " + e.getMessage());
+    }
+}
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -199,7 +314,9 @@ public class LocationService extends Service {
             public void onProviderEnabled(String provider) {}
 
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+                checkAndPromptGPS();
+            }
         };
 
         // Solicitar atualizações de localização via GPS
@@ -213,6 +330,7 @@ public class LocationService extends Service {
                         Looper.getMainLooper()
                 );
             } catch (SecurityException e) {
+                showNotification("Erro ao registrar localização: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -242,14 +360,7 @@ public class LocationService extends Service {
         File file = new File(FILE_PATH);
 
         if(!file.exists()){
-            try{
-                Thread.sleep(10000);
-                updateInfo();
-
-                return;
-            } catch(Exception e){
-
-            }
+            return;
         }
 
         StringBuilder content = new StringBuilder();
@@ -299,4 +410,63 @@ public class LocationService extends Service {
         updateHandler.removeCallbacks(updateInfoRunnable);
         updateHandler.post(updateInfoRunnable);
     }
+
+    private Runnable permissionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            boolean hasPermission = ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+            if (!hasPermission) {
+                resetUpdates = true;
+                //stopLocationUpdates();
+                showNotification("Permissão de localização foi revogada");
+
+                /*Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                */
+            }
+
+            if (hasPermission && resetUpdates) {
+                resetUpdates = false;
+                showNotification("Permissão restaurada. Reiniciando localização.");
+                //new Handler(Looper.getMainLooper()).postDelayed(() -> startLocationUpdates(), 2000);
+            }
+
+            permissionHandler.postDelayed(this, 10000);
+        }
+    };
+
+    private void startPermissionUpdates(){
+        permissionHandler.removeCallbacks(permissionRunnable);
+        permissionHandler.post(permissionRunnable);
+    }
+
+    private boolean isLocationEnabled() {
+        try{
+            LocationManager lM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            return lM.isProviderEnabled(LocationManager.GPS_PROVIDER);    
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
+    private void checkAndPromptGPS() {
+        if (!isLocationEnabled()) {
+            showNotification("Por favor, ative o GPS para continuar.");
+
+            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            // Rechecar depois de 10 segundos
+            new Handler(Looper.getMainLooper()).postDelayed(this::checkAndPromptGPS, 10000);
+        } else {
+            showNotification("GPS ativado. Obrigado!");
+        }
+    }
+
 }
