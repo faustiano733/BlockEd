@@ -30,7 +30,7 @@ import org.json.JSONArray;
 
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
-    private static String API_URL = "http://172.20.10.5:3000/api/app";
+    //private static String API_URL = "http://172.20.10.5:3000/api/app";
     private static final int INTERVAL_MS = 5000; 
 
     private final Handler handler = new Handler();
@@ -80,7 +80,14 @@ public class ApiService extends Service {
         Executors.newSingleThreadExecutor().execute(() -> {
             HttpURLConnection connection = null;
             try {
-                URL url = new URL(API_URL);
+                File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
+                File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
+                File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
+                File exceptionsFile = new File("/storage/emulated/0/Documents/blocked_exceptions.txt");
+                
+                //HttpURLConnection connection = null;
+            
+                URL url = new URL("http://192.168.249.192/app_data.php"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
@@ -96,46 +103,86 @@ public class ApiService extends Service {
                         response.append(line);
                     }
                     reader.close();
+                    //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    JSONObject responseJson = new JSONObject(response.toString());
 
-                    JSONArray jsonArray = new JSONArray(response.toString());
+                    JSONObject configContent = new JSONObject();
 
-                    // 2️⃣ Extrai apenas os "packageName" e cria um novo JSONArray
-                    JSONArray blockedApps = new JSONArray();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        blockedApps.put(obj.getString("packageName"));
-                    }
+                    if(configFile.exists()){
+                        StringBuilder configBuilder = new StringBuilder();
 
-                    // 3️⃣ Lê o arquivo blocked_config.json
-                    File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
-                    File file = new File(documentsDir, "blocked_config.json");
-                    JSONObject configJson;
-                
-                    if (file.exists()) {
-                        BufferedReader reader1 = new BufferedReader(new FileReader(file));
-                        StringBuilder jsonContent = new StringBuilder();
-                        String line1;
-                        while ((line1 = reader1.readLine()) != null) {
-                            jsonContent.append(line1);
+                        try (BufferedReader configReader = new BufferedReader(new FileReader(configFile))) {
+                            String configLine;
+
+                            while ((configLine = configReader.readLine()) != null) {
+                                configBuilder.append(configLine);
+                                //blockedApps.add(line.trim());
+                            }
+                        } catch (Exception e) {
+
                         }
-                        reader1.close();
-                        configJson = new JSONObject(jsonContent.toString());
-                    } else {
-                        configJson = new JSONObject();
+
+                        configContent = new JSONObject(configBuilder.toString());
                     }
 
-                    // 4️⃣ Atualiza o campo "blocked_apps"
-                    configJson.put("blocked_apps", blockedApps);
+                    //configContent.put("token", responseJson.getString("token"));
+                    //configContent.put("aluno", name.getText().toString());
+                    configContent.put("latitude", responseJson.getString("latitude"));
+                    configContent.put("longitude", responseJson.getString("longitude"));
+                    configContent.put("raio", responseJson.getString("raio"));
+                    configContent.put("block_apps", responseJson.getString("block_apps"));
+                    configContent.put("block_sites", responseJson.getString("block_sites"));
+                    configContent.put("block_cam", responseJson.getString("block_cam"));
+                    configContent.put("block_internet", responseJson.getString("block_internet"));
 
-                    // 5️⃣ Escreve de volta no arquivo
-                    FileWriter writer = new FileWriter(file);
-                    writer.write(configJson.toString());
-                    writer.close();
+                    FileWriter configWriter = new FileWriter(configFile);
+                    configWriter.write(configContent.toString(4));
+                    configWriter.close();
 
-                    System.out.println("✅ Configuração atualizada com sucesso!");
-                } else {
-                    System.out.println("❌ Erro ao acessar a API: "+responseCode);
+                    //System.out.println(configContent.toString());
+
+                    JSONArray domainsJson = responseJson.getJSONArray("domains");
+                    StringBuilder domainsContent = new StringBuilder();
+
+                    for(int i = 0; i < domainsJson.length(); i++){
+                        domainsContent.append(domainsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter sitesWriter = new FileWriter(sitesFile);
+                    sitesWriter.write(domainsContent.toString());
+                    sitesWriter.close();
+
+                    //System.out.println(domainsContent.toString());
+
+
+                    JSONArray appsJson = responseJson.getJSONArray("apps");
+                    StringBuilder appsContent = new StringBuilder();
+
+                    for(int i = 0; i < appsJson.length(); i++){
+                        appsContent.append(appsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter appsWriter = new FileWriter(appsFile);
+                    appsWriter.write(appsContent.toString());
+                    appsWriter.close();
+
+                    //System.out.println(appsContent.toString());
+
+
+                    JSONArray exceptionsJson = responseJson.getJSONArray("exceptions");
+                    StringBuilder exceptionsContent = new StringBuilder();
+
+                    for(int i = 0; i < exceptionsJson.length(); i++){
+                        exceptionsContent.append(exceptionsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter exceptionsWriter = new FileWriter(exceptionsFile);
+                    exceptionsWriter.write(exceptionsContent.toString());
+                    exceptionsWriter.close();
+
+                    //System.out.println(exceptionsContent.toString());
                 }
+            
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

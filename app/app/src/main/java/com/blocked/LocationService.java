@@ -75,7 +75,7 @@ public class LocationService extends Service {
         
         startForeground(NOTIFICATION_ID, notification);
         startUpdatingInfo();
-        startPermissionUpdates();
+        //startPermissionUpdates();
 
         return START_STICKY;
     }
@@ -130,7 +130,7 @@ public class LocationService extends Service {
     }
 
     private void startLocationUpdates() {
-        stopLocationUpdates(); // <- Garante que não vai acumular listeners
+        //stopLocationUpdates(); // <- Garante que não vai acumular listeners
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         
@@ -148,7 +148,7 @@ public class LocationService extends Service {
         }
 
         locationListener = new LocationListener() {
-            /*@Override
+            @Override
             public void onLocationChanged(Location location) {
                 if (location == null) {
                     showNotification("Erro: localização nula recebida");
@@ -224,8 +224,8 @@ public class LocationService extends Service {
                     startService(stopSiteIntent);
                 }
             }
-            */
-
+            
+            /*
             @Override
 public void onLocationChanged(Location location) {
     try {
@@ -305,7 +305,7 @@ public void onLocationChanged(Location location) {
     } catch (Exception e) {
         showNotification("Erro inesperado: " + e.getMessage());
     }
-}
+}*/
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {}

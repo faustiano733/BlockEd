@@ -37,6 +37,11 @@ import java.io.FileWriter;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 456;
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //saveConfig();
+                saveConfig();
                 //hideApp();
                 /*Intent stopIntent = new Intent(MainActivity.this, InternetBlockerService.class);
                 stopIntent.setAction("STOP_VPN");
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveConfig() {
-        if(token.getText().toString().equals("") || name.getText().toString().equals("") || date.getText().toString().equals("")){
+        /*if(token.getText().toString().equals("") || name.getText().toString().equals("") || date.getText().toString().equals("")){
             Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
         }
         else{
@@ -151,8 +156,119 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
             }
+        }*/
+
+        Toast.makeText(this, "Buscando dados do servidor", Toast.LENGTH_SHORT).show();
+        
+        
+        File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
+        File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
+        File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
+        File exceptionsFile = new File("/storage/emulated/0/Documents/blocked_exceptions.txt");
+
+        new Thread(() ->{
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL("http://192.168.249.192/app_cadastro.php"); //mudar em produção
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    JSONObject responseJson = new JSONObject(response.toString());
+
+                    JSONObject configContent = new JSONObject();
+                    configContent.put("token", responseJson.getString("token"));
+                    configContent.put("aluno", name.getText().toString());
+                    configContent.put("latitude", responseJson.getString("latitude"));
+                    configContent.put("longitude", responseJson.getString("longitude"));
+                    configContent.put("raio", responseJson.getString("raio"));
+                    configContent.put("block_apps", responseJson.getString("block_apps"));
+                    configContent.put("block_sites", responseJson.getString("block_sites"));
+                    configContent.put("block_cam", responseJson.getString("block_cam"));
+                    configContent.put("block_internet", responseJson.getString("block_internet"));
+
+                    FileWriter configWriter = new FileWriter(configFile);
+                    configWriter.write(configContent.toString(4));
+                    configWriter.close();
+
+                    //System.out.println(configContent.toString());
+
+                    JSONArray domainsJson = responseJson.getJSONArray("domains");
+                    StringBuilder domainsContent = new StringBuilder();
+
+                    for(int i = 0; i < domainsJson.length(); i++){
+                        domainsContent.append(domainsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter sitesWriter = new FileWriter(sitesFile);
+                    sitesWriter.write(domainsContent.toString());
+                    sitesWriter.close();
+
+                    //System.out.println(domainsContent.toString());
+
+
+                    JSONArray appsJson = responseJson.getJSONArray("apps");
+                    StringBuilder appsContent = new StringBuilder();
+
+                    for(int i = 0; i < appsJson.length(); i++){
+                        appsContent.append(appsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter appsWriter = new FileWriter(appsFile);
+                    appsWriter.write(appsContent.toString());
+                    appsWriter.close();
+
+                    //System.out.println(appsContent.toString());
+
+
+                    JSONArray exceptionsJson = responseJson.getJSONArray("exceptions");
+                    StringBuilder exceptionsContent = new StringBuilder();
+
+                    for(int i = 0; i < exceptionsJson.length(); i++){
+                        exceptionsContent.append(exceptionsJson.getString(i)+"\n");
+                    }
+
+                    FileWriter exceptionsWriter = new FileWriter(exceptionsFile);
+                    exceptionsWriter.write(exceptionsContent.toString());
+                    exceptionsWriter.close();
+
+                    System.out.println(exceptionsContent.toString());
+
+                    runOnUiThread(new Runnable(){
+                        public void run(){
+                            Toast.makeText(MainActivity.this, "Configurado com sucesso", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    startService(new Intent(MainActivity.this, LocationService.class));
+                    startService(new Intent(MainActivity.this, ApiService.class));
+                }
+            } catch (Exception e) {
+                runOnUiThread(new Runnable(){
+                    public void run(){
+                        Toast.makeText(MainActivity.this, "Erro ao buscar dados. Tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                    }
+                });
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }).start();
         }
-    }
 
     private void hideApp() {
         PackageManager pm = getPackageManager();
@@ -298,7 +414,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     } else {
         //startService(new Intent(this, AppMonitorService.class));
-        startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, LocationService.class));
+        //startService(new Intent(this, ApiService.class));
         //startService(new Intent(this, HttpProxyService.class));
         //startService(new Intent(this, InternetBlockerService.class));
         //startService(new Intent(this, SiteBlockerService.class));
