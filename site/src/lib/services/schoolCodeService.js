@@ -1,4 +1,5 @@
-import { school } from "../db/models"
+import db from "../db/connection"
+import { schoolCode } from "../db/models"
 
 function generateSchoolCode(){
     const chars = 'ABCDEFGHJKLMNPQESTUVWXYZ23456789'
@@ -24,6 +25,21 @@ function generateSchoolCode(){
     return `${code.substring(0,4)}-${code.substring(4)}`
 }
 
-export async function createSchoolCode(SchoolId){
-}
+export async function createSchoolCode(idSchool){
 
+    const code = generateSchoolCode()
+    const transaction = await db.sequelize.transaction()
+    const expiresAt = new Date()
+    expiresAt.setMinutes(expiresAt.getMinutes() + 5)
+    try{
+        const new_code = await schoolCode.create({code:code,idSchool:idSchool, expiresAt:expiresAt},transaction)
+        if(new_code.code != code || new_code.idSchool != idSchool) throw new Error('Alguma coisa correu mal')
+        await transaction.commit()
+    }catch(error){
+        await transaction.rollback()
+        console.log(error.message)
+    }
+
+    return code
+
+}

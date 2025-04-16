@@ -1,4 +1,5 @@
 "use client";
+import 'leaflet/dist/leaflet.css';
 import Image from "next/image";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
@@ -10,6 +11,48 @@ import Confirm from "@components/Confirm.js";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/Loading";
 import { EmptyMenu } from "../bloqueio/page";
+import MapaComRaio from "@/components/MapaComRaio";
+
+function LocationMenu(){
+  const [dadosLocalizacao, setDadosLocalizacao] = useState({ 
+    lat: -8.8383, 
+    lng: 13.2344, 
+    radius: 500 
+  });
+
+  const [changeLocationLoading, setChangeLocationLoading] = useState(false)
+  useEffect(()=>{
+    async function fetchData(){
+      const response = await fetch('/api/location')
+      const dados = await response.json()
+      setDadosLocalizacao({lat:Number(dados.latitude), lng:Number(dados.longitude), radius:dadosLocalizacao.radius})
+    }
+
+    fetchData()
+  },[])
+
+  return (
+    <>
+    <div style={{ maxWidth: '1200px', margin: '0 auto',height:'70%' }}>
+      <h1 className="titulo-mapa">Marque a localização da escola</h1>
+      <MapaComRaio className='mapa-wrapper' onChange={setDadosLocalizacao} initialPosition={{lat:dadosLocalizacao.lat,lng:dadosLocalizacao.lng}} initialRadius={Number(dadosLocalizacao.radius)} />
+    </div>
+    <div className="dados-localizacao">
+    <h3>Dados da Localização:</h3>
+    <pre>
+      Latitude: {dadosLocalizacao.lat.toFixed(6)}
+      <br />
+      Longitude: {dadosLocalizacao.lng.toFixed(6)}
+      <br />
+      Raio: {dadosLocalizacao.radius} metros
+    </pre>
+  </div>
+  <Button onClick={() =>{setChangeLocationLoading(true);}}>
+	       {changeLocationLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
+  </Button>
+  </>
+  );
+}
 
 function ExceptionSection(){
   const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
@@ -169,7 +212,7 @@ function CloseMenu(props){
 export default function Profile() {
   const [user, setUser]  = useState('')
   const [school, setSchool] = useState('')
-  const [subMenu, setSubMenu] = useState(null);
+  const [subMenu, setSubMenu] = useState('senha');
   function deletarConta(){
     alert(1);
   }
@@ -190,7 +233,7 @@ export default function Profile() {
       <>
       <div className="profileContent">
 	<ProfileOption text="Gerir senha e exceções" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
-	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />}/>
+	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />} onClick={()=>setSubMenu('location')} />
 	<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>
 	<ProfileOption id="logoutButton" text="Terminar sessão" icon={logoutLoading ? <PendingIcon color="#ff8080" /> : <LogoutIcon color="#ff8080" />} onClick={()=>{setLogoutLoading(true); logout()}}/>
       </div>
@@ -260,6 +303,12 @@ export default function Profile() {
       <SenhaMenu />
       </>
     );
+    if(subMenu == "location") return(
+      <>
+      <CloseMenu onClick={()=> setSubMenu(null)}/> 
+      <LocationMenu />
+      </>
+    );
   }
 
   useEffect(()=>{
@@ -274,18 +323,19 @@ export default function Profile() {
   
   return (
     <>
-    <div className="main">
-      { subMenu ? <SubMenu /> : <> <Header user={user} school={school} /> <Content /> </> }
-    </div>
-    <div className="mainDesktop">
-      <div className="profileSettingsDesktop">
-        {user===''?<Loading/> :<Header user={user} school={school} />}
-        <Content />
+      <div className="main">
+        {subMenu ? <SubMenu /> : <> <Header user={user} school={school} /> <Content /> </>}
       </div>
-      <div className="profileScreenDesktop">
-        <SenhaMenu />
+      <div className="mainDesktop">
+        <div className="profileSettingsDesktop">
+          {user === '' ? <Loading /> : <Header user={user} school={school} />}
+          <Content />
+        </div>
+        <div className="profileScreenDesktop">
+          {subMenu === 'senha' && <SenhaMenu />}
+          {subMenu === 'location' && <LocationMenu />} {/* Substitua LocationMenu por Location */}
+        </div>
       </div>
-    </div>
     </>
   );
 }

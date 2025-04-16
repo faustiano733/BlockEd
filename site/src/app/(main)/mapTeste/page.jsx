@@ -1,11 +1,11 @@
 // pages/escola.js
 'use client'
-
+import 'leaflet/dist/leaflet.css';
 import './page.css'
 import { useState } from 'react';
 import MapaComRaio from '@/components/MapaComRaio';
 
-export default function PaginaEscola() {
+export default function Location() {
   const [dadosLocalizacao, setDadosLocalizacao] = useState({ 
     lat: -8.8383, 
     lng: 13.2344, 
@@ -13,20 +13,16 @@ export default function PaginaEscola() {
   });
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 className="titulo-mapa">Marque a localização da escola</h1>
-      <MapaComRaio onChange={setDadosLocalizacao} />
-
-      <div className="dados-localizacao">
-        <h3>Dados da Localização:</h3>
-        <pre>
-          Latitude: {dadosLocalizacao.lat.toFixed(6)}
-          <br />
-          Longitude: {dadosLocalizacao.lng.toFixed(6)}
-          <br />
-          Raio: {dadosLocalizacao.radius} metros
-        </pre>
-      </div>
-    </div>
+    <div className="-container">
+    <h3 className='subtitle'>Marque a localização da escola</h3>
+    <MapaComRaio 
+      onChange={setDadosLocalizacao}
+      initialPosition={{
+        lat: Number(dadosLocalizacao.latitude),
+        lng: Number(dadosLocalizacao.longitude)
+      }}
+      initialRadius={Number(dadosLocalizacao.radius)}
+    />
+  </div>
   );
 }

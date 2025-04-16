@@ -7,3 +7,7 @@ export const createLocation = async (newLocation,transaction) => {
 
   return await location.create(newLocation, transaction);
 };
+
+export async function getLocation(idSchool){
+  return await location.findOne({where:{idSchool:idSchool}}) 
+}
