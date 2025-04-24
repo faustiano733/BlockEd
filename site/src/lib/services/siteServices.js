@@ -3,82 +3,62 @@ import { Op } from "sequelize";
 import { parse } from 'tldts';
 import { siteSchema } from "../validators/authValidator.js";
 
-
 export async function getAllSites(idSchool){
     return await sites.findAll({where:{idSchool:idSchool}})
 }
 
-export async function deleteSite(site){
-    const site_db = await getSite(site)
-   
-    await sites.destroy({
-        where:{
-            domine:site_db.dominio,
-            idSchool:site_db.idSchool
-        }});
+export async function deleteSite(domain,idSchool){
+  return await sites.destroy({
+      where:{
+          domain:domain,
+          idSchool:idSchool
+      }});
 
-    return JSON.stringify(site)
 }
 
 export async function createSite(site,transaction) {
     
-    const {error} = siteSchema.validate(site)
+  const {error} = siteSchema.validate(site)
     
-    if(error) throw new Error(error)
+  if(error) throw new Error(error)
 
-    const {domain,idSchool} = site
-    
   try {
-    // Normaliza e valida a URL
-    const { normalizedUrl, isValid,error } = await validateSite(domain);
-    
-    if (!isValid) {
-      throw new Error(error);
-    }
-
-    const novo_site = await sites.create({
-      domain: normalizedUrl,
-      idSchool: idSchool
-    },transaction);
-
+    const novo_site = await sites.create(site,transaction);
     return novo_site;
   } catch (error) {
     throw error; 
   }
 }
 
-async function validateSite(url_site) {
+export async function validateSite(url_site) {
   try {
     // Adiciona protocolo se não existir
     if (!url_site.startsWith('http://') && !url_site.startsWith('https://')) {
       url_site = 'https://' + url_site;
     }
 
-    console.log(url_site)
-
     // Parse da URL com tldts
     const parsed = parse(url_site);
-    console.log(parsed)
+    
     // Verifica se a URL tem estrutura válida
     if (!parsed.isIcann || !parsed.hostname) {
-      return { isValid: false, error: 'Estrutura de URL inválida' };
+      return { isValid: false, error: 'Estrutura de URL inválida',status:404 };
     }
 
     // Verifica se é um domínio público (opcional)
     if (parsed.isPrivate) {
-      return { isValid: false, error: 'Domínios privados não são permitidos' };
+      return { isValid: false, error: 'Domínios privados não são permitidos',status:403 };
     }
 
     // Remove www. e protocolo para armazenamento consistente
     const normalizedUrl = parsed.hostname.replace(/^www\./, '');
-
+    
     // Verificação adicional de conectividade (opcional)
     try {
       const resposta = await fetch(`https://${normalizedUrl}`, {
-        method: 'HEAD', // Mais eficiente que GET
-        redirect: 'error', // Não seguir redirecionamentos
-        timeout: 5000 // Timeout de 5 segundos
-      });
+        method: 'HEAD', 
+        timeout: 5000 
+      });    
       
       return { 
         isValid: true, 
@@ -86,11 +66,12 @@ async function validateSite(url_site) {
         status: resposta.status 
       };
     } catch (fetchError) {
-      // Ainda consideramos válido se o domínio estiver correto, mesmo que offline
+      console.error('Erro na validação do site:', fetchError.message)
       return { 
         isValid: false, 
         normalizedUrl,
-        error: 'Domínio válido mas inacessível' 
+        error: 'Domínio válido mas inacessível',
+        status:202
       };
     }
 

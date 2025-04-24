@@ -1,8 +1,8 @@
 import { apps } from "../db/models.js";
 import gplay from "google-play-scraper"
 
-export async function getAllApps(){
-    const all_apps_list = await apps.findAll()
+export async function getAllApps(idSchool){
+    const all_apps_list = await apps.findAll({where:{idSchool:idSchool}})
     return all_apps_list
 }
 
@@ -20,15 +20,12 @@ export async function getApp(app_name){
 
 export async function suggestApps(app_name){
     const suggest_apps_list = await gplay.search({term:app_name, num:5})
-    const apps_name = suggest_apps_list.map((app)=>{
-        return {name:app.title}
-    })
+    console.log(suggest_apps_list)
     return suggest_apps_list;
 }
 
-export async function addApp(app_name, app_package){
-
-    const added_app = await apps.create({name:app_name, package_name:app_package, idSchool:1})
+export async function addApp(name, packageName,idSchool){
+    const added_app = await apps.create({name, packageName, active:true,idSchool})
     return added_app;
 }
 
@@ -47,8 +44,8 @@ export async function activeApp(app_name){
     return actived_app
 }
 
-export async function deleteApp(appName){
-    await apps.destroy({where:{nome:appName}})
+export async function deleteApp({id,idSchool,name}){
+    await apps.destroy({where:{id,idSchool,name}})
 }
 
 export async function getNumberOfApps(){

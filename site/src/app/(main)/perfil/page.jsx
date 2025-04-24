@@ -14,40 +14,66 @@ import { EmptyMenu } from "../bloqueio/page";
 import MapaComRaio from "@/components/MapaComRaio";
 
 function LocationMenu(){
-  const [dadosLocalizacao, setDadosLocalizacao] = useState({ 
-    lat: -8.8383, 
-    lng: 13.2344, 
+  const [locationData, setLocationData] = useState({ 
+    latitude: -8.8383, 
+    longitude: 13.2344, 
     radius: 500 
   });
+
+
+  const handleLocationChange = ({ lat, lng, radius }) => {
+    setLocationData(prev => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+      radius: radius
+    }));
+  };
 
   const [changeLocationLoading, setChangeLocationLoading] = useState(false)
   useEffect(()=>{
     async function fetchData(){
       const response = await fetch('/api/location')
       const dados = await response.json()
-      setDadosLocalizacao({lat:Number(dados.latitude), lng:Number(dados.longitude), radius:dadosLocalizacao.radius})
+      setLocationData({latitude:parseFloat(dados.latitude), longitude:parseFloat(dados.longitude), radius:dados.radius})
     }
 
     fetchData()
   },[])
 
+  const handleSubmit = async ()=>{
+    const response = await fetch('/api/location',{
+      headers:{
+        'Content-Type':'application/json'
+      },
+      method:'PUT',
+      body:JSON.stringify({location:{
+        ...locationData,
+        longitude:locationData.longitude.toString(),
+        latitude:locationData.latitude.toString()
+      }})
+    })
+
+    setChangeLocationLoading(false)
+  }
+
   return (
     <>
     <div style={{ maxWidth: '1200px', margin: '0 auto',height:'70%' }}>
       <h1 className="titulo-mapa">Marque a localização da escola</h1>
-      <MapaComRaio className='mapa-wrapper' onChange={setDadosLocalizacao} initialPosition={{lat:dadosLocalizacao.lat,lng:dadosLocalizacao.lng}} initialRadius={Number(dadosLocalizacao.radius)} />
+      <MapaComRaio className='mapa-wrapper' onChange={handleLocationChange} initialPosition={{lat:locationData.latitude,lng:locationData.longitude}} initialRadius={locationData.radius} />
     </div>
     <div className="dados-localizacao">
     <h3>Dados da Localização:</h3>
     <pre>
-      Latitude: {dadosLocalizacao.lat.toFixed(6)}
+      Latitude: {locationData.latitude.toFixed(6)}
       <br />
-      Longitude: {dadosLocalizacao.lng.toFixed(6)}
+      Longitude: {locationData.longitude.toFixed(6)}
       <br />
-      Raio: {dadosLocalizacao.radius} metros
+      Raio: {locationData.radius} metros
     </pre>
   </div>
-  <Button onClick={() =>{setChangeLocationLoading(true);}}>
+  <Button onClick={() =>{setChangeLocationLoading(true);handleSubmit()}}>
 	       {changeLocationLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
   </Button>
   </>

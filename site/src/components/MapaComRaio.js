@@ -19,13 +19,15 @@ const Circle = dynamic(
   () => import('react-leaflet').then((mod) => mod.Circle),
   { ssr: false }
 );
+
+
 function MapaComRaio({ onChange, initialPosition, initialRadius }) {
   const [position, setPosition] = useState({ 
     lat: -8.8383, 
     lng: 13.2344 
   });
   
-  const [radius, setRadius] = useState(500);
+  const [radius, setRadius] = useState(300);
 
   useEffect(() => {
     if (initialPosition && 
@@ -36,6 +38,10 @@ function MapaComRaio({ onChange, initialPosition, initialRadius }) {
       setPosition(initialPosition);
     }
   }, [initialPosition]);
+
+  const getZoomFromRadius = (radiusInMeters) => {
+    return Math.floor(16 - Math.log2(radiusInMeters / 100));
+  }
 
   useEffect(() => {
     if (initialRadius && !isNaN(initialRadius)) {
@@ -59,7 +65,7 @@ function MapaComRaio({ onChange, initialPosition, initialRadius }) {
     <div style={{ height: '100%', width: '100%' }}>
       <MapContainer 
         center={position} 
-        zoom={15} 
+        zoom={getZoomFromRadius(radius)} 
         style={{ height: '50%', width: '100%' }}
       >
         <TileLayer

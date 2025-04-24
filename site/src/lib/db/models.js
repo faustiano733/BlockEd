@@ -18,7 +18,7 @@ export const account = db.sequelize.define("account",{
 });
 
 export const apps = db.sequelize.define("app",{
-    idApp:{
+    id:{
         type:db.Sequelize.UUID,
         primaryKey:true,
         defaultValue:db.Sequelize.UUIDV4
@@ -204,7 +204,7 @@ export const schoolCode = db.sequelize.define('school_code',{
 
     },
     code:{
-        type:db.Sequelize.STRING(9),
+        type:db.Sequelize.STRING(8),
         unique:true,
         allowNull:false
     },

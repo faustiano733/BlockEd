@@ -3,7 +3,7 @@ import { createStudent, getAllStudents, getStudentInformation } from "../service
 import db from "../db/connection";
 import { createDevice } from "../services/deviceServices";
 
-export async function StudentsController(req){
+export async function get(req){
     let status = 200
     const url = new URL(req.url);
     const student = url.searchParams.get('q')
@@ -34,3 +34,5 @@ export async function createStudentController(idSchool,student_data,device_data)
         console.log(error.message)
     }
 }
+
+export const StudentsController = {get:get}

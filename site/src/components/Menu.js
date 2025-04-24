@@ -20,9 +20,9 @@ export default function Menu(){
       </div>
       <div className="menuContent">
 	<MenuItem href="/" text="Início" src="/img/home.svg" icon={<HomeIcon />}/>
-	<MenuItem href="/perfil" text="Perfil" src="/img/profile.svg" icon={<ProfileIcon />}/>
 	<MenuItem href="/bloqueio" text="Bloqueio" src="/img/lock.svg" icon={<BlockIcon />}/>
 	<MenuItem href="/alunos" text="Alunos" src="/img/alunos.svg" icon={<StudentsIcon />}/>
+  <MenuItem href="/perfil" text="Perfil" src="/img/profile.svg" icon={<ProfileIcon />}/>
       </div>
     </div>
   )

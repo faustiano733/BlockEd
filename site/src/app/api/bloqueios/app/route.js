@@ -1,37 +1,16 @@
 import { NextResponse } from "next/server.js"
 import {getApp, activeApp, addApp, getAllApps} from "@lib/services/appServices.js"
+import AppControler from "@/lib/controllers/AppController"
 
 export async function GET(req){
-    let response = ""
-
-    const url = new URL(req.url)
-    const param = url.searchParams.get("app")
-    if(!(!param)){
-        const app = await getApp(param)
-        response = app        
-    }else{
-        const all_apps_list = await getAllApps()
-        response = all_apps_list
-    }
-
-    return NextResponse.json(response)
+    return await AppControler.GET(req)
 }
 
 export async function POST(req){
-
-    const request = await req.json()
-
-    const app_name = request.name
-    const app_package = request.package
-
-    const app = await addApp(app_name, app_package)
-
-    return NextResponse.json(app)
-
+    return await AppControler.POST(req)
 }
 
 export async function PUT(req){
-
     const request = await req.json()
 
     const app_name = request.name;
@@ -43,6 +22,5 @@ export async function PUT(req){
 }
 
 export async function DELETE(req){
-    const request = await req.json()
-    
+    return await AppControler.DELETE(req)
 }

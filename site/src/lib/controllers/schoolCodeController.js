@@ -6,7 +6,7 @@ export async function generateSchoolCodeController(req){
  
     try{
         const code = await createSchoolCode(idSchool)
-        return NextResponse.json({code},{status:201})
+        return NextResponse.json(code,{status:201})
     }catch(error){
         console.log(error)
         return NextResponse.json({error:error.messge},{status:500})
