@@ -87,7 +87,7 @@ public class ApiService extends Service {
                 
                 //HttpURLConnection connection = null;
             
-                URL url = new URL("http://192.168.249.192/app_data.php"); //mudar em produção
+                URL url = new URL("http://192.168.227.150/app_data.php"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");

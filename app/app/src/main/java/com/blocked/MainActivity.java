@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        token = findViewById(R.id.token);
+        //token = findViewById(R.id.token);
         name = findViewById(R.id.name);
         date = findViewById(R.id.date);
         //editText4 = findViewById(R.id.editText4);
@@ -80,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Functions.createAttempt("cam", "cam");
         System.out.println(Functions.isException(this));
-        tvCoordinates = findViewById(R.id.tvCoordinates);
+        //tvCoordinates = findViewById(R.id.tvCoordinates);
 
-        if (!Settings.canDrawOverlays(this)) {
+        /*if (!Settings.canDrawOverlays(this)) {
             Intent overlayIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             startActivity(overlayIntent);
         }
@@ -111,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
             checkLocationPermissions();
         } else {
             checkLocationPermissions(); // Verificar permissões de localização
-        }
+        }*/
 
-        registerLocationReceiver();
+        //registerLocationReceiver();
     }
 
     private void saveConfig() {
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() ->{
             HttpURLConnection connection = null;
             try {
-                URL url = new URL("http://192.168.249.192/app_cadastro.php"); //mudar em produção
+                URL url = new URL("http://192.168.227.150/app_cadastro.php"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
                     startService(new Intent(MainActivity.this, LocationService.class));
                     startService(new Intent(MainActivity.this, ApiService.class));
+                    hideApp();
                 }
             } catch (Exception e) {
                 runOnUiThread(new Runnable(){
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
 
-        Toast.makeText(this, "App oculto", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "App oculto", Toast.LENGTH_SHORT).show();
     }
 
     private void checkLocationPermissions() {
@@ -312,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
@@ -322,9 +323,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permissão de localização negada! O app não funcionará corretamente.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
-    private void registerLocationReceiver() {
+    /*private void registerLocationReceiver() {
         locationReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -340,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
                 locationReceiver,
                 new IntentFilter(LocationService.ACTION_LOCATION_UPDATE)
         );
-    }
-
+    }*/
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -354,9 +355,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permissão de dados de uso ainda não concedida!", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
-     @Override
+    @Override
     protected void onResume() {
         super.onResume();
         //Toast.makeText(this, "Resumido!", Toast.LENGTH_SHORT).show();
@@ -406,13 +407,20 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, LocationService.class));
     }*/
     private void startServices() {
+    File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
+
     // Verificar se o GPS está ativado
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
         Toast.makeText(this, "Ative o GPS para continuar", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
-    } else {
+    } 
+    else if(configFile.exists()){
+        startService(new Intent(this, LocationService.class));
+        startService(new Intent(this, ApiService.class));
+    }
+    else {
         //startService(new Intent(this, AppMonitorService.class));
         //startService(new Intent(this, LocationService.class));
         //startService(new Intent(this, ApiService.class));
@@ -422,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
         //startService(new Intent(this, DnsFilterService.class));
         //startService(new Intent(this, DnsVpnService.class));
         //startService(new Intent(this, CamMonitorService.class));
-    }
+    } 
     }
 
     private boolean isUsageStatsPermissionGranted() {
@@ -446,6 +454,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
     }
 }

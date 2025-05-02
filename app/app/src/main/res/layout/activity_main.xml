@@ -7,13 +7,13 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
+    <!-- <TextView
         android:id="@+id/tvCoordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Aguardando coordenadas..."
         android:textSize="18sp" />
-
+    -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,8 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Token de acesso"
-        android:textSize="28px" />
-    <EditText
+        android:textSize="30px" 
+        android:layout_marginBottom="10px" />
+    <!-- <EditText
         android:id="@+id/token"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
         android:maxLines="1"
         android:inputType="text"
         android:scrollHorizontally="true" />
-
+    -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +52,6 @@
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:layout_marginRight="25px"
@@ -65,7 +65,6 @@
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:layout_marginRight="25px"
@@ -79,7 +78,6 @@
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:layout_marginRight="25px"
@@ -92,15 +90,14 @@
         <TextView
             android:layout_width="wrap_content  "
             android:layout_height="wrap_content"
-            android:text="-"
             android:layout_marginRight="25px"
-            android:textSize="40px" />
+            android:textSize="40px" 
+            android:text="-"/>
 
         <EditText
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:layout_marginRight="25px"
@@ -114,7 +111,6 @@
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:layout_marginRight="25px"
@@ -128,7 +124,6 @@
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:hint="_"
             android:background="@drawable/edittext_background"
             android:layout_marginBottom="25px"
             android:gravity="center"
@@ -143,7 +138,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nome do aluno"
-        android:textSize="28px" />
+        android:textSize="30px" 
+        android:layout_marginBottom="10px" />
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -160,7 +156,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Data de nascimento"
-        android:textSize="28px" />
+        android:textSize="30px" 
+        android:layout_marginBottom="10px" />
     <EditText
         android:id="@+id/date"
         android:layout_width="match_parent"
