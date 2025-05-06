@@ -1,6 +1,7 @@
 "use client";
 import 'leaflet/dist/leaflet.css';
 import Image from "next/image";
+import {useRouter} from "next/navigation";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
 import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon, AddIcon } from "@icon";
@@ -132,13 +133,18 @@ function Excecao({children,id}){
 function Header({user, school}){
   return(
     <div className="profileHeader">
-<div className="profileHeaderImg">
-  <StudentIcon color="white" fill/>
- </div>
-<div className="profileHeaderTxt">
-  <h3>{user}</h3>
-  <h6>{school}</h6>
-</div>
+
+      { !user || !school ? <Loading /> :
+      <>
+      <div className="profileHeaderImg">
+        <StudentIcon color="white" fill/>
+      </div>
+      <div className="profileHeaderTxt">
+        <h3>{user}</h3>
+        <h6>{school}</h6>
+      </div>
+      </>
+      }
     </div>
   );
 }
@@ -238,7 +244,7 @@ function CloseMenu(props){
 export default function Profile() {
   const [user, setUser]  = useState('')
   const [school, setSchool] = useState('')
-  const [subMenu, setSubMenu] = useState('senha');
+  const [subMenu, setSubMenu] = useState('');
   function deletarConta(){
     alert(1);
   }
@@ -248,12 +254,20 @@ export default function Profile() {
   function Content(){
     const[delAccount, setDelAccount] = useState(false);
     const[logoutLoading, setLogoutLoading] = useState(false);
+    const router = useRouter();
 
     async function logout(){
-      setTimeout(()=>setLogoutLoading(false), 2000);
-      await fetch('/api/logout',{
+      //setTimeout(()=>setLogoutLoading(false), 2000);
+      let obj = await fetch('/api/logout',{
         method:'POST'
       })
+
+      let res = await obj.json();
+      if(res.success){
+        router.replace("/login")
+      }
+
+      setLogoutLoading(false)
     }
     return(
       <>
@@ -354,7 +368,7 @@ export default function Profile() {
       </div>
       <div className="mainDesktop">
         <div className="profileSettingsDesktop">
-          {user === '' ? <Loading /> : <Header user={user} school={school} />}
+          <Header user={user} school={school} />
           <Content />
         </div>
         <div className="profileScreenDesktop">

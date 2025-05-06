@@ -27,7 +27,7 @@ export function EmptyMenu({text}){
     const [remAppLoading, setRemAppLoading] = useState(false);
 
     async function addApp(app){
-      await fetch('/api/bloqueios/app',{
+      let obj = await fetch('/api/bloqueios/app',{
         headers:{
           'Content-type':'application/json'
         },
@@ -35,7 +35,9 @@ export function EmptyMenu({text}){
         body:JSON.stringify({name:app.title,package:app.appId})
       })
       setAppLoading(false);
-      setAppAccepted(true);
+      if(obj.status === 200){
+        setAppAccepted(true);
+      }
     }
     async function handleRemApp(){
       await fetch('/api/bloqueios/app',{

@@ -1,4 +1,4 @@
-import { deleteApp, getAllApps, getApp } from "../services/appServices"
+import { deleteApp, getAllApps, getApp, addApp } from "../services/appServices"
 import { NextResponse } from "next/server"
 
 
@@ -41,7 +41,7 @@ const DELETE = async (req)=>{
     }
 }
 
-const POST = async req=>{
+const POST = async (req)=>{
     const request = await req.json()
     const idSchool = req.headers.get('x-school-id')
     const name = request.name
