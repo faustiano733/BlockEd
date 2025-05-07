@@ -1,6 +1,8 @@
 package com.blocked;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -70,6 +72,7 @@ public class LocationService extends Service {
                 .setContentText("Obtendo coordenadas em tempo real")
                 .setSmallIcon(R.drawable.ic_launcher_foreground) // Ícone obrigatório
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOngoing(true)
                 .build();
 
         
@@ -93,6 +96,39 @@ public class LocationService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), LocationService.class);
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(
+            getApplicationContext(),
+            1,
+            restartServiceIntent,
+            PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmService = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmService.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 1000,
+                restartServicePendingIntent
+            );
+        } else {
+            alarmService.set(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 1000,
+                restartServicePendingIntent
+            );
+        }
+
+        super.onTaskRemoved(rootIntent);
+    }
+
+
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
