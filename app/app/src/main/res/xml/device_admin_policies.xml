@@ -1,0 +1,10 @@
+<device-admin>
+    <uses-policies>
+        <!-- Permite bloquear o dispositivo -->
+        <force-lock /> 
+        <!-- Permite desativar a câmera -->
+        <disable-camera /> 
+        <!-- Permite desinstalar outros apps -->
+        <limit-password /> 
+    </uses-policies>
+</device-admin>

@@ -28,26 +28,6 @@ import java.io.FileWriter;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.os.Bundle;
-import android.os.Looper;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.ActivityCompat;
-import android.content.BroadcastReceiver;
-import android.net.Uri;
-
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.os.SystemClock;
-
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 public class ApiService extends Service {
     private static final String TAG = "ApiService";
     //private static String API_URL = "http://172.20.10.5:3000/api/app";
@@ -216,53 +196,6 @@ public class ApiService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
-    }
-
-    
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
-        super.onTaskRemoved(rootIntent);
-    }
-
-    private void scheduleServiceRestart() {
-        // Reinicia via AlarmManager (rápido)
-        Intent restartIntent = new Intent(this, ApiService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(
-            this, 
-            2, 
-            restartIntent, 
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 3000, // 1 segundo
-                    pendingIntent
-                );
-            } else {
-                alarmManager.setExact(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 3000,
-                    pendingIntent
-                );
-            }
-        }
-        /*
-        // Fallback com JobScheduler (Android 5+)
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        ComponentName component = new ComponentName(this, RestartJobServiceApi.class);
-        JobInfo jobInfo = new JobInfo.Builder(1234, component)
-            .setOverrideDeadline(4000) // Máximo 2 segundos de atraso
-            .setPersisted(true) // Sobrevive a reinicializações
-            .build();
-        
-        if (jobScheduler != null) {
-            jobScheduler.schedule(jobInfo);
-        }*/
     }
 
     @Override

@@ -2,9 +2,7 @@ package com.blocked;
 
 import android.Manifest;
 import android.app.AppOpsManager;
-import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStatsManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText date;
     private Button btnSave;
     private BroadcastReceiver locationReceiver;
-    private ComponentName adminComponent;
     
 
     @Override
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         date = findViewById(R.id.date);
         //editText4 = findViewById(R.id.editText4);
         btnSave = findViewById(R.id.buttonSave);
-        adminComponent = new ComponentName(this, MyDeviceAdminReceiver.class);
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,13 +80,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_USER_PRESENT); // Quando o usuário desbloqueia
-        registerReceiver(new ScreenStateReceiver(), filter);
-
         //Functions.createAttempt("cam", "cam");
-        //System.out.println(Functions.isException(this));
+        System.out.println(Functions.isException(this));
         //tvCoordinates = findViewById(R.id.tvCoordinates);
 
         /*if (!Settings.canDrawOverlays(this)) {
@@ -399,9 +391,6 @@ public class MainActivity extends AppCompatActivity {
             Intent VpnIntent = VpnService.prepare(this);
             startActivityForResult(VpnIntent, 100);
         }
-        else if(!isDeviceAdminActive()){
-            requestDeviceAdminPermission();
-        }
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
          !((PowerManager) getSystemService(Context.POWER_SERVICE))
              .isIgnoringBatteryOptimizations(getPackageName())) {
@@ -468,20 +457,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
-    }
-
-
-    private boolean isDeviceAdminActive() {
-        DevicePolicyManager dpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        return dpm != null && dpm.isAdminActive(adminComponent);
-    }
-
-    private void requestDeviceAdminPermission() {
-        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent);
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, 
-            "Ative o modo administrador para garantir o controle escolar.");
-        startActivity(intent);
     }
 
     @Override

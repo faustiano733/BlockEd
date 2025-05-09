@@ -22,10 +22,6 @@ import androidx.core.app.ActivityCompat;
 import android.content.BroadcastReceiver;
 import android.net.Uri;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.os.SystemClock;
 
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -37,7 +33,7 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
- 
+
 public class LocationService extends Service {
 
     private static final String CHANNEL_ID = "LocationServiceChannel";
@@ -71,73 +67,20 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        createNotificationChannel(); // Garante que o canal existe
-        Notification notification = buildPersistentNotification();
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Monitorando Localização")
+                .setContentText("Obtendo coordenadas em tempo real")
+                .setSmallIcon(R.drawable.ic_launcher_foreground) // Ícone obrigatório
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOngoing(true)
+                .build();
+
+        
         startForeground(NOTIFICATION_ID, notification);
-        
-        startLocationUpdates();
         startUpdatingInfo();
-        
-        return START_STICKY; // Indica ao sistema para reiniciar o serviço
-    }
+        //startPermissionUpdates();
 
-    private Notification buildPersistentNotification() {
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Monitorando Localização")
-            .setContentText("Ativo em segundo plano")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setOngoing(true) // Notificação não pode ser fechada
-            .build();
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
-        super.onTaskRemoved(rootIntent);
-    }
-
-    private void scheduleServiceRestart() {
-        // Reinicia via AlarmManager (rápido)
-        Intent restartIntent = new Intent(this, LocationService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(
-            this, 
-            1, 
-            restartIntent, 
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 1000, // 1 segundo
-                    pendingIntent
-                );
-            } else {
-                alarmManager.setExact(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 1000,
-                    pendingIntent
-                );
-            }
-        }
-
-        /*
-        // Fallback com JobScheduler (Android 5+)
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        ComponentName component = new ComponentName(this, RestartJobService.class);
-        JobInfo jobInfo = new JobInfo.Builder(123, component)
-            .setOverrideDeadline(2000) // Máximo 2 segundos de atraso
-            .setImportantWhileForeground(true) // Prioriza se o app estava em foreground
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // Ou outro requisito/
-            .setPersisted(true) // Sobrevive a reinicializações
-            .build();
-        
-        if (jobScheduler != null) {
-            jobScheduler.schedule(jobInfo);
-        }*/
+        return START_STICKY;
     }
 
     @Override
@@ -152,6 +95,37 @@ public class LocationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), LocationService.class);
+        restartServiceIntent.setPackage(getPackageName());
+
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(
+            getApplicationContext(),
+            1,
+            restartServiceIntent,
+            PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmService = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmService.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 1000,
+                restartServicePendingIntent
+            );
+        } else {
+            alarmService.set(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 1000,
+                restartServicePendingIntent
+            );
+        }
+
+        super.onTaskRemoved(rootIntent);
     }
 
 
