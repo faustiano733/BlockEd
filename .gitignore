@@ -10,6 +10,7 @@ site/.pnp
 !.yarn/releases
 !.yarn/versions
 app/
+controller/
 # testing
 site/coverage
 
