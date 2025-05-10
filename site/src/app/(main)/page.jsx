@@ -102,7 +102,7 @@ export default function Home() {
     </div>
 
     {/* Desktop */}
-    <div>{message}</div>
+    {/*<div>{message}</div>*/}
     <div className="homePageDesktop">
       <HomePageHeader  totalAlunos={totalAlunos} totalApps={totalApps} totalDispositivos={totalDispositivos} totalSites={totalSites} />
       <div className="desktopGraphConteiner">

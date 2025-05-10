@@ -11,5 +11,9 @@ export const createSchool = async (newSchool, transaction) => {
 };
 
 export const getSchool = async (idUser)=>{
-    return await school.findOne({where:{idUser:idUser}})
+  return await school.findOne({where:{idUser:idUser}})
+}
+
+export const updateSchoolOptions = async (idUser, options)=>{
+  return await school.update(options, {where: {idUser: idUser}})
 }

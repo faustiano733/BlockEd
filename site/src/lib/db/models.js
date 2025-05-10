@@ -220,3 +220,45 @@ export const schoolCode = db.sequelize.define('school_code',{
         defaultValue:false
     }
 })
+
+export const alert = db.sequelize.define('alert',{
+    id:{
+
+        type:db.Sequelize.UUID,
+        defaultValue:db.Sequelize.UUIDV4,
+        primaryKey:true
+
+    },
+    text:{
+        type:db.Sequelize.STRING
+    },
+    idSchool:{
+        type:db.Sequelize.UUID,
+        allowNull:false
+    },
+    read: {
+        type:db.Sequelize.BOOLEAN,
+        defaultValue:false
+    }
+})
+
+export const attempt = db.sequelize.define('attempt',{
+    id:{
+
+        type:db.Sequelize.UUID,
+        defaultValue:db.Sequelize.UUIDV4,
+        primaryKey:true
+
+    },
+    type:{
+        type:db.Sequelize.STRING
+    },
+    value:{
+        type:db.Sequelize.STRING
+    },
+    createdAt:{
+        type:db.Sequelize.DATE
+    },
+
+})
+

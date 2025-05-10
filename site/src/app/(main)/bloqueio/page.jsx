@@ -6,7 +6,7 @@ import { HorizontalLine, VerticalLine } from "@components/Lines.js";
 import Header from "@components/Header.js";
 import Input from "@components/Input.js";
 import Button from "@components/Button.js";
-import { AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "@/Icons.jsx";
+import { CheckBoxIcon, CheckBoxInativeIcon, AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "@/Icons.jsx";
 import { Metadata } from "next";
 import Loading from "@components/Loading";
 
@@ -262,23 +262,59 @@ export function EmptyMenu({text}){
   }
 
   function MenuOutros(){
+    const[data, setData] = useState({});
+    useEffect(()=>{
+      async function fetchData(){
+        let obj = await fetch("/api/bloqueios/options");
+        let resp = await obj.json();
+  
+        setData(resp);
+      }
+  
+      fetchData()
+      const interval = setInterval(()=>{
+        fetchData();
+      }, 10000)
+  
+      return ()=>clearInterval(interval);
+
+    }, [])
+
+    async function handleUpdate(changes){
+      let obj = await fetch("/api/bloqueios/options", {
+        method: "PUT",
+        body: JSON.stringify({options: changes})
+      })
+
+      let {error, updates} = await obj.json();
+      if(error) alert("Erro ao actualizar");
+      else{
+        setData(updates);
+      }
+    }
+
     return(
       <div className="menuItem" id="menuOutros">
-  <MenuOutrosServico icon={<InternetIcon color="#358bff"/>} text="Internet" />
-  <MenuOutrosServico icon={<CameraIcon color="#358bff"/>} text="Câmera" />
-  {/*<MenuOutrosServico icon={<SoundIcon />} text="Silencioso" />*/}
+        <MenuOutrosServico icon={<InternetIcon color="#358bff"/>} text="Internet" checked={data.blockInternet} onClick={async()=>handleUpdate({...data, blockInternet: !data.blockInternet})}/>
+        <MenuOutrosServico icon={<CameraIcon color="#358bff"/>} text="Câmera" checked={data.blockCam} onClick={async()=>handleUpdate({...data, blockCam: !data.blockCam})}/>
+        <MenuOutrosServico icon={<AndroidIcon color="#358bff"/>} text="Apps" checked={data.blockApps} onClick={async()=>handleUpdate({...data, blockApps: !data.blockApps})}/>
+        <MenuOutrosServico icon={<SiteIcon color="#358bff"/>} text="Sites" checked={data.blockSites} onClick={async()=>handleUpdate({...data, blockSites: !data.blockSites})}/>
       </div>
     );
   }
 
   function MenuOutrosServico(props){
+    const[loadingOp, setLoadingOp] = useState(false);
+
     return(
-      <div className="outro">
-  <div className="outro_child1">
+      <div className="outro" onClick={async()=>{setLoadingOp(true); await sleep(500); await props.onClick(); setLoadingOp(false)}}>
+        <div className="outro_child1">
           {props.icon}
           <span>{props.text}</span>
-  </div>
-        <input type="checkbox" />
+        </div>
+        {
+          loadingOp ? <PendingIcon/> : props.checked ? <CheckBoxIcon /> : <CheckBoxInativeIcon />
+        }
       </div>
     )
   }
@@ -304,7 +340,7 @@ export function EmptyMenu({text}){
   function MainContentSubMenu({menuActual}){
     if(menuActual == "aplicativos") return <AdicionarAplicativos />
     if(menuActual == "sites") return <AdicionarSites />
-    if(menuActual == "outros") return <EmptyMenu text="BlockEd (^ v ^)"/>
+    if(menuActual == "outros") return <EmptyMenu text="Seleccione os bloqueios a aplicar"/>
   }
   const Bloqueios = ()=>{
     const [menuActual, setMenuActual] = useState("aplicativos");
