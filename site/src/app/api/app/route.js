@@ -3,7 +3,7 @@ import {getApp, activeApp, addApp, getAllApps} from "@lib/services/appServices.j
 
 export async function GET(req){
     let response = ""
-
+    const schoolId = req.headers.get('x-school-id');
     const url = new URL(req.url)
     
     const param = url.searchParams.get("app")
@@ -11,7 +11,7 @@ export async function GET(req){
         const app = await getApp(param)
         response = app        
     }else{
-        const all_apps_list = await getAllApps()
+        const all_apps_list = await getAllApps(schoolId)
         response = all_apps_list
     }
 

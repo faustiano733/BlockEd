@@ -162,6 +162,24 @@ export const sites = db.sequelize.define("site",{
     updatedAt:false
 });
 
+export const subSite = db.sequelize.define("sub_site", {
+    id:{
+        type:db.Sequelize.UUID,
+        primaryKey:true,
+        defaultValue:db.Sequelize.UUIDV4
+    },
+    domain:{
+        type:db.Sequelize.STRING
+    },
+    idSchool:{
+        type:db.Sequelize.UUID
+    }
+
+},{
+    timestamps:true,
+    updatedAt:false
+})
+
 export const students = db.sequelize.define("student",{
     id:{
         type:db.Sequelize.UUID,

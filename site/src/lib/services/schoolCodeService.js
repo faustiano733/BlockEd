@@ -30,7 +30,7 @@ export async function createSchoolCode(idSchool){
     const code = generateSchoolCode()
     const transaction = await db.sequelize.transaction()
     const expiresAt = new Date()
-    expiresAt.setMinutes(expiresAt.getMinutes() + 1)
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10)
     try{
         const new_code = await schoolCode.create({code:code,idSchool:idSchool, expiresAt:expiresAt},transaction)
         if(new_code.code != code || new_code.idSchool != idSchool) throw new Error('Alguma coisa correu mal')
