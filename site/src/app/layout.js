@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/context/AuthContext";
+import { AlertProvider } from "@/context/AlertContext";
 import "./globals.css";
 
 export const metadata = {
@@ -10,7 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        <AuthProvider> {children} </AuthProvider>
+        <AuthProvider> 
+          <AlertProvider>
+            {children}
+          </AlertProvider> 
+        </AuthProvider>
       </body>
     </html>
   );

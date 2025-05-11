@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/Loading";
 import { EmptyMenu } from "../bloqueio/page";
 import MapaComRaio from "@/components/MapaComRaio";
+import { useAlert } from "@/context/AlertContext";
 
 function LocationMenu(){
   const [locationData, setLocationData] = useState({ 
@@ -245,6 +246,8 @@ export default function Profile() {
   const [user, setUser]  = useState('')
   const [school, setSchool] = useState('')
   const [subMenu, setSubMenu] = useState('');
+  const { showAlert } = useAlert();
+
   function deletarConta(){
     alert(1);
   }
@@ -376,6 +379,7 @@ export default function Profile() {
           {subMenu === 'location' && <LocationMenu />} {/* Substitua LocationMenu por Location */}
         </div>
       </div>
+      {/*<div onClick={()=>{showAlert("Bruh2mnjdhfdgjfhdhgfhdfdhfdjgfjgdhjfgdgfhdghfdgfdgf")}}>Clique</div>*/}
     </>
   );
 }

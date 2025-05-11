@@ -55,9 +55,10 @@
 
 @media(min-width: 900px){
   .menu{
-    width: 35%;
+    min-width: 20%;
+    width: 20%;
     max-width: 400px;
-    min-width:320px;
+    /*min-width:320px;*/
     height: 100%;
   }
   .menuHeader{

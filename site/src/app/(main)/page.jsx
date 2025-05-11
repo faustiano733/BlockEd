@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { TentativasMenu,DetalhesMenu,AppsMenu } from "@/components/main/Charts";
 import { getDayOfWeek } from "@lib/helpers.js";
 import AlunosMenu from "@/components/main/AlunoMenu";
+import { useAlert } from "@/context/AlertContext";
+import Notifications from "@components/Notifications";
 
 function HeaderCard(props){
   
@@ -46,7 +48,7 @@ export default function Home() {
   const [totalDispositivos, setTotalDispositivos] = useState(0);
   const [totalApps, setTotalApps] = useState(0);
   const [totalSites, setTotalSites] = useState(0);
-  
+  const {showAlert} = useAlert();
   function Overview(){ 
     return(
       <div className="overviewTit">
@@ -89,6 +91,10 @@ export default function Home() {
     fetchData()
   }, [])
 
+  useEffect(()=>{
+    showAlert("Nothing")
+  }, [])
+
   
   return (
     <>
@@ -114,6 +120,7 @@ export default function Home() {
         <section className="section2"><DetalhesMenu /></section>
       </div>
     </div>
+    <Notifications />
     </>
   );
 }

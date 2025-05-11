@@ -1,0 +1,13 @@
+.alertPopup{
+	display: flex;
+	max-width: 300px;
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	background: white;
+	border-radius: 10px;
+	padding: 10px;
+	border: solid 1px gray;
+	transition: all 0.5s;
+	font-size: 13px;
+} 
