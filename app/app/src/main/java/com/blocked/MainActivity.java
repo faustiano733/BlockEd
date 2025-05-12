@@ -21,6 +21,10 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.ComponentName;
 import android.view.View;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import org.json.JSONObject;
@@ -43,6 +48,7 @@ import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -53,7 +59,14 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 1;
     private static final int REQUEST_CODE_MANAGE_STORAGE = 1234;
     private TextView tvCoordinates;
-    private EditText token;
+    private EditText token1;
+    private EditText token2;
+    private EditText token3;
+    private EditText token4;
+    private EditText token5;
+    private EditText token6;
+    private EditText token7;
+    private EditText token8;
     private EditText name;
     private EditText date;
     private Button btnSave;
@@ -71,6 +84,63 @@ public class MainActivity extends AppCompatActivity {
         date = findViewById(R.id.date);
         //editText4 = findViewById(R.id.editText4);
         btnSave = findViewById(R.id.buttonSave);
+        token1 = findViewById(R.id.token1);
+        token2 = findViewById(R.id.token2);
+        token3 = findViewById(R.id.token3);
+        token4 = findViewById(R.id.token4);
+        token5 = findViewById(R.id.token5);
+        token6 = findViewById(R.id.token6);
+        token7 = findViewById(R.id.token7);
+        token8 = findViewById(R.id.token8);
+
+        EditText[] editTexts = new EditText[8];
+        editTexts[0] = token1;
+        editTexts[1] = token2;
+        editTexts[2] = token3;
+        editTexts[3] = token4;
+        editTexts[4] = token5;
+        editTexts[5] = token6;
+        editTexts[6] = token7;
+        editTexts[7] = token8;
+
+        for(int i = 0; i < editTexts.length; i++){
+            final int index = i;
+
+            editTexts[i].setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(1)
+            });
+
+            editTexts[i].addTextChangedListener(new TextWatcher(){
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count){
+                    if(s.length() == 1 && index < editTexts.length - 1){
+                        editTexts[index + 1].requestFocus();
+                    } else if(s.length() == 0 && index > 0){
+                        editTexts[index - 1].requestFocus();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s){}
+            });
+
+            editTexts[i].setOnKeyListener((v, keyCode, event) -> {
+                if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL){
+                    if(editTexts[index].getText().toString().isEmpty() && index > 0){
+                        editTexts[index - 1].requestFocus();
+                        editTexts[index - 1].setSelection(editTexts[index - 1].getText().length());
+                    }
+                }
+
+                return false;
+            });
+
+            editTexts[i].setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        }
+
         adminComponent = new ComponentName(this, MyDeviceAdminReceiver.class);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,50 +197,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveConfig() {
-        /*if(token.getText().toString().equals("") || name.getText().toString().equals("") || date.getText().toString().equals("")){
+        if(
+            token1.getText().toString().equals("") || 
+            token2.getText().toString().equals("") || 
+            token3.getText().toString().equals("") || 
+            token4.getText().toString().equals("") || 
+            token5.getText().toString().equals("") || 
+            token6.getText().toString().equals("") || 
+            token7.getText().toString().equals("") || 
+            token8.getText().toString().equals("") || 
+            name.getText().toString().equals("") || 
+            date.getText().toString().equals("")){
             Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+            return;
         }
-        else{
-            try {
-                // Criando um JSON com os valores das EditText
-                JSONObject config = new JSONObject();
-                JSONArray jarray = new JSONArray();
-
-                String[] blockedApps = {"com.facebook.lite", "com.whatsapp", "com.nada", "com.whatsapp.mobile"};
-                for(String app : blockedApps){
-                    jarray.put(app);
-                }
-                
-                config.put("nomeDoAluno", name.getText().toString());
-                config.put("data", date.getText().toString());
-                config.put("token", token.getText().toString());
-                config.put("blocked_apps", jarray);
-
-                File documentsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
-                //    if (!documentsDir.exists()) {
-                //    documentsDir.mkdirs();  // Criar se não existir
-                //}
-
-                // Criando o arquivo no diretório
-                File configFile = new File(documentsDir, "blocked_config.json");
-                FileWriter writer = new FileWriter(configFile);
-                writer.write(config.toString());
-                writer.flush();
-                writer.close();
-
-                //Toast.makeText(this, "Configuração salva em " + configFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-                //hideApp();
-                finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
-            }
-        }*/
 
         Toast.makeText(this, "Buscando dados do servidor", Toast.LENGTH_SHORT).show();
         
-        
+        String tokenComplete = 
+        token1.getText().toString() +
+        token2.getText().toString() +
+        token3.getText().toString() +
+        token4.getText().toString() +
+        token5.getText().toString() +
+        token6.getText().toString() +
+        token7.getText().toString() +
+        token8.getText().toString();
+
+        String androidId = Settings.Secure.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String model = Build.MODEL;
+
         File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
         File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
         File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
@@ -179,12 +235,30 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() ->{
             HttpURLConnection connection = null;
             try {
-                URL url = new URL("http://192.168.227.150/app_cadastro.php"); //mudar em produção
+                URL url = new URL("http://192.168.72.150:3000/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
+                connection.setRequestMethod("POST");
                 connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Content-Type", "application/json");
                 connection.setConnectTimeout(5000);
                 connection.setReadTimeout(5000);
+                connection.setDoOutput(true); // Necessário para enviar dados
+
+                // Corpo da requisição (JSON neste caso)
+                JSONObject jsonInput = new JSONObject();
+                jsonInput.put("name", name.getText().toString());
+                jsonInput.put("birthday", date.getText().toString());
+                jsonInput.put("code", tokenComplete);
+                jsonInput.put("UID", androidId);
+                jsonInput.put("model", model);
+
+                String jsonInputString = jsonInput.toString();
+
+                // Enviar os dados
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -198,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
                     JSONObject responseJson = new JSONObject(response.toString());
 
+
+                    if(responseJson.getString("success").equals("true")){
                     JSONObject configContent = new JSONObject();
                     configContent.put("token", responseJson.getString("token"));
                     configContent.put("aluno", name.getText().toString());
@@ -265,11 +341,18 @@ public class MainActivity extends AppCompatActivity {
                     startService(new Intent(MainActivity.this, LocationService.class));
                     startService(new Intent(MainActivity.this, ApiService.class));
                     hideApp();
+                    } else {
+                        runOnUiThread(new Runnable(){
+                        public void run(){
+                            Toast.makeText(MainActivity.this, "Token inválido ou expirado", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    }
                 }
             } catch (Exception e) {
                 runOnUiThread(new Runnable(){
                     public void run(){
-                        Toast.makeText(MainActivity.this, "Erro ao buscar dados. Tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Erro ao buscar dados. Tente novamente mais tarde: "+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
                 e.printStackTrace();

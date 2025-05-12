@@ -50,87 +50,129 @@
         android:orientation="horizontal" >
         
         <EditText
+            android:id="@+id/token1"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
         <EditText
+            android:id="@+id/token2"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
         <EditText
+            android:id="@+id/token3"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/token4"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
         <TextView
             android:layout_width="wrap_content  "
             android:layout_height="wrap_content"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:textSize="40px" 
             android:text="-"/>
 
         <EditText
+            android:id="@+id/token5"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
         <EditText
+            android:id="@+id/token6"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
-            android:layout_marginRight="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
         <EditText
+            android:id="@+id/token7"
             android:layout_width="0dp"
             android:layout_weight=".10"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_background"
+            android:background="@drawable/token_background"
             android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
             android:gravity="center"
-            android:textSize="30px"
+            android:textSize="35px"
             android:maxLines="1"
             android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/token8"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
             android:inputType="text" />
 
     </LinearLayout>

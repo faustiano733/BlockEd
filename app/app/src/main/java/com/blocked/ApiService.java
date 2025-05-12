@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
@@ -104,29 +105,8 @@ public class ApiService extends Service {
                 File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
                 File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
                 File exceptionsFile = new File("/storage/emulated/0/Documents/blocked_exceptions.txt");
-                
-                //HttpURLConnection connection = null;
-            
-                URL url = new URL("http://192.168.227.150/app_data.php"); //mudar em produção
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                    JSONObject responseJson = new JSONObject(response.toString());
-
-                    JSONObject configContent = new JSONObject();
+                JSONObject configContent = new JSONObject();
 
                     if(configFile.exists()){
                         StringBuilder configBuilder = new StringBuilder();
@@ -143,7 +123,48 @@ public class ApiService extends Service {
                         }
 
                         configContent = new JSONObject(configBuilder.toString());
+                    } else {
+                        return;
                     }
+                
+                //HttpURLConnection connection = null;
+            
+                URL url = new URL("http://192.168.72.150:3000/api/app"); //mudar em produção
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("PUT");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.setDoOutput(true); // Necessário para enviar dados
+
+                // Corpo da requisição (JSON neste caso)
+                JSONObject jsonInput = new JSONObject();
+                jsonInput.put("token", configContent.getString("token"));
+                jsonInput.put("attempts", "");
+                
+
+                String jsonInputString = jsonInput.toString();
+
+                // Enviar os dados
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    JSONObject responseJson = new JSONObject(response.toString());
+
+                    
 
                     //configContent.put("token", responseJson.getString("token"));
                     //configContent.put("aluno", name.getText().toString());
