@@ -28,11 +28,13 @@ export const schoolSchema = Joi.object({
 
 export const studentSchema = Joi.object({
   name: Joi.string().required(),
+  birthday: Joi.string().required(),
   idSchool: Joi.string().max(36).required()
 })
 
 export const deviceSchema = Joi.object({
   idStudent:Joi.string().max(36).required(),
+  model:Joi.string().required(),
   UID:Joi.string().required()
 })
 

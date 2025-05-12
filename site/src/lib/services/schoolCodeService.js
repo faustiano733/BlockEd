@@ -50,3 +50,17 @@ export async function createSchoolCode(idSchool){
 export async function getSchoolCode(code){
     return await schoolCode.findOne({where:{code}})
 }
+
+export async function compareCode(code, idSchool){
+    const now = new Date();
+    const result = await schoolCode.findOne({
+        where:{
+            idSchool,
+        },
+        order: [
+            ["createdAt", "DESC"]
+        ]
+    })
+
+    return result.expiresAt >=  now && result.code == code
+}

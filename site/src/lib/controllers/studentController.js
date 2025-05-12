@@ -21,7 +21,7 @@ export async function get(req){
     return NextResponse.json(list_students,{status:status})
 }
 
-export async function createStudentController(idSchool,student_data,device_data){
+export async function createStudentController(idSchool, student_data, device_data){
 
     const transaction = await db.sequelize.transaction()
     try{
@@ -29,9 +29,12 @@ export async function createStudentController(idSchool,student_data,device_data)
 
         const new_device = await createDevice({...device_data,idStudent:new_student.id}, {transaction:transaction})
         await transaction.commit()
+        return {...new_student, ...new_device};
     }catch(error){
         await transaction.rollback()
         console.log(error.message)
+
+        return {}
     }
 }
 

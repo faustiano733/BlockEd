@@ -64,6 +64,9 @@ export const device = db.sequelize.define("device",{
         primaryKey:true,
         defaultValue:db.Sequelize.UUIDV4
     },
+    model:{
+        type:db.Sequelize.STRING
+    },
     idStudent:{
         type:db.Sequelize.UUID
     },
@@ -187,6 +190,9 @@ export const students = db.sequelize.define("student",{
         defaultValue:db.Sequelize.UUIDV4
     },
     name:{
+        type:db.Sequelize.STRING
+    },
+    birthday: {
         type:db.Sequelize.STRING
     },
     idSchool:{

@@ -17,3 +17,7 @@ export const getSchool = async (idUser)=>{
 export const updateSchoolOptions = async (idUser, options)=>{
   return await school.update(options, {where: {idUser: idUser}})
 }
+
+export const getSchoolFromId = async (idSchool)=>{
+  return await school.findOne({where:{id:idSchool}})
+}

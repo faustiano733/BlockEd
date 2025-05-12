@@ -50,6 +50,6 @@ function redirectToLogin(url, message = '') {
 
 export const config = {
     matcher: [
-      '/((?!login|_next/static|_next/image|favicon.ico|api/auth|cadastro|api/login|api/siggin).*)',
+      '/((?!login|_next/static|_next/image|favicon.ico|api/auth|cadastro|api/login|api/siggin|api/app).*)',
     ],
   };
