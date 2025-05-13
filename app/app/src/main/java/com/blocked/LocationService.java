@@ -54,6 +54,7 @@ public class LocationService extends Service {
     private static boolean block_cam;
     private static boolean block_sites;
     private static boolean block_apps;
+    private static boolean isAtSchool = false;
     private Handler updateHandler = new Handler();
     private Handler permissionHandler = new Handler();
     private boolean resetUpdates = false;
@@ -87,6 +88,7 @@ public class LocationService extends Service {
             .setContentText("Ativo em segundo plano")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup("blocked_group")
             .setOngoing(true) // Notificação não pode ser fechada
             .build();
     }
@@ -188,7 +190,7 @@ public class LocationService extends Service {
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .build();
 
-    notificationManager.notify(1, notification);
+    notificationManager.notify(999, notification);
     }
 
     private void startLocationUpdates() {
@@ -208,6 +210,8 @@ public class LocationService extends Service {
             //stopSelf();
             return;
         }
+        /*double dist = calculateDistance(-23.561414, -46.655881, -22.971177, -43.182543);
+                showNotification("Distância: " + dist + " km");*/
 
         locationListener = new LocationListener() {
             @Override
@@ -231,8 +235,11 @@ public class LocationService extends Service {
                     return;
                 }
 
+
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
+                double accuracy = location.getAccuracy();
+
 
                 // Enviar coordenadas para a MainActivity
                 Intent intent = new Intent(ACTION_LOCATION_UPDATE);
@@ -244,8 +251,9 @@ public class LocationService extends Service {
 
                 //startService(new Intent(LocationService.this, ApiService.class));
                 if (distance <= RADIUS_METERS) {
-                    showNotification("Você está na área da escola!:"+distance+"m");
-
+                    //showNotification("Você está na área da escola!:"+distance+"m"+accuracy);
+                    showNotification("Lat:"+ latitude+" Lon:"+longitude+" d:"+distance);
+                    /*
                     if(block_cam)
                         startService(new Intent(LocationService.this, CamMonitorService.class));
                     else
@@ -271,10 +279,12 @@ public class LocationService extends Service {
                             stopSiteIntent.setAction("STOP_VPN");
                             startService(stopSiteIntent);
                         }
-                    }
+                    }*/
+                    isAtSchool = true;
                 } else {
-                    showNotification("Você saiu da área da escola!:"+distance+"m");
-                    stopService(new Intent(LocationService.this, CamMonitorService.class));
+                    showNotification("Lat:"+ latitude+" Lon:"+longitude+" d:"+distance);
+                    //showNotification("Você saiu da área da escola!:"+distance+"m"+accuracy);
+                    /*stopService(new Intent(LocationService.this, CamMonitorService.class));
                     stopService(new Intent(LocationService.this, AppMonitorService.class));
                     
                     Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
@@ -283,7 +293,8 @@ public class LocationService extends Service {
 
                     Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
                     stopSiteIntent.setAction("STOP_VPN");
-                    startService(stopSiteIntent);
+                    startService(stopSiteIntent);*/
+                    isAtSchool = false;
                 }
             }
             
@@ -386,7 +397,7 @@ public void onLocationChanged(Location location) {
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, // Usar GPS
-                        3000, // Intervalo de atualização em milissegundos
+                        5000, // Intervalo de atualização em milissegundos
                         1, // Distância mínima em metros
                         locationListener,
                         Looper.getMainLooper()
@@ -455,8 +466,52 @@ public void onLocationChanged(Location location) {
         
         } catch (Exception e) {
             //return new String[0];
+
+
+            return;
         }
 
+        if (isAtSchool) {
+                    /*showNotification("Você está na área da escola!:"+distance+"m");*/
+            if(block_cam)
+                startService(new Intent(LocationService.this, CamMonitorService.class));
+            else
+                stopService(new Intent(LocationService.this, CamMonitorService.class));
+
+            if(block_apps)
+                startService(new Intent(LocationService.this, AppMonitorService.class));
+            else
+                stopService(new Intent(LocationService.this, AppMonitorService.class));
+
+
+            if(block_internet)
+                startService(new Intent(LocationService.this, InternetBlockerService.class));
+            else{
+                Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+                stopIntent.setAction("STOP_VPN");
+                startService(stopIntent);
+
+                if(block_sites)
+                    startService(new Intent(LocationService.this, SiteBlockerService.class));
+                else{
+                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                    stopSiteIntent.setAction("STOP_VPN");
+                    startService(stopSiteIntent);
+                }
+            }
+        } else {
+            /*showNotification("Você saiu da área da escola!:"+distance+"m");*/
+            stopService(new Intent(LocationService.this, CamMonitorService.class));
+            stopService(new Intent(LocationService.this, AppMonitorService.class));
+                    
+            Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+            stopIntent.setAction("STOP_VPN");
+            startService(stopIntent);
+
+            Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+            stopSiteIntent.setAction("STOP_VPN");
+            startService(stopSiteIntent);
+        }
     }
 
     private Runnable updateInfoRunnable = new Runnable() {
@@ -464,7 +519,7 @@ public void onLocationChanged(Location location) {
         public void run() {
             updateInfo();
 
-            updateHandler.postDelayed(this, 10000);
+            updateHandler.postDelayed(this, 5000);
         }
     };
 
@@ -481,7 +536,7 @@ public void onLocationChanged(Location location) {
             if (!hasPermission) {
                 resetUpdates = true;
                 //stopLocationUpdates();
-                showNotification("Permissão de localização foi revogada");
+                //showNotification("Permissão de localização foi revogada");
 
                 /*Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 intent.setData(Uri.parse("package:" + getPackageName()));
@@ -492,11 +547,11 @@ public void onLocationChanged(Location location) {
 
             if (hasPermission && resetUpdates) {
                 resetUpdates = false;
-                showNotification("Permissão restaurada. Reiniciando localização.");
+                //showNotification("Permissão restaurada. Reiniciando localização.");
                 //new Handler(Looper.getMainLooper()).postDelayed(() -> startLocationUpdates(), 2000);
             }
 
-            permissionHandler.postDelayed(this, 10000);
+            permissionHandler.postDelayed(this, 5000);
         }
     };
 

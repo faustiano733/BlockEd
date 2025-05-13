@@ -368,6 +368,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import android.content.Intent;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.os.Build;
+import android.util.Log;
+import androidx.core.app.NotificationCompat;
 //import java.util.Thread;
 
 
@@ -394,11 +404,12 @@ public class SiteBlockerService extends VpnService {
 
             if("STOP_VPN".equals(intentAction)){
                 System.out.println("Tentando parar");
+                this.stopForeground(true);
                 this.onDestroy();
                 return START_NOT_STICKY;
             }
         }
-
+        
         // Verifica se o serviço já está em execução
         if (isRunning) {
             Log.d(TAG, "Serviço já está em execução. Ignorando nova inicialização.");
@@ -515,6 +526,8 @@ public class SiteBlockerService extends VpnService {
             resolveDomainsAndSetupVPN();
         }, DOMAIN_UPDATE_INTERVAL, DOMAIN_UPDATE_INTERVAL, TimeUnit.MINUTES);
     }
+
+    
 
     @Override
     public void onDestroy() {

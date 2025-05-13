@@ -61,8 +61,10 @@
     	    android:exported="false" />
         <service
             android:name=".ApiService"
-            android:foregroundServiceType="dataSync"
-            android:exported="false"/>
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="dataSync"/>
         <service
             android:name=".SiteBlockerService"
             android:permission="android.permission.BIND_VPN_SERVICE"

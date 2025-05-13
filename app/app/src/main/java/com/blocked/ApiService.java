@@ -81,7 +81,22 @@ public class ApiService extends Service {
                 .setContentTitle("API Service")
                 .setContentText("Consultando API periodicamente")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setGroup("blocked_group")
                 .build();
+
+        Notification summaryNotification = new Notification.Builder(this, channelId)
+        .setContentTitle("API Service")
+        .setContentText("Várias atualizações disponíveis")
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .setStyle(new Notification.InboxStyle()
+            .addLine("Atualização 1")
+            .addLine("Atualização 2")
+            .setSummaryText("2 novas atualizações"))
+        .setGroup("blocked_group")
+        .setGroupSummary(true)
+        .build();
+
+        notificationManager.notify(11111, summaryNotification);
 
         startForeground(1, notification);
     }
@@ -129,7 +144,7 @@ public class ApiService extends Service {
                 
                 //HttpURLConnection connection = null;
             
-                URL url = new URL("http://192.168.72.150:3000/api/app"); //mudar em produção
+                URL url = new URL("http://172.20.10.3:3000/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Accept", "application/json");

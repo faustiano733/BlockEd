@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() ->{
             HttpURLConnection connection = null;
             try {
-                URL url = new URL("http://192.168.72.150:3000/api/app"); //mudar em produção
+                URL url = new URL("http://172.20.10.3:3000/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Accept", "application/json");

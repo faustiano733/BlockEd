@@ -67,6 +67,8 @@ import android.widget.Toast;
 public class CamMonitorService extends Service {
     private CameraManager cameraManager;
     private WindowManager windowManager;
+    private CameraManager.AvailabilityCallback cameraCallback;
+
     private View overlayView;
 
     @Override
@@ -78,21 +80,21 @@ public class CamMonitorService extends Service {
     }
 
     private void startMonitoring() {
-        cameraManager.registerAvailabilityCallback(new CameraManager.AvailabilityCallback() {
-            @Override
-            public void onCameraAvailable(String cameraId) {
-                super.onCameraAvailable(cameraId);
-                //showToast("📸 Câmera disponível (NÃO está em uso)");
-                removeOverlay();
-            }
+        cameraCallback = new CameraManager.AvailabilityCallback() {
+        @Override
+        public void onCameraAvailable(String cameraId) {
+            super.onCameraAvailable(cameraId);
+            removeOverlay();
+        }
 
-            @Override
-            public void onCameraUnavailable(String cameraId) {
-                super.onCameraUnavailable(cameraId);
-                //showToast("🚨 Câmera em uso!");
-                showOverlay();
-            }
-        }, new Handler(Looper.getMainLooper()));
+        @Override
+        public void onCameraUnavailable(String cameraId) {
+            super.onCameraUnavailable(cameraId);
+            showOverlay();
+        }
+    };
+
+    cameraManager.registerAvailabilityCallback(cameraCallback, new Handler(Looper.getMainLooper()));
     }
 
     private void showToast(String message) {
@@ -136,6 +138,9 @@ public class CamMonitorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (cameraManager != null && cameraCallback != null) {
+            cameraManager.unregisterAvailabilityCallback(cameraCallback);
+        }
         removeOverlay();
     }
 

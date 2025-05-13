@@ -76,9 +76,10 @@ public class AppMonitorService extends Service {
             .setContentTitle("App Blocker em execução")
             .setContentText("Monitorando aplicativos")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setGroup("blocked_group")
             .build();
 
-    startForeground(1, notification);
+    startForeground(777, notification);
 	}
 
 	

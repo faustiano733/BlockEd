@@ -29,6 +29,7 @@ public class InternetBlockerService extends VpnService implements Runnable {
     private boolean isRunning = false;
     private static final String CHANNEL_ID = "vpn_service_channel";
     private static final int NOTIFICATION_ID = 12;
+    private Thread vpnThread;
 
     // Lista de sites bloqueados (pode ser carregada dinamicamente depois)
     private final Set<String> blockedSites = new HashSet<>();
@@ -44,23 +45,38 @@ public class InternetBlockerService extends VpnService implements Runnable {
                 System.out.println("Tentando parar");
                 this.onDestroy();
                 this.stopForeground(true);
+                
                 return START_NOT_STICKY;
             }
         }
 
-        startForegroundNotification(); // Certifique-se que a notificação está ativa
-
-        if (vpnInterface == null) {
-            setupVpn();
+        if (isRunning) {
+            Log.d("internetBlocker", "Serviço já está em execução.");
+            return START_STICKY;
         }
 
         isRunning = true;
-        new Thread(this).start(); // Inicia a thread de análise de pacotes
+
+        startForegroundNotification();
+        setupVpn();
+
+        vpnThread = new Thread(this);
+        vpnThread.start();
 
         return START_STICKY;
     }
 
     private void setupVpn() {
+
+        if (vpnInterface != null) {
+            try {
+                vpnInterface.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            vpnInterface = null;
+        }
+
         Builder builder = new Builder();
         builder.addAddress("10.0.0.2", 32); // Endereço IP virtual para a VPN
         builder.addRoute("0.0.0.0", 0); // Redireciona todo tráfego para a VPN
@@ -187,6 +203,7 @@ public void run() {
             .setContentTitle("VPN Ativada")
             .setContentText("Monitorando tráfego de internet.")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setGroup("blocked_group")
             .build();
 
     startForeground(NOTIFICATION_ID, notification);

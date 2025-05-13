@@ -6,5 +6,6 @@
         <disable-camera /> 
         <!-- Permite desinstalar outros apps -->
         <limit-password /> 
+        <watch-login/>
     </uses-policies>
 </device-admin>
