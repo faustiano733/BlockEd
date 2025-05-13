@@ -6,7 +6,7 @@ import Loading from "@/components/Loading";
 
 import { HorizontalLine, VerticalLine } from "@/components/Lines.js";
 import Header from "@/components/Header.js";
-import { StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon, CloseIcon, SmartPhoneIcon} from "@/Icons.jsx";
+import { StudentAddIcon, StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon, CloseIcon, SmartPhoneIcon} from "@/Icons.jsx";
 import {EmptyMenu} from "../bloqueio/page.jsx";
 import Button from "@/components/Button";
 //import { Metadata } from "next";
@@ -21,13 +21,15 @@ function SearchAluno(props){
   );
 }
 
-function MenuAlunos(){
+function MenuAlunos({setAluno}){
   const [alunos, setAlunos] = useState(null);
   const [selectdStudent, setSelectdStudent] = useState('')
 
-  function handleSelectStudent(){
-    setStudentLoading(true);
-    setSelectdStudent(entidade.name)
+  async function handleSelectStudent(id){
+    let obj = await fetch("/api/student?q="+id);
+    let resp = await obj.json()
+
+    setAluno(resp)
   }
 
   useEffect(()=>{
@@ -39,15 +41,45 @@ function MenuAlunos(){
     }
 
     fetchData()
+
+    let interval = setInterval(()=>fetchData(), 10000);
+
+    return ()=> clearInterval(interval);
   }, []);
+
+  function timeDiff(before){
+    let agr = new Date();
+    let bf = new Date(before)
+    let d = agr - bf;
+    let sem = Math.floor(d / (1000 * 60 * 60 * 24 * 7))
+    let day = Math.floor(d / (1000 * 60 * 60 * 24))
+    let h = Math.floor(d / (1000 * 60 * 60))
+    let m = Math.floor(d / (1000 * 60))
+    let s = Math.floor(d / (1000))
+
+    let diff = "há ";
+
+    if(sem > 0)
+      diff+=sem + " semana(s)"
+    else if(day > 0)
+      diff += day + " dia(s)"
+    else if(h>0)
+      diff+=h + " hora(s)"
+    else if(m>0)
+      diff+=m + " minuto(s)"
+    else{
+      diff+= s + " segundo(s)"
+    }
+    return diff;
+  }
   
   if(!alunos) return <Loading />
   return(
     <div className="menuAlunos">
-      <AddIcon color='#358bff' />
+      {/*<AddIcon color='#358bff' />*/}
       {
       alunos.map((entidade, index) => (
-        <Aluno key={`aluno-${index}`} nome={entidade.name} dispositivos={entidade.devices.length} ultimaConexao={"há 7 dias"/*entidade.ultimaConexao*/} onClick={()=>{handleSelectStudent}}/>
+        <Aluno key={`aluno-${index}`} nome={entidade.name} dispositivos={entidade.devices.length} ultimaConexao={timeDiff(entidade.devices[0].updatedAt)} onClick={()=>{handleSelectStudent}} onClick={()=>handleSelectStudent(entidade.id)}/>
       ))
       }
       <SearchAluno />
@@ -89,7 +121,10 @@ function CountdownTimer ({target}) {
       const minutes = Math.floor(diff / (1000 * 60)).toString().padStart(2, '0');
       const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-      setTimeLeft(`${minutes==='-1'?"00":minutes}:${seconds==='-1'?'00':seconds}`);
+      if(diff <= 0)
+        setTimeLeft(`00:00`);
+      else
+        setTimeLeft(`${minutes==='-1'?"00":minutes}:${seconds==='-1'?'00':seconds}`);
     };
 
     if(!timeIsExpired){
@@ -103,7 +138,7 @@ function CountdownTimer ({target}) {
 
   return (
     <div>
-      <h3><div style={{color:'#358bff'}}>{timeIsExpired?'O codigo expirado':'O codigo expira em'} <span style={timeLeft.startsWith('00')?{color:'red'}:{}}>{timeLeft}</span> </div> </h3>
+      <h5><div style={{color:'black'}}>{timeIsExpired?'O código expirado':'O código expira em'} <span style={timeLeft.startsWith('00') ? {color:'#ff8080'}:{}}>{timeLeft}</span> </div> </h5>
     </div>
   );
 }
@@ -136,14 +171,12 @@ const SubMenuAddStudent = ({close})=>{
   const [expiresAt,setExpiresAt] = useState(null)
   const Information = ()=>(<div className="information">
     <p>
-      Para vincular um aluno à instituição:
-      Clique em "Gerar Código".
-      Um código alfanumérico de 8 dígitos será exibido na tela.
+      Para vincular um aluno à instituição, clique em "Gerar código". Após isso, insira o código na tela de configurações da app
     </p>
-    <p>
+    {/*<p>
     Próximo passo:<br/>
     O código deverá ser inserido diretamente no aplicativo móvel para concluir a vinculação automática à instituição.
-    </p>
+    </p>*/}
   </div>)
 
   
@@ -165,10 +198,10 @@ const SubMenuAddStudent = ({close})=>{
   return(
     <>
       <div className="addStudentMenu">
-        <CloseMenu onClick={close} />
+        {/*<CloseMenu onClick={close} />*/}
         {code?<Code code={code} target={expiresAt}/>:<Information/>}
         
-        <Button onClick={handleGenerateCode}>Gerar Novo Codigo</Button>
+        <Button onClick={handleGenerateCode}>Gerar código</Button>
       </div>
     </>
   )
@@ -188,7 +221,7 @@ export default function AlunosPage(){
   //const [loading, setLoading] = useState(false);
   const [searchAlunoLoading, setSearchAlunoLoading] = useState(false);
   const [studentLoading, setStudentLoading] = useState(false);
-  const [isAddingStudent, setIsAddingStudent] = useState(true)
+  const [isAddingStudent, setIsAddingStudent] = useState(false)
 
   async function selectStudent(studentName){
     let obj = await fetch(`/api/student?student=${studentName}`);
@@ -231,6 +264,59 @@ export default function AlunosPage(){
   }
 
   function SubMenuAluno(){
+    function timeDiff(before){
+    let agr = new Date();
+    let bf = new Date(before)
+    let d = agr - bf;
+    let sem = Math.floor(d / (1000 * 60 * 60 * 24 * 7))
+    let day = Math.floor(d / (1000 * 60 * 60 * 24))
+    let h = Math.floor(d / (1000 * 60 * 60))
+    let m = Math.floor(d / (1000 * 60))
+    let s = Math.floor(d / (1000))
+
+    let diff = "há ";
+
+    if(sem > 0)
+      diff+=sem + " semana(s)"
+    else if(day > 0)
+      diff += day + " dia(s)"
+    else if(h>0)
+      diff+=h + " hora(s)"
+    else if(m>0)
+      diff+=m + " minuto(s)"
+    else{
+      diff+= s + " segundo(s)"
+    }
+    return diff;
+    }
+
+    function timeDiffYear(before){
+      let agr = new Date();
+      let tmp_bf = before.split("/");
+      let bf = new Date(tmp_bf[2] + "-" + tmp_bf[1] + "-" + tmp_bf[0]);
+
+      let d = agr.getFullYear() - bf.getFullYear()
+      if(agr.getMonth() < bf.getMonth())
+        d--
+      else if(agr.getMonth() == bf.getMonth() && agr.getDate() < bf.getDate())
+        d--
+      else{
+
+      }
+
+      return d
+    }
+
+    function timeDiffDay(before){
+      let agr = new Date();
+      let bf = new Date(before);
+
+      let d = agr - bf;
+
+
+      return Math.floor(d / (1000 * 60 * 60 * 24))
+    }
+
     return(
       <>
       <CloseMenu onClick={() => setAluno(null)}/>
@@ -240,17 +326,17 @@ export default function AlunosPage(){
             <StudentIcon color="white" fill={true}/>
           </div>
           <h3>{aluno.name}</h3>
-          {/*<div className="subMenuAlunoInfo">
-            <span>Turma: {aluno[0].turma}</span>
-            <span>Idade: {aluno[0].idade} anos</span>
-            <span>Actividade: <small className="subMenuAlunoInfoActividade">{aluno[0].actividade}</small></span>
-          </div>*/}
+          <div className="subMenuAlunoInfo">
+            {/*<span>Turma: {aluno[0].turma}</span>*/}
+            <span>Idade: {timeDiffYear(aluno.birthday)} anos</span>
+            <span>Actividade: <small className="subMenuAlunoInfoActividade">{timeDiffDay(aluno.devices[0].updatedAt) <= 5 ? "Normal" : timeDiffDay(aluno.devices[0].updatedAt) <= 7 ? "Alerta" : "Suspeito"}</small></span>
+          </div>
           <h5>- Dispositivos -</h5>
           <section className="devicesList">
             {
             aluno.devices.map((elemento, index) => {
               return(
-                <Dispositivo key={"dispositivo"+index} modelo={"Iphone"/*elemento.modelo*/} conexao={elemento.createdAt} />
+                <Dispositivo key={"dispositivo"+index} modelo={elemento.model} conexao={timeDiff(elemento.updatedAt)} />
               );
             })
             }
@@ -265,19 +351,36 @@ export default function AlunosPage(){
   return(
     <>
     <div id="alunosPage">
-      <AddIcon color='#358bff' onClick={()=>setIsAddingStudent(true)}/>
-      { aluno || isAddingStudent ? <SubMenu /> : <MenuAlunos />}
+      {/*<AddIcon color='#358bff' onClick={()=>setIsAddingStudent(true)}/>*/}
+      { aluno ? <SubMenuAluno /> : <MenuAlunos setAluno={setAluno}/>}
     </div>
 
     <div id="alunosPageDesktop">
       <div className="menuAlunosDesktop">
         <SearchAlunoDesktop />
-        <MenuAlunos addStudent={()=>setIsAddingStudent(true)}/>
+        <MenuAlunos setAluno={setAluno}/>
       </div>
       <div className="subMenuAlunoDesktop">
-        {<SubMenu />}
+        {<SubMenuAluno/>}
       </div>
     </div>
+    <div 
+      style={{
+        position: "fixed", 
+        bottom: 60, 
+        right: 20,
+        background: "white",
+        height: "fit-content",
+        padding: "5px 7px",
+        borderRadius: 100,
+        boxShadow: "0 0 8px 0.5px rgb(0, 0, 0, 0.2)"
+      }}
+      onClick={()=>setIsAddingStudent(!isAddingStudent)}
+    > 
+      <StudentAddIcon color={"#358bff"}/>
+    </div>
+    {isAddingStudent && <SubMenuAddStudent />}
+    
     </>
   );
 }

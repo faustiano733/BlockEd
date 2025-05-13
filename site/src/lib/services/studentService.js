@@ -40,9 +40,9 @@ async function getStudent(student_id){
         }
     });
     if(student){
-        throw new Error('student not found')
-    }else{
         return student;
+    }else{
+        throw new Error('student not found')
 }}
 
 export async function editStudent(changes){
@@ -78,6 +78,7 @@ export async function getStudentInformation(student_id){
 
     const student_information = {
         name:student.name,
+        birthday:student.birthday,
         tot_devices:student_devices.length,
         devices:student_devices
     }

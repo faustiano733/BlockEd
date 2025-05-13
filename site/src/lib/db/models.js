@@ -73,6 +73,10 @@ export const device = db.sequelize.define("device",{
     UID:{
         type:db.Sequelize.STRING
     },
+    updatedAt: {
+        type:db.Sequelize.DATE,
+        defaultValue: new Date()
+    }
 },{
     timestamps:true,
     updatedAt:false

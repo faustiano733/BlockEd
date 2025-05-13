@@ -8,7 +8,7 @@ export async function get(req){
     const url = new URL(req.url);
     const student = url.searchParams.get('q')
     if(student){
-        const listStudents = getStudentInformation(idSchool)
+        const listStudents = await getStudentInformation(student)
         if(listStudents){
             status = 201
         }
