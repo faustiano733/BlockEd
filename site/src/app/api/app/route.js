@@ -6,6 +6,7 @@ import {getLocation} from "@lib/services/locationService";
 import {compareCode, getSchoolCode} from "@lib/services/schoolCodeService";
 import {createStudentController} from "@lib/controllers/studentController";
 import {getExceptionsService} from "@lib/services/exceptionService";
+import {createAttempt} from "@lib/services/attemptServices";
 import {EncryptJWT, jwtDecrypt} from "jose";
 
 export async function GET(req){
@@ -116,17 +117,30 @@ export async function PUT(req){
     const token = dados.token;
     const attempts = dados.attempts;
 
+
+    console.log("Attempts", attempts);
+
     const chave = new TextEncoder().encode("12345678901234567890123456789012");
     let result;
     try {
         const  {payload, protectedHeader} = await jwtDecrypt(token, chave)
         result = payload;
     } catch(error){
-        NextResponse.json({success: false, error: "Erro no token armazenado"});
+        return NextResponse.json({success: false, error: "Erro no token armazenado"});
     }
 
     let apps = await getAllApps(result.idSchool);
-    let sites = await getAllSites(result.idSchool) 
+    let sites = await getAllSites(result.idSchool);
+    try{
+        let {blockSites, blockApps, blockCam, blockInternet} =  await getSchoolFromId(result.idSchool);
+    } catch(error) {
+        return NextResponse.json({success: false, error: "Escola inexistente"});
+    }
+
+    attempts.map(async (attempt, index)=>{
+        await createAttempt({...attempt, idSchool: result.idSchool});
+    })
+
     let {blockSites, blockApps, blockCam, blockInternet} =  await getSchoolFromId(result.idSchool);
     let {latitude, longitude, radius} = await getLocation(result.idSchool);
     let schoolData = {blockSites, blockApps, blockCam, blockInternet};

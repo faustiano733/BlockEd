@@ -48,7 +48,11 @@ export async function deleteApp({id,idSchool,name}){
     await apps.destroy({where:{id,idSchool,name}})
 }
 
-export async function getNumberOfApps(){
-    const number_of_apps = await apps.count()
+export async function getNumberOfApps(idSchool){
+    const number_of_apps = await apps.count({
+        where:{
+            idSchool
+        }
+    })
     return number_of_apps
 }

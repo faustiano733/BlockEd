@@ -284,9 +284,16 @@ export const attempt = db.sequelize.define('attempt',{
     value:{
         type:db.Sequelize.STRING
     },
+    idSchool:{
+        type:db.Sequelize.UUID,
+        allowNull:false
+    },
     createdAt:{
-        type:db.Sequelize.DATE
+        type:db.Sequelize.DATEONLY
     },
 
+},
+{
+    timeStamps:false
 })
 

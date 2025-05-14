@@ -96,7 +96,11 @@ export async function getSite(site_dominio) {
     }
 }
 
-export async function getNumberOfSites(){
-    const total_sites = await sites.count();
+export async function getNumberOfSites(idSchool){
+    const total_sites = await sites.count({
+      where:{
+        idSchool: idSchool
+      }
+    });
     return total_sites;
 }
