@@ -126,6 +126,7 @@ public class CamMonitorService extends Service {
 
         params.gravity = Gravity.CENTER;
         windowManager.addView(overlayView, params);
+        Functions.createAttempt("cam ", "cam");
     }
 
     private void removeOverlay() {

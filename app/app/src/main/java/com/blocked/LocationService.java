@@ -64,17 +64,36 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
+        createNotificationChannel(); // Garante que o canal existe
+        Notification notification = buildPersistentNotification();
+        startForeground(NOTIFICATION_ID, notification);
         updateInfo();
         
         startLocationUpdates();
+        Intent intent = new Intent(this, WatchdogReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+            this,
+            999,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        long firstTriggerTime = SystemClock.elapsedRealtime() + 5000; // 5 segundos de atraso inicial
+        long interval = 15000; // intervalo de 15 segundos entre cada verificação
+        alarmManager.setRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            firstTriggerTime,
+            interval,
+            pendingIntent
+        );
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        createNotificationChannel(); // Garante que o canal existe
+        /*createNotificationChannel(); // Garante que o canal existe
         Notification notification = buildPersistentNotification();
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, notification);*/
         
         startLocationUpdates();
         startUpdatingInfo();
@@ -95,11 +114,11 @@ public class LocationService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
+        //scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
         super.onTaskRemoved(rootIntent);
     }
 
-    private void scheduleServiceRestart() {
+    /*private void scheduleServiceRestart() {
         // Reinicia via AlarmManager (rápido)
         Intent restartIntent = new Intent(this, LocationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(
@@ -125,22 +144,7 @@ public class LocationService extends Service {
                 );
             }
         }
-
-        /*
-        // Fallback com JobScheduler (Android 5+)
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        ComponentName component = new ComponentName(this, RestartJobService.class);
-        JobInfo jobInfo = new JobInfo.Builder(123, component)
-            .setOverrideDeadline(2000) // Máximo 2 segundos de atraso
-            .setImportantWhileForeground(true) // Prioriza se o app estava em foreground
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // Ou outro requisito/
-            .setPersisted(true) // Sobrevive a reinicializações
-            .build();
-        
-        if (jobScheduler != null) {
-            jobScheduler.schedule(jobInfo);
-        }*/
-    }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -493,6 +497,7 @@ public void onLocationChanged(Location location) {
 
                 if(block_sites)
                     startService(new Intent(LocationService.this, SiteBlockerService.class));
+                    //startService(new Intent(LocationService.this, DnsFilterVpnService.class));
                 else{
                     Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
                     stopSiteIntent.setAction("STOP_VPN");

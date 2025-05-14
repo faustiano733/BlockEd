@@ -38,7 +38,7 @@ public class Functions {
 			int day = now.getDate();
 			int month = (now.getMonth() + 1);
 			int year = (now.getYear() + 1900);
-			String date =  day + "/" + (month < 10 ? "0" + month  : month) + "/" + year;
+			String date =  year + "-" + (month < 10 ? "0" + month  : month) + "-" + day;
 		
 
 			try{
@@ -47,7 +47,7 @@ public class Functions {
 
 				attempt.put("type", type);
 				attempt.put("value", value);
-				attempt.put("created_at", date);
+				attempt.put("createdAt", date);
 
 				File file = new File(FILE_PATH);
 

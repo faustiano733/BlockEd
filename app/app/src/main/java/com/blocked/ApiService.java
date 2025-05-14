@@ -62,6 +62,24 @@ public class ApiService extends Service {
         super.onCreate();
         startForegroundService();
         startPeriodicRequests();
+
+        Intent intent = new Intent(this, WatchdogReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+            this,
+            11111,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        long firstTriggerTime = SystemClock.elapsedRealtime() + 5000; // 5 segundos de atraso inicial
+        long interval = 15000; // intervalo de 15 segundos entre cada verificação
+        alarmManager.setRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            firstTriggerTime,
+            interval,
+            pendingIntent
+        );
     }
 
     private void startForegroundService() {
@@ -120,8 +138,10 @@ public class ApiService extends Service {
                 File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
                 File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
                 File exceptionsFile = new File("/storage/emulated/0/Documents/blocked_exceptions.txt");
+                File attemptsFile = new File("/storage/emulated/0/Documents/blocked_attempts.json");
 
                 JSONObject configContent = new JSONObject();
+                JSONArray attempsArray = new JSONArray();
 
                     if(configFile.exists()){
                         StringBuilder configBuilder = new StringBuilder();
@@ -141,10 +161,29 @@ public class ApiService extends Service {
                     } else {
                         return;
                     }
+
+                if(attemptsFile.exists()){
+                    StringBuilder attemptsBuilder = new StringBuilder();
+                    JSONObject attemptsContent = new JSONObject();
+
+                        try (BufferedReader attemptsReader = new BufferedReader(new FileReader(attemptsFile))) {
+                            String attemptsLine;
+
+                            while ((attemptsLine = attemptsReader.readLine()) != null) {
+                                attemptsBuilder.append(attemptsLine);
+                                //blockedApps.add(line.trim());
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+                        attemptsContent = new JSONObject(attemptsBuilder.toString());
+                        attempsArray = attemptsContent.getJSONArray("attempts");
+                }
                 
                 //HttpURLConnection connection = null;
             
-                URL url = new URL("http://172.20.10.3:3000/api/app"); //mudar em produção
+                URL url = new URL("http://192.168.235.150:3000/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Accept", "application/json");
@@ -156,7 +195,7 @@ public class ApiService extends Service {
                 // Corpo da requisição (JSON neste caso)
                 JSONObject jsonInput = new JSONObject();
                 jsonInput.put("token", configContent.getString("token"));
-                jsonInput.put("attempts", "");
+                jsonInput.put("attempts", attempsArray);
                 
 
                 String jsonInputString = jsonInput.toString();
@@ -178,7 +217,9 @@ public class ApiService extends Service {
                     reader.close();
                     //Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
                     JSONObject responseJson = new JSONObject(response.toString());
-
+                    if(!(responseJson.getString("success").equals("true"))){
+                        return;
+                    }
                     
 
                     //configContent.put("token", responseJson.getString("token"));
@@ -237,6 +278,16 @@ public class ApiService extends Service {
                     exceptionsWriter.close();
 
                     //System.out.println(exceptionsContent.toString());
+                    if(attemptsFile.exists()){
+                        JSONObject tmp_attempts = new JSONObject();
+                        JSONArray tmp_array = new JSONArray();
+
+                        tmp_attempts.put("attempts", tmp_array);
+
+                        FileWriter attemptsWriter = new FileWriter(attemptsFile);
+                        attemptsWriter.write(tmp_attempts.toString(2));
+                        attemptsWriter.close();
+                    }
                 }
             
             } catch (Exception e) {
@@ -257,13 +308,13 @@ public class ApiService extends Service {
     
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
+        //scheduleServiceRestart(); // Agenda reinício via AlarmManager + JobScheduler
         super.onTaskRemoved(rootIntent);
     }
 
-    private void scheduleServiceRestart() {
+    /*private void scheduleServiceRestart() {
         // Reinicia via AlarmManager (rápido)
-        Intent restartIntent = new Intent(this, ApiService.class);
+        Intent restartIntent = new Intent(this, WatchdogReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getService(
             this, 
             2, 
@@ -287,19 +338,8 @@ public class ApiService extends Service {
                 );
             }
         }
-        /*
-        // Fallback com JobScheduler (Android 5+)
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        ComponentName component = new ComponentName(this, RestartJobServiceApi.class);
-        JobInfo jobInfo = new JobInfo.Builder(1234, component)
-            .setOverrideDeadline(4000) // Máximo 2 segundos de atraso
-            .setPersisted(true) // Sobrevive a reinicializações
-            .build();
-        
-        if (jobScheduler != null) {
-            jobScheduler.schedule(jobInfo);
-        }*/
     }
+    */
 
     @Override
     public void onDestroy() {
