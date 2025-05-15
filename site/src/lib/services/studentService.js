@@ -1,6 +1,7 @@
 import {students} from "../db/models.js";
 import { studentSchema } from "../validators/authValidator.js";
 import { getAllDevices } from "./deviceServices.js";
+import db from "../db/connection";
 
 export async function createStudent(new_student, transaction){
     const {error} = studentSchema.validate(new_student)
@@ -48,7 +49,7 @@ async function getStudent(student_id){
 export async function editStudent(changes){
     const edited_student = students.update(changes,{
         where:{
-            idStudent:changes.idStudent
+            id:changes.id
         }
     });
 
@@ -81,11 +82,88 @@ export async function getStudentInformation(student_id){
     const student_devices = await getAllDevices(student.id);
 
     const student_information = {
+        id:student.id,
         name:student.name,
         birthday:student.birthday,
+        uninstall: student.uninstall,
         tot_devices:student_devices.length,
         devices:student_devices
     }
 
     return student_information
 }
+
+export async function getNormalStudents(idSchool){
+    const cincoDiasAtras = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+
+    const [results] = await db.sequelize.query(`
+        SELECT COUNT(*) AS total
+        FROM students s
+        WHERE (
+            SELECT d.updatedAt
+            FROM devices d
+            WHERE d.idStudent = s.id
+            ORDER BY d.updatedAt ASC
+            LIMIT 1
+        ) >= ? and idSchool = ?
+    `, {
+        replacements: [cincoDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        type: db.sequelize.QueryTypes.SELECT,
+    });
+
+    return results.total;
+}
+
+export async function getAlertStudents(idSchool){
+    const cincoDiasAtras = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+    const seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [results] = await db.sequelize.query(`
+        SELECT COUNT(*) AS total
+        FROM students s
+        WHERE (
+            SELECT d.updatedAt
+            FROM devices d
+            WHERE d.idStudent = s.id
+            ORDER BY d.updatedAt ASC
+            LIMIT 1
+        ) >= ? and  
+
+        (
+            SELECT d.updatedAt
+            FROM devices d
+            WHERE d.idStudent = s.id
+            ORDER BY d.updatedAt ASC
+            LIMIT 1
+        ) < ? and idSchool = ?
+    `, {
+        replacements: [seteDiasAtras, cincoDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        type: db.sequelize.QueryTypes.SELECT,
+    });
+
+    return results.total;
+}
+
+export async function getSuspectStudents(idSchool){
+    //const cincoDiasAtras = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+    const seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [results] = await db.sequelize.query(`
+        SELECT COUNT(*) AS total
+        FROM students s
+        WHERE (
+            SELECT d.updatedAt
+            FROM devices d
+            WHERE d.idStudent = s.id
+            ORDER BY d.updatedAt ASC
+            LIMIT 1
+        ) < ? and idSchool = ?
+    `, {
+        replacements: [seteDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        type: db.sequelize.QueryTypes.SELECT,
+    });
+
+    return results.total;
+}
+
+

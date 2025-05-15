@@ -9,6 +9,8 @@ import Header from "@/components/Header.js";
 import { StudentAddIcon, StudentIcon, StudentSearchIcon, AndroidIcon, Profile, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon, CloseIcon, SmartPhoneIcon} from "@/Icons.jsx";
 import {EmptyMenu} from "../bloqueio/page.jsx";
 import Button from "@/components/Button";
+import Confirm from "@components/Confirm.js";
+import { useAlert } from "@/context/AlertContext";
 //import { Metadata } from "next";
 
 function SearchAluno(props){
@@ -73,7 +75,7 @@ function MenuAlunos({setAluno}){
     return diff;
   }
   
-  if(!alunos) return <Loading />
+  if(!alunos) return <Loading bg="transparent"/>
   return(
     <div className="menuAlunos">
       {/*<AddIcon color='#358bff' />*/}
@@ -82,7 +84,7 @@ function MenuAlunos({setAluno}){
         <Aluno key={`aluno-${index}`} nome={entidade.name} dispositivos={entidade.devices.length} ultimaConexao={timeDiff(entidade.devices[0].updatedAt)} onClick={()=>{handleSelectStudent}} onClick={()=>handleSelectStudent(entidade.id)}/>
       ))
       }
-      <SearchAluno />
+      {/*<SearchAluno />*/}
     </div>
   );
 }
@@ -264,6 +266,36 @@ export default function AlunosPage(){
   }
 
   function SubMenuAluno(){
+    const[uninstall, setUninstall] = useState(false);
+    const {showAlert} = useAlert();
+    
+    async function handleCurrentStudent(id){
+      let obj = await fetch("/api/student?q="+id);
+      let resp = await obj.json()
+
+      setAluno(resp)
+    }
+
+    useEffect(()=>{
+      const interval = setInterval(()=>{
+        if(aluno) handleCurrentStudent(aluno.id);
+      }, 5000)
+
+      return ()=>clearInterval(interval);
+    }, [])
+
+    async function changeUninstall(){
+      let obj = await fetch("/api/student", {
+        method: "PUT",
+        "Content-Type": "application/json",
+        body: JSON.stringify({student: {id: aluno.id, uninstall: aluno.uninstall}})
+      })
+
+      let res = await obj.json();
+
+      if(res.success) showAlert("Estado da desinstalação mudado")
+    }
+
     function timeDiff(before){
     let agr = new Date();
     let bf = new Date(before)
@@ -326,6 +358,7 @@ export default function AlunosPage(){
             <StudentIcon color="white" fill={true}/>
           </div>
           <h3>{aluno.name}</h3>
+          {aluno.uninstall && <h6 style={{color: "#ff8080"}}>Por desinstalar</h6>}
           <div className="subMenuAlunoInfo">
             {/*<span>Turma: {aluno[0].turma}</span>*/}
             <span>Idade: {timeDiffYear(aluno.birthday)} anos</span>
@@ -341,9 +374,29 @@ export default function AlunosPage(){
             })
             }
           </section>
+          <Confirm visible={uninstall} text={aluno.uninstall ? "Desabilitar desinstalação?" : "Habilitar desinstalação?"} onCancel={()=>setUninstall(false)} onOk={changeUninstall}/>
+          <div 
+            style={{
+              position: "fixed", 
+              bottom: 10, 
+              right: 20,
+              background: "white",
+              height: "fit-content",
+              padding: "7px",
+              borderRadius: 100,
+              boxShadow: "0 0 8px 0.5px rgb(0, 0, 0, 0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+          }}
+            onClick={()=>setUninstall(!uninstall)}
+          > 
+            {uninstall ?  <CloseIcon/> : <DeleteIcon color={"#ff8080"}/>}
+          </div>
         </div>
         : <EmptyMenu text="Nenhum aluno seleccionado" />
       }
+      
       </>
     );
   }
@@ -357,7 +410,7 @@ export default function AlunosPage(){
 
     <div id="alunosPageDesktop">
       <div className="menuAlunosDesktop">
-        <SearchAlunoDesktop />
+        {/*<SearchAlunoDesktop />*/}
         <MenuAlunos setAluno={setAluno}/>
       </div>
       <div className="subMenuAlunoDesktop">

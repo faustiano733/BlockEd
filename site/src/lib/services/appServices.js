@@ -1,5 +1,6 @@
 import { apps } from "../db/models.js";
-import gplay from "google-play-scraper"
+import gplay from "google-play-scraper";
+import db from "../db/connection";
 
 export async function getAllApps(idSchool){
     const all_apps_list = await apps.findAll({where:{idSchool:idSchool}})
@@ -55,4 +56,24 @@ export async function getNumberOfApps(idSchool){
         }
     })
     return number_of_apps
+}
+
+export async function getTop4Apps(idSchool){
+    const apps = await db.sequelize.query(`
+    SELECT 
+        a.*, 
+        (
+        SELECT COUNT(*) 
+        FROM attempts at 
+        WHERE at.value = a.packageName and idSchool = ?
+        ) AS totalAttempts
+    FROM apps a WHERE idSchool = ?
+    ORDER BY totalAttempts DESC
+    LIMIT 4
+`, {
+    replacements: [idSchool, idSchool],
+    type: db.sequelize.QueryTypes.SELECT
+});
+
+    return apps;
 }

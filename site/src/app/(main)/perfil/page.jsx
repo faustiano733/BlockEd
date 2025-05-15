@@ -76,7 +76,7 @@ function LocationMenu(){
     </pre>
   </div>
   <Button onClick={() =>{setChangeLocationLoading(true);handleSubmit()}}>
-	       {changeLocationLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
+	       {changeLocationLoading ? <>Alterando<PendingIcon color="#fff"/></> : <><small>Confirmar</small></>}
   </Button>
   </>
   );
@@ -84,7 +84,7 @@ function LocationMenu(){
 
 function ExceptionSection(){
   const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-  const [exceptions,setExceptions] = useState([])
+  const [exceptions,setExceptions] = useState(null)
 
   
 
@@ -99,7 +99,8 @@ function ExceptionSection(){
     //const interval = setInterval(()=>fetchData(),2500)
     //return ()=>clearInterval(interval)
   },[])
- if(!(exceptions.length >= 1)) return <EmptyMenu text='Nenhuma Excepção Adicionada'/>
+  if(!exceptions) return <Loading />
+ if(!(exceptions.length >= 1)) return <EmptyMenu text='Nenhuma excepção adicionada'/>
  return (<section className="excecoesSection">
     {exceptions.map((exception,index)=>(
       <Excecao id={exception.id} key={`exception-${index}`}>{meses[new Date(exception.date).getMonth()]}{' '}{new Date(exception.date).getDate()}</Excecao>
@@ -135,14 +136,14 @@ function Header({user, school}){
   return(
     <div className="profileHeader">
 
-      { !user || !school ? <Loading /> :
+      {// !user || !school ? <Loading /> :
       <>
       <div className="profileHeaderImg">
         <StudentIcon color="white" fill/>
       </div>
       <div className="profileHeaderTxt">
-        <h3>{user}</h3>
-        <h6>{school}</h6>
+        <h3>{user || "__"}</h3>
+        <h6>{school || "__"}</h6>
       </div>
       </>
       }
@@ -277,7 +278,7 @@ export default function Profile() {
       <div className="profileContent">
 	<ProfileOption text="Gerir senha e exceções" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
 	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />} onClick={()=>setSubMenu('location')} />
-	<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>
+	{/*<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>*/}
 	<ProfileOption id="logoutButton" text="Terminar sessão" icon={logoutLoading ? <PendingIcon color="#ff8080" /> : <LogoutIcon color="#ff8080" />} onClick={()=>{setLogoutLoading(true); logout()}}/>
       </div>
       <Confirm visible={delAccount} text="Deletar Conta?" onCancel={()=>setDelAccount(false)} />
@@ -326,7 +327,7 @@ export default function Profile() {
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
         <Button onClick={() =>{setChangePassLoading(true); changePass()}}>
-	       {changePassLoading ? <PendingIcon color="#fff"/> : <><small>Confirmar</small></>}
+	       {changePassLoading ? <>Alterando <PendingIcon color="#fff"/></> : <><small>Confirmar</small></>}
         </Button>
         <ExcecaoTit />
         {

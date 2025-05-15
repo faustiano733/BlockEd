@@ -7,10 +7,13 @@ const AlertContext = createContext();
 export function AlertProvider({ children }) {
   const [text, setText] = useState("");
   const [top, setTop] = useState(-50)
-  const [borderColor, setBorderColor] = useState("") 
+  const [borderColor, setBorderColor] = useState("#ffa500") 
 
 
-  function showAlert(message) {
+  function showAlert(message, option) {
+    let tmp_bc = option == 1 ? "#00dd00" : option == 2 ?  "#ff6060" : "#ffa500";
+
+    setBorderColor(tmp_bc);
     setText(message);
     setTop(20)
 
@@ -22,7 +25,7 @@ export function AlertProvider({ children }) {
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-        <div style={{...styles.alert, top}}>
+        <div style={{...styles.alert, top, borderColor}}>
           {text}
         </div>
     </AlertContext.Provider>

@@ -127,7 +127,7 @@ export function EmptyMenu({text}){
           <SiteIcon color="#358bff"/>
     <div>
             <span>{props.domain}</span>
-      <small><small>{props.tentativas} tentativas</small></small> 
+      {/*<small><small>{props.tentativas} tentativas</small></small> */}
     </div>
   </div>
           {remSiteLoading ? <PendingIcon className="remIcon" color="#ff8080" /> : <DeleteIcon className="remIcon" color="#ff8080" onClick={()=>{setRemSiteLoading(true); remSite()}}/>}
@@ -231,7 +231,24 @@ export function EmptyMenu({text}){
     return <AddIcon className="add" color="white" onClick={props.onClick && props.onClick}/> 
   }
   
-  function MenuAplicativos({apps, setSubMenu}){
+  function MenuAplicativos({setSubMenu}){
+    const [apps, setApps] = useState(null);
+    useEffect(()=>{
+      async function fetchData(){
+        let obj = await fetch("/api/bloqueios/app");
+        let resp = await obj.json();
+  
+        setApps(resp);
+      }
+  
+      fetchData()
+      const interval = setInterval(()=>{
+      fetchData();
+      }, 5000)
+      
+      return ()=>clearInterval(interval);
+    }, [])
+
     /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
     if(!apps) return <Loading bg="transparent" />
     return(
@@ -247,7 +264,26 @@ export function EmptyMenu({text}){
     );
   }
 
-  function MenuSites({sites, setSubMenu}){
+  function MenuSites({setSubMenu}){
+    const [sites, setSites] = useState(null);
+    
+  
+    useEffect(()=>{
+      async function fetchData(){
+        let obj = await fetch("/api/bloqueios/site");
+        let resp = await obj.json();
+  
+        setSites(resp);
+      }
+  
+      fetchData()
+      const interval = setInterval(()=>{
+        fetchData();
+      }, 5000)
+  
+      return ()=>clearInterval(interval);
+    }, []) 
+
     if(!sites) return <Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuSites">
@@ -319,17 +355,17 @@ export function EmptyMenu({text}){
     )
   }
 
-   function MainContent({menuActual, subMenu, apps, sites, setSubMenu}){
+   function MainContent({menuActual, subMenu, setSubMenu}){
       if(subMenu == "adicionarAplicativos") return <AdicionarAplicativos />
       if(subMenu == "adicionarSites") return <AdicionarSites />
-        if(menuActual == "aplicativos") return <MenuAplicativos apps={apps} setSubMenu={setSubMenu}/>
-        if(menuActual == "sites") return <MenuSites sites={sites} setSubMenu={setSubMenu}/>
+        if(menuActual == "aplicativos") return <MenuAplicativos setSubMenu={setSubMenu}/>
+        if(menuActual == "sites") return <MenuSites setSubMenu={setSubMenu}/>
         if(menuActual == "outros") return <MenuOutros />
    }
 
-  function MainContentMenu({menuActual, apps, sites, setSubMenu}){
-    if(menuActual == "aplicativos") return <MenuAplicativos apps={apps} setSubMenu={setSubMenu}/> 
-    if(menuActual == "sites") return <MenuSites sites={sites} setSubMenu={setSubMenu}/>
+  function MainContentMenu({menuActual, setSubMenu}){
+    if(menuActual == "aplicativos") return <MenuAplicativos setSubMenu={setSubMenu}/> 
+    if(menuActual == "sites") return <MenuSites setSubMenu={setSubMenu}/>
     if(menuActual == "outros") return <MenuOutros />
     /*return(
       <div className="menuContentMenu">
@@ -342,43 +378,12 @@ export function EmptyMenu({text}){
     if(menuActual == "sites") return <AdicionarSites />
     if(menuActual == "outros") return <EmptyMenu text="Seleccione os bloqueios a aplicar"/>
   }
+
   const Bloqueios = ()=>{
     const [menuActual, setMenuActual] = useState("aplicativos");
     const [subMenu, setSubMenu] = useState(null);
     const [diretorios, setDiretdorios] = useState("");
-    const [sites, setSites] = useState(null);
-    const [apps, setApps] = useState(null);
-    useEffect(()=>{
-      async function fetchData(){
-        let obj = await fetch("/api/bloqueios/app");
-        let resp = await obj.json();
-  
-        setApps(resp);
-      }
-  
-      fetchData()
-      const interval = setInterval(()=>{
-      fetchData();
-      }, 3000)
-      
-      return ()=>clearInterval(interval);
-    }, [])
-  
-    useEffect(()=>{
-      async function fetchData(){
-        let obj = await fetch("/api/bloqueios/site");
-        let resp = await obj.json();
-  
-        setSites(resp);
-      }
-  
-      fetchData()
-      const interval = setInterval(()=>{
-        fetchData();
-      }, 3000)
-  
-      return ()=>clearInterval(interval);
-    }, []) 
+    
   
     function BloqueioItem(props){
       return(
@@ -401,7 +406,7 @@ export function EmptyMenu({text}){
       <>
       <div id="main">
         <div id="mainContent">
-          <MainContent menuActual={menuActual} subMenu={subMenu} apps={apps} sites={sites} setSubMenu={setSubMenu}/>
+          <MainContent menuActual={menuActual} subMenu={subMenu} setSubMenu={setSubMenu}/>
         </div>
         <div id="mainFooter">
           <BloqueioItem icon={<AndroidIcon />} text="Aplicativos" menu="aplicativos"/>
@@ -411,7 +416,7 @@ export function EmptyMenu({text}){
         {/*<HorizontalLine />*/}
         <div id="mainContent2">
           <div className="mainContentMenu">
-             <MainContentMenu menuActual={menuActual} apps={apps} sites={sites} setSubMenu={setSubMenu}/>
+             <MainContentMenu menuActual={menuActual} setSubMenu={setSubMenu}/>
           </div>
           {/*<VerticalLine />*/}
           <div className="mainContentMenu mainContentSubMenu">

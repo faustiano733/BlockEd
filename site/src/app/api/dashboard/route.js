@@ -1,11 +1,12 @@
 import { getDashboard } from "@/lib/services/dashboardService.js";
 import { NextResponse } from "next/server";
 import {getAllAttempts} from "@lib/services/attemptServices";
-import {getNumberOfApps} from "@lib/services/appServices";
+import {getNumberOfApps, getTop4Apps} from "@lib/services/appServices";
 import {getNumberOfDevices} from "@lib/services/deviceServices";
 import {getNumberOfStudents} from "@lib/services/studentService";
 import {getNumberOfSites} from "@lib/services/siteServices";
 import {getNumberOfAttemptsDate} from "@lib/services/attemptServices";
+import {getNormalStudents, getAlertStudents, getSuspectStudents} from "@lib/services/studentService";
 
 
 export async function GET(req){
@@ -18,13 +19,28 @@ export async function GET(req){
     days.map(async(el, index)=>{
         days[index] = await getNumberOfAttemptsDate(el, school);
     })
-    
+    //console.log()
+    let appAttempts = await getTop4Apps(school);
+    let appAttemptsLabel = []
+    let appAttemptsData = []
+
+    appAttempts.map((el, index)=>{
+        appAttemptsData = [...appAttemptsData, el.totalAttempts];
+        appAttemptsLabel = [...appAttemptsLabel, el.name.split(" ")[0]]
+    })
     return NextResponse.json({
         apps: await getNumberOfApps(school),
         devices: await getNumberOfDevices(school),
         students: await getNumberOfStudents(school),
         sites: await getNumberOfSites(school),
-        days: days
+        normalSt: await getNormalStudents(school),
+        alertSt: await getAlertStudents(school),
+        suspectSt: await getSuspectStudents(school),
+        //appAttempts: await getTop4Apps(school),
+        appAttemptsData,
+        appAttemptsLabel, 
+        days: days,
+
     })
 }
 

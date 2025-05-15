@@ -199,6 +199,10 @@ export const students = db.sequelize.define("student",{
     birthday: {
         type:db.Sequelize.STRING
     },
+    uninstall:{
+        type:db.Sequelize.BOOLEAN,
+        defaultValue:false
+    },
     idSchool:{
         type:db.Sequelize.UUID
     }

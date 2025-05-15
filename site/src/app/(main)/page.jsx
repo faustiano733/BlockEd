@@ -37,24 +37,7 @@ function lineLabels(){
 const Doughnut = dynamic(() => import('react-chartjs-2').then((mod) => mod.Doughnut), {
       ssr: false,
     });
-    const dataDoughnut = {
-      labels: [
-        'Normal',
-        'Alerta',
-        'Suspeito'
-      ],
-      datasets: [{
-        label: "",
-        data: [60,20, 20],
-        backgroundColor: [
-          '#00cc00',
-          '#f9f900',
-          '#ee8080'
-        ],
-        borderWidth: 3,
-        borderRadius: 6
-      }]
-    };
+    
     const optionsDoughnut = {
         plugins: {
           legend: {
@@ -116,7 +99,81 @@ const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
     });
     
     
-    const optionsBar = {
+    
+
+export function DetalhesMenu({data}){
+  const dataDoughnut = {
+      labels: [
+        'Normal',
+        'Alerta',
+        'Suspeito'
+      ],
+      datasets: [{
+        label: "",
+        data: data,
+        backgroundColor: [
+          '#00cc00',
+          '#f9f900',
+          '#ee8080'
+        ],
+        borderWidth: 3,
+        borderRadius: 6
+      }]
+    };
+
+    function DoughnutTit(props){
+        return(
+      <div className="homeDoughnutTit">
+        <div className="quad" style={{background: props.color}}></div>
+        <span>{props.text}</span>
+      </div>
+        );
+      }
+  
+      return(
+        <div className="homeDoughnut">
+      <h5>Actividade dos alunos</h5>
+          <div className="homeDoughnutConteiner">
+        <Doughnut data={dataDoughnut} options={optionsDoughnut} />
+          </div>
+          <div className="homeDoughnutTits">
+        <DoughnutTit color="#00cc00" text="Normal" />
+        <DoughnutTit color="#f9f900" text="Alerta" />
+        <DoughnutTit color="#ee8080" text="Suspeito" />
+          </div>
+        </div>
+      );
+}
+  
+export function TentativasMenu({data}){
+  const dataLine = {
+      labels: lineLabels(),
+      datasets: [
+        {
+          label: 'Tentativas de acesso',
+          data: data,
+          fill: false,
+          borderColor: '#55abff',
+          tension: 0.3,
+          fill: true,
+          backgroundColor: "#358bff22",
+          borderColor: '#358bff',
+          tension: 0.1,
+          borderWidth: 1.5,
+          pointStyle: "circle",
+          pointBorderWidth: .9
+        },
+      ],
+    };   
+    
+  
+      return(
+        <Line data={dataLine} options={optionsLine}/>
+      );
+}
+
+export function AppsMenu({data, labels}){
+  const optionsBar = {
       plugins: {
         legend: {
           display: false
@@ -158,11 +215,11 @@ const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
     }
     
     const dataBar = {
-      labels: ['Facebook', 'Instagram', 'TikTok', 'Whatsapp'],
+      labels: labels,
       datasets: [
         {
           label: 'Apps mais tentados dos últimos dias',
-          data: [25, 19, 10, 50],
+          data: data,
           backgroundColor: ["#358bff"],
           borderColor: ["#eee"],
           borderWidth: 0,
@@ -170,62 +227,6 @@ const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
         },
       ],
     };
-
-export function DetalhesMenu({data}){
-
-    function DoughnutTit(props){
-        return(
-      <div className="homeDoughnutTit">
-        <div className="quad" style={{background: props.color}}></div>
-        <span>{props.text}</span>
-      </div>
-        );
-      }
-  
-      return(
-        <div className="homeDoughnut">
-      <h5>Descrição de alunos</h5>
-          <div className="homeDoughnutConteiner">
-        <Doughnut data={dataDoughnut} options={optionsDoughnut} />
-          </div>
-          <div className="homeDoughnutTits">
-        <DoughnutTit color="#00cc00" text="Normal" />
-        <DoughnutTit color="#f9f900" text="Alerta" />
-        <DoughnutTit color="#ee8080" text="Suspeito" />
-          </div>
-        </div>
-      );
-}
-  
-export function TentativasMenu({data}){
-  const dataLine = {
-      labels: lineLabels(),
-      datasets: [
-        {
-          label: 'Tentativas de acesso',
-          data: data,
-          fill: false,
-          borderColor: '#55abff',
-          tension: 0.3,
-          fill: true,
-          backgroundColor: "#358bff22",
-          borderColor: '#358bff',
-          tension: 0.1,
-          borderWidth: 1.5,
-          pointStyle: "circle",
-          pointBorderWidth: .9
-        },
-      ],
-    };   
-    
-  
-      return(
-        <Line data={dataLine} options={optionsLine}/>
-      );
-}
-
-export function AppsMenu(){
-  
     
     
     return(
@@ -265,7 +266,7 @@ function HomePageHeader({totalAlunos, totalDispositivos,totalApps,totalSites}){
   );
 }
 
-function MainGraphConteiner({alunos, overviewMenu, lineData}){
+function MainGraphConteiner({alunos, overviewMenu, lineData, doughData}){
     return(
       <div className="homeOverview">
         {
@@ -276,7 +277,7 @@ function MainGraphConteiner({alunos, overviewMenu, lineData}){
     overviewMenu == "alunos" ?
           <AlunosMenu alunos={alunos} /> :
           overviewMenu == "detalhes" ?
-          <DetalhesMenu /> :
+          <DetalhesMenu data={doughData}/> :
     null
            
         }
@@ -295,6 +296,9 @@ export default function Home() {
   const [totalApps, setTotalApps] = useState(0);
   const [totalSites, setTotalSites] = useState(0);
   const [lineData, setLineData] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [doughData, setDoughData] = useState([0, 0, 0]);
+  const [barLabels, setBarLabels] = useState([0, 0, 0, 0]);
+  const [barData, setBarData] = useState(["", "", "", ""])
   const {showAlert} = useAlert();
   function Overview(){ 
     return(
@@ -322,6 +326,9 @@ export default function Home() {
       setTotalAlunos(data.students)
       setTotalDispositivos(data.devices)
       setLineData(data.days)
+      setDoughData([data.normalSt, data.alertSt, data.suspectSt])
+      setBarData(data.appAttemptsData)
+      setBarLabels(data.appAttemptsLabel)
       
     }
     fetchData()
@@ -331,7 +338,7 @@ export default function Home() {
   }, [])
 
   useEffect(()=>{
-    showAlert("Nothing")
+    //showAlert("Nothing")
     console.log(lineLabels())
   }, [])
 
@@ -360,7 +367,7 @@ export default function Home() {
       <HomePageHeader totalAlunos={totalAlunos} totalApps={totalApps} totalDispositivos={totalDispositivos} totalSites={totalSites} />
       <Overview />
       <div id="homePageContent">
-        <MainGraphConteiner alunos={alunos} overviewMenu={overviewMenu} lineData={lineData}/>
+        <MainGraphConteiner alunos={alunos} overviewMenu={overviewMenu} lineData={lineData} doughData={doughData} barData={barData} barLabels={barLabels}/>
       </div>
     </div>
 
@@ -370,14 +377,14 @@ export default function Home() {
       <HomePageHeader  totalAlunos={totalAlunos} totalApps={totalApps} totalDispositivos={totalDispositivos} totalSites={totalSites} />
       <div className="desktopGraphConteiner">
         <section> <TentativasMenu data={lineData}/> </section>
-        <section> <AppsMenu /> </section>
+        <section> <AppsMenu data={barData} labels={barLabels}/> </section>
       </div>
       <div className="othersConteiner">
         <section className="section1"><AlunosMenu alunos={alunos} /></section>
-        <section className="section2"><DetalhesMenu /></section>
+        <section className="section2"><DetalhesMenu data={doughData}/></section>
       </div>
     </div>
-    <Notifications />
+    {/*<Notifications />*/}
     </>
   );
 }
