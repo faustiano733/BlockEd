@@ -234,19 +234,40 @@ export function EmptyMenu({text}){
   function MenuAplicativos({setSubMenu}){
     const [apps, setApps] = useState(null);
     useEffect(()=>{
+      const controller = new AbortController()
+      let isActive = true
+
       async function fetchData(){
-        let obj = await fetch("/api/bloqueios/app");
-        let resp = await obj.json();
-  
-        setApps(resp);
+      while(isActive){
+        if (document.hidden) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+
+        try{
+          let obj = await fetch("/api/bloqueios/app", {
+            signal: controller.signal
+          });
+          
+          let resp = await obj.json();
+          setApps(resp);
+        } catch(error) {
+
+        } finally {
+
+        }
+
+        await new Promise((resolve)=>setTimeout(resolve, 5000))
       }
-  
-      fetchData()
-      const interval = setInterval(()=>{
-      fetchData();
-      }, 5000)
-      
-      return ()=>clearInterval(interval);
+    }
+
+    fetchData();
+    //const interval = setInterval(()=>fetchData(), 10000)
+
+      return ()=>{
+        isActive = false
+        controller.abort()
+      }
     }, [])
 
     /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
@@ -269,19 +290,41 @@ export function EmptyMenu({text}){
     
   
     useEffect(()=>{
+
+      const controller = new AbortController()
+      let isActive = true
+
       async function fetchData(){
-        let obj = await fetch("/api/bloqueios/site");
-        let resp = await obj.json();
-  
-        setSites(resp);
+      while(isActive){
+        if (document.hidden) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+
+        try{
+          let obj = await fetch("/api/bloqueios/site", {
+            signal: controller.signal
+          });
+          
+          let resp = await obj.json();
+          setSites(resp);
+        } catch(error) {
+
+        } finally {
+
+        }
+
+        await new Promise((resolve)=>setTimeout(resolve, 5000))
       }
-  
-      fetchData()
-      const interval = setInterval(()=>{
-        fetchData();
-      }, 5000)
-  
-      return ()=>clearInterval(interval);
+    }
+
+    fetchData();
+    //const interval = setInterval(()=>fetchData(), 10000)
+
+      return ()=>{
+        isActive = false
+        controller.abort()
+      }
     }, []) 
 
     if(!sites) return <Loading bg="transparent" />
@@ -300,7 +343,7 @@ export function EmptyMenu({text}){
   function MenuOutros(){
     const[data, setData] = useState({});
     useEffect(()=>{
-      async function fetchData(){
+      /*async function fetchData(){
         let obj = await fetch("/api/bloqueios/options");
         let resp = await obj.json();
   
@@ -313,7 +356,42 @@ export function EmptyMenu({text}){
       }, 10000)
   
       return ()=>clearInterval(interval);
+      */
 
+      const controller = new AbortController()
+      let isActive = true
+
+      async function fetchData(){
+      while(isActive){
+        if (document.hidden) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+
+        try{
+          let obj = await fetch("/api/bloqueios/options", {
+            signal: controller.signal
+          });
+          
+          let resp = await obj.json();
+          setData(resp);
+        } catch(error) {
+
+        } finally {
+
+        }
+
+        await new Promise((resolve)=>setTimeout(resolve, 5000))
+      }
+    }
+
+    fetchData();
+    //const interval = setInterval(()=>fetchData(), 10000)
+
+      return ()=>{
+        isActive = false
+        controller.abort()
+      }
     }, [])
 
     async function handleUpdate(changes){

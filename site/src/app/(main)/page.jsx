@@ -317,24 +317,43 @@ export default function Home() {
   
    
   useEffect(()=>{
+    const controller = new AbortController()
+    let isActive = true
+
     async function fetchData(){
-      const response = await fetch('/api/dashboard/')
-      const data = await response.json()
+        while(isActive){
+          try{
+            const response = await fetch('/api/dashboard/', {
+              signal: controller.signal
+            })
 
-      setTotalApps(data.apps)
-      setTotalSites(data.sites)
-      setTotalAlunos(data.students)
-      setTotalDispositivos(data.devices)
-      setLineData(data.days)
-      setDoughData([data.normalSt, data.alertSt, data.suspectSt])
-      setBarData(data.appAttemptsData)
-      setBarLabels(data.appAttemptsLabel)
+            const data = await response.json()
       
-    }
-    fetchData()
-    const interval = setInterval(()=>fetchData(), 10000)
+            setTotalApps(data.apps)
+            setTotalSites(data.sites)
+            setTotalAlunos(data.students)
+            setTotalDispositivos(data.devices)
+            setLineData(data.days)
+            setDoughData([data.normalSt, data.alertSt, data.suspectSt])
+            setBarData(data.appAttemptsData)
+            setBarLabels(data.appAttemptsLabel)
+          } catch(error){
 
-    return ()=>clearInterval(interval)
+          } finally {
+
+          }
+
+          await new Promise((resolve)=>setTimeout(resolve, 5000))
+        }
+    }
+
+    fetchData()
+    //const interval = setInterval(()=>fetchData(), 10000)
+
+    return ()=>{
+      isActive = false
+      controller.abort()
+    }
   }, [])
 
   useEffect(()=>{
@@ -344,19 +363,39 @@ export default function Home() {
 
 
   useEffect(()=>{
+    const controller = new AbortController()
+    let isActive = true
+
     async function fetchData(){
-      let obj = await fetch("/api/student");
+      while(isActive){
+        if (document.hidden) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+        try{
+          let obj = await fetch("/api/student", {
+            signal: controller.signal
+          });
+          
+          let res = await obj.json();
+          setAlunos(res);
+        } catch(error) {
 
-      let res = await obj.json();
+        } finally {
 
-      setAlunos(res);
+        }
+
+        await new Promise((resolve)=>setTimeout(resolve, 5000))
+      }
     }
 
     fetchData();
+    //const interval = setInterval(()=>fetchData(), 10000)
 
-    const interval = setInterval(()=>fetchData(), 10000)
-
-    return ()=>clearInterval(interval)
+    return ()=>{
+      isActive = false
+      controller.abort()
+    }
   }, [])
 
   

@@ -61,5 +61,6 @@ a {
 @media(min-width:900px){
   body{
     flex-direction: row;
+    background: #eceff8;
   }
 }

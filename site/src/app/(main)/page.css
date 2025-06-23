@@ -208,7 +208,7 @@
 }
 .desktopGraphConteiner section{
   width: stretch;
-  height: stretch;
+  height: 100%;
   padding: 10px;
   background: white;
   border-radius: 10px;

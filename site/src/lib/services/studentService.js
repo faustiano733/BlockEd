@@ -100,12 +100,12 @@ export async function getNormalStudents(idSchool){
         SELECT COUNT(*) AS total
         FROM students s
         WHERE (
-            SELECT d.updatedAt
+            SELECT d."updatedAt"
             FROM devices d
-            WHERE d.idStudent = s.id
-            ORDER BY d.updatedAt ASC
+            WHERE d."idStudent" = s.id
+            ORDER BY d."updatedAt" ASC
             LIMIT 1
-        ) >= ? and idSchool = ?
+        ) >= ? and "idSchool" = ?
     `, {
         replacements: [cincoDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
         type: db.sequelize.QueryTypes.SELECT,
@@ -122,20 +122,20 @@ export async function getAlertStudents(idSchool){
         SELECT COUNT(*) AS total
         FROM students s
         WHERE (
-            SELECT d.updatedAt
+            SELECT d."updatedAt"
             FROM devices d
-            WHERE d.idStudent = s.id
-            ORDER BY d.updatedAt ASC
+            WHERE d."idStudent" = s.id
+            ORDER BY d."updatedAt" ASC
             LIMIT 1
         ) >= ? and  
 
         (
-            SELECT d.updatedAt
+            SELECT d."updatedAt"
             FROM devices d
-            WHERE d.idStudent = s.id
-            ORDER BY d.updatedAt ASC
+            WHERE d."idStudent" = s.id
+            ORDER BY d."updatedAt" ASC
             LIMIT 1
-        ) < ? and idSchool = ?
+        ) < ? and "idSchool" = ?
     `, {
         replacements: [seteDiasAtras, cincoDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
         type: db.sequelize.QueryTypes.SELECT,
@@ -152,12 +152,12 @@ export async function getSuspectStudents(idSchool){
         SELECT COUNT(*) AS total
         FROM students s
         WHERE (
-            SELECT d.updatedAt
+            SELECT d."updatedAt"
             FROM devices d
-            WHERE d.idStudent = s.id
-            ORDER BY d.updatedAt ASC
+            WHERE d."idStudent" = s.id
+            ORDER BY d."updatedAt" ASC
             LIMIT 1
-        ) < ? and idSchool = ?
+        ) < ? and "idSchool" = ?
     `, {
         replacements: [seteDiasAtras, idSchool], // ex: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
         type: db.sequelize.QueryTypes.SELECT,

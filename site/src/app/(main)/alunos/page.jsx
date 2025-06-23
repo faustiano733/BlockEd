@@ -35,18 +35,48 @@ function MenuAlunos({setAluno}){
   }
 
   useEffect(()=>{
-    async function fetchData(){
+    /*async function fetchData(){
       let obj = await fetch("/api/student");
       let resp = await obj.json();
 
       setAlunos(resp);
+    }*/
+
+    const controller = new AbortController()
+    let isActive = true
+
+    async function fetchData(){
+      while(isActive){
+
+        if (document.hidden) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+        
+        try{
+          let obj = await fetch("/api/student", {
+            signal: controller.signal
+          });
+          
+          let res = await obj.json();
+          setAlunos(res);
+        } catch(error) {
+
+        } finally {
+
+        }
+
+        await new Promise((resolve)=>setTimeout(resolve, 5000))
+      }
     }
 
-    fetchData()
+    fetchData();
+    //const interval = setInterval(()=>fetchData(), 10000)
 
-    let interval = setInterval(()=>fetchData(), 10000);
-
-    return ()=> clearInterval(interval);
+    return ()=>{
+      isActive = false
+      controller.abort()
+    }
   }, []);
 
   function timeDiff(before){
@@ -76,6 +106,12 @@ function MenuAlunos({setAluno}){
   }
   
   if(!alunos) return <Loading bg="transparent"/>
+  if(alunos.length == 0) 
+    return(
+      <div style={{color: "gray", display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "transparent"}}> 
+        Nenhum aluno cadastrado
+      </div>
+    )
   return(
     <div className="menuAlunos">
       {/*<AddIcon color='#358bff' />*/}

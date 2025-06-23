@@ -1,3 +1,5 @@
+import "pg";
+
 import { NextResponse } from "next/server.js"
 import {getApp, activeApp, addApp, getAllApps} from "@lib/services/appServices.js"
 import AppControler from "@/lib/controllers/AppController"

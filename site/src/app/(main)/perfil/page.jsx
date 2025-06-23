@@ -14,6 +14,7 @@ import Loading from "@/components/Loading";
 import { EmptyMenu } from "../bloqueio/page";
 import MapaComRaio from "@/components/MapaComRaio";
 import { useAlert } from "@/context/AlertContext";
+import Notifications from "@components/Notifications";
 
 function LocationMenu(){
   const [locationData, setLocationData] = useState({ 
@@ -142,8 +143,8 @@ function Header({user, school}){
         <StudentIcon color="white" fill/>
       </div>
       <div className="profileHeaderTxt">
-        <h3>{user || "__"}</h3>
-        <h6>{school || "__"}</h6>
+        <h3>{user || "***"}</h3>
+        <h6>{school || "***"}</h6>
       </div>
       </>
       }
@@ -381,6 +382,7 @@ export default function Profile() {
         </div>
       </div>
       {/*<div onClick={()=>{showAlert("Bruh2mnjdhfdgjfhdhgfhdfdhfdjgfjgdhjfgdgfhdghfdgfdgf")}}>Clique</div>*/}
+      <Notifications />
     </>
   );
 }

@@ -65,10 +65,10 @@ export async function getTop4Apps(idSchool){
         (
         SELECT COUNT(*) 
         FROM attempts at 
-        WHERE at.value = a.packageName and idSchool = ?
-        ) AS totalAttempts
-    FROM apps a WHERE idSchool = ?
-    ORDER BY totalAttempts DESC
+        WHERE at.value = a."packageName" and "idSchool" = ?
+        ) AS "totalAttempts"
+    FROM apps a WHERE "idSchool" = ?
+    ORDER BY "totalAttempts" DESC
     LIMIT 4
 `, {
     replacements: [idSchool, idSchool],
