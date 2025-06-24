@@ -284,10 +284,10 @@ export default function Cadastro() {
               </div>
 
               <div className={styles.locationPreview}>
-                <h3 className={styles.subtitle}>Localização Definida</h3>
+                <h3 className={styles.subtitle}>Dados fornecidos</h3>
                 <p>Escola: {formData.schoolName}</p>
-                <p>Latitude: {parseFloat(formData.latitude).toFixed(6)}</p>
-                <p>Longitude: {parseFloat(formData.longitude).toFixed(6)}</p>
+                <p>Email: {formData.email}</p>
+                <p>Username: {formData.username}</p>
                 <p>Raio de Atuação: {formData.radius} metros</p>
               </div>
 

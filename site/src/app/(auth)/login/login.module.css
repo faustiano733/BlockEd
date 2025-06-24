@@ -8,7 +8,7 @@
   
   .card {
     width: 100%;
-    max-width: 28rem;
+    max-width: 25rem;
     padding: 2.5rem;
     background-color: white;
     border-radius: 1rem;
@@ -16,7 +16,7 @@
   }
   
   .title {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     line-height: 2.25rem;
     color: #162938;
     text-align: center;

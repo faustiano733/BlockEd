@@ -2,6 +2,11 @@
 import dynamic from 'next/dynamic';
 import { useState,useEffect } from 'react';
 import { useMapEvents } from 'react-leaflet';
+/*import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';*/
+
 // Carregar os componentes do Leaflet apenas no cliente
 const MapContainer = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
@@ -20,6 +25,14 @@ const Circle = dynamic(
   { ssr: false }
 );
 
+/*const customMarkerIcon = new L.Icon({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});*/
 
 function MapaComRaio({ onChange, initialPosition, initialRadius }) {
   const [position, setPosition] = useState({ 
@@ -66,13 +79,13 @@ function MapaComRaio({ onChange, initialPosition, initialRadius }) {
       <MapContainer 
         center={position} 
         zoom={getZoomFromRadius(radius)} 
-        style={{ height: '50%', width: '100%' }}
+        style={{ height: 'calc(100% - 50px)', width: '100%', borderRadius: 10 }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={position} />
+        {/*<Marker position={position} icon={customMarkerIcon} />*/}
         <Circle 
           center={position} 
           radius={radius} 
@@ -81,8 +94,8 @@ function MapaComRaio({ onChange, initialPosition, initialRadius }) {
         <MapaClickHandler />
       </MapContainer>
 
-      <div style={{ marginTop: '1rem' }}>
-        <label>Raio (metros): </label>
+      <div style={{ marginTop: '5px', height: "20px", display: "flex", gap: 2, fontSize: "0.875rem", color: "#2a4859", alignItems: "center", justifyContent: "center"  }}>
+        <label>Raio: </label>
         <input
           type="range"
           min="100"

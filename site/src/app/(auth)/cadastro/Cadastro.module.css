@@ -4,12 +4,12 @@
   align-items: center;
   min-height: 100vh;
   width: 100%;
-  padding: 20px;
+  /*padding: 20px;*/
 }
 
 .card {
   width: 100%;
-  max-width: 28rem;
+  max-width: 25rem;
   background-color: white;
   border-radius: 1rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -37,18 +37,26 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  /*margin-bottom: 1.25rem;*/
 }
 
 .label {
   color: #162938;
   font-weight: 500;
+  display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #2a4859;
 }
 
 .input {
   padding: 0.75rem;
   border: 1px solid rgb(209 213 219);
   border-radius: 0.5rem;
+  width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
 }
 
 .input:focus {
@@ -58,11 +66,11 @@
 }
 
 .mapContainer {
-  margin: 1.5rem 0;
+  /*margin: 1.5rem 0;*/
   border: 1px solid #e0e0e0;
   padding: 1rem;
   background: #f9f9f9;
-  height: 400px;
+  height: 250px;
   width: 100%;
   border-radius: 8px
 }
@@ -70,7 +78,7 @@
 .subtitle {
   margin-bottom: 1rem;
   color: #444;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
 }
 
 .locationPreview {
@@ -88,7 +96,7 @@
 .formSection {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .button {
@@ -118,28 +126,29 @@
 .checkboxGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin: 1rem 0;
+  gap: 7px;
+  /*margin: 1rem 0;*/
 }
 
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 5px;
   color: #162938;
   cursor: pointer;
+  font-size: 0.875rem;
 }
 
 .checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   accent-color: #162938;
 }
 
 .buttonGroup {
   display: flex;
   gap: 1rem;
-  margin-top: 1.5rem;
+  /*margin-top: 1.5rem;*/
 }
 
 .buttonFlex {
@@ -161,6 +170,14 @@
 }
 
 .textCenter {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #2a4859;
+}
+
+.loginRedirect{
+  width: 100%;
+  margin-top: 1.5rem;
   text-align: center;
   font-size: 0.875rem;
   color: #2a4859;

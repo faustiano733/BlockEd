@@ -9,9 +9,10 @@ export const signController = async (req)=>{
   try{
     const isValid = await signup(accountData,userData,schoolData,locationData);
     if(isValid.status === 'ok'){
-      const url = new URL(req.url)
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
+      //const url = new URL(req.url)
+      //url.pathname = '/login'
+
+      return NextResponse.json({message: "Cadastrado com sucesso"});
     }
   }catch(error){
     console.log(error.message)

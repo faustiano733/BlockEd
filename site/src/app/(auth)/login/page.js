@@ -63,27 +63,29 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className={styles.input}
+                            placeholder="Email"
                         />
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>Password</label>
+                        <label className={styles.label}>Senha</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className={styles.input}
+                            placeholder="Senha"
                         />
                     </div>
 
-                    <div className={styles.rememberContainer}>
+                    {/*<div className={styles.rememberContainer}>
                         <label className={styles.rememberCheckbox}>
                             <input type="checkbox" className={styles.checkbox} />
                             Remember me
                         </label>
                         <a href="#" className={styles.forgotPassword}>Forgot password?</a>
-                    </div>
+                    </div>*/}
 
                     <button
                         type="submit"
@@ -95,13 +97,13 @@ export default function Login() {
 
                     <div className={styles.registerText}>
                         <p>
-                            Don't have an account?{' '}
+                            Não tem uma conta?{' '}
                             <Link 
                                 onClick={handleRegisterRedirect}
                                 className={styles.registerLink}
                                 href='#'
                             >
-                                Register
+                                Criar conta
                             </Link>
                         </p>
                     </div>
