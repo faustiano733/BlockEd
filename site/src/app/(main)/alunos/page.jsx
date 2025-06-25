@@ -11,6 +11,8 @@ import {EmptyMenu} from "../bloqueio/page.jsx";
 import Button from "@/components/Button";
 import Confirm from "@components/Confirm.js";
 import { useAlert } from "@/context/AlertContext";
+import NoStudentSkeleton from "@/skeletons/NoStudentSkeleton"
+import NoStudentSelectedSkeleton from "@/skeletons/NoStudentSelectedSkeleton"
 //import { Metadata } from "next";
 
 function SearchAluno(props){
@@ -108,9 +110,10 @@ function MenuAlunos({setAluno}){
   if(!alunos) return <Loading bg="transparent"/>
   if(alunos.length == 0) 
     return(
-      <div style={{color: "gray", display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "transparent"}}> 
+      /*<div style={{color: "gray", display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "transparent"}}> 
         Nenhum aluno cadastrado
-      </div>
+      </div>*/
+      <NoStudentSkeleton/>
     )
   return(
     <div className="menuAlunos">
@@ -207,6 +210,8 @@ export function Aluno(props){
 const SubMenuAddStudent = ({close})=>{
   const [code, setCode] = useState(null)
   const [expiresAt,setExpiresAt] = useState(null)
+  const [generating, setGenerating] = useState(false)
+  const { showAlert } = useAlert();
   const Information = ()=>(<div className="information">
     <p>
       Para vincular um aluno à instituição, clique em "Gerar código". Após isso, insira o código na tela de configurações da app
@@ -220,6 +225,7 @@ const SubMenuAddStudent = ({close})=>{
   
 
   const handleGenerateCode = async ()=>{
+    setGenerating(true);
     const response = await fetch('/api/student',{
       headers:{
         'Content-Type':'application/json'
@@ -230,7 +236,7 @@ const SubMenuAddStudent = ({close})=>{
     const data = await response.json()
     setCode(data.code)
     setExpiresAt(data.expiresAt)
-
+    setGenerating(false)
   }
 
   return(
@@ -239,7 +245,7 @@ const SubMenuAddStudent = ({close})=>{
         {/*<CloseMenu onClick={close} />*/}
         {code?<Code code={code} target={expiresAt}/>:<Information/>}
         
-        <Button onClick={handleGenerateCode}>Gerar código</Button>
+        <Button onClick={handleGenerateCode}>{generating ? "Gerando..." : "Gerar código"}</Button>
       </div>
     </>
   )
@@ -430,7 +436,7 @@ export default function AlunosPage(){
             {uninstall ?  <CloseIcon/> : <DeleteIcon color={"#ff8080"}/>}
           </div>
         </div>
-        : <EmptyMenu text="Nenhum aluno seleccionado" />
+        : <NoStudentSelectedSkeleton />
       }
       
       </>

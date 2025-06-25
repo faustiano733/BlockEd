@@ -1,22 +1,65 @@
+*{
+  scrollbar-width: none;
+  scrollbar-color: gray;
+}
+
+*::-webkit-scrollbar{
+  width: none;
+}
+
+*::-webkit-scrollbar-track{
+  background: gray;
+}
+
+*::-webkit-scrollbar-thumb{
+  background-color: gray;
+  border-radius: 20px;
+  border: 0px solid gray;
+}
+
 .notificationsContainer{
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	position: fixed;
+	/*position: fixed;*/
 	height: 100%;
 	background: white;
-	top: 0;
-	padding: 30px 10px 10px;
+	/*top: 0;*/
+	padding: 10px;
+	gap: 10px;
 	overflow: auto;
 }
 
 .notification{
+	display: flex;
+	align-items: flex-start;
 	width: 100%;
 	word-break: break-word;
-	font-size: 13px;
 	color: #444;
-	border-top: solid 1px #aaa5;
-	padding: 10px 0;
+	/*border-top: solid 1px #aaa5;*/
+	padding: 7px;
+	gap: 10px;
+	border-radius: 	10px;
+}
+
+.notification svg{
+	min-width: 35px;
+	min-height: 35px;
+	background: #f0f0f0;
+	padding: 3px;
+	border-radius: 100px;
+}
+
+.notification span{
+	width: 100%;
+	font-size: 13px;
+  	color: #2a4859;
+  	padding: 0;
+}
+
+.notification small{
+	font-size: 11px;
+	min-width: fit-content;
 }
 
 .notificationsIcon{
@@ -42,11 +85,11 @@
 
 @media(min-width: 900px){
 	.notificationsContainer{
-		width: 300px;
-		height: 350px;
+		max-width: 400px;
+		height: 100%;
 		border-radius: 10px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-		top: 60px;
+		/*box-shadow: 0 2px 8px rgba(0,0,0,0.2);*/
+		/*top: 60px;*/
 		right: 10px;
 	}
 }

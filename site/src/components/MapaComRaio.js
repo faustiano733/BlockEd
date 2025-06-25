@@ -35,10 +35,7 @@ const Circle = dynamic(
 });*/
 
 function MapaComRaio({ onChange, initialPosition, initialRadius }) {
-  const [position, setPosition] = useState({ 
-    lat: -8.8383, 
-    lng: 13.2344 
-  });
+  const [position, setPosition] = useState(initialPosition);
   
   const [radius, setRadius] = useState(300);
 
@@ -100,7 +97,7 @@ function MapaComRaio({ onChange, initialPosition, initialRadius }) {
           type="range"
           min="100"
           max="2000"
-          step="10"
+          step="5"
           value={radius}
           onChange={(e) => {
             const newRadius = parseInt(e.target.value, 10);

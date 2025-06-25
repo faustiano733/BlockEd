@@ -9,7 +9,9 @@ import Button from "@components/Button.js";
 import { CheckBoxIcon, CheckBoxInativeIcon, AndroidIcon, SiteIcon, DeleteIcon, AddIcon, CheckIcon, PendingIcon, SearchIcon, InternetIcon, CameraIcon, SoundIcon, MoreIcon} from "@/Icons.jsx";
 import { Metadata } from "next";
 import Loading from "@components/Loading";
-
+import { useAlert } from "@/context/AlertContext";
+import NoAppsSkeleton from "@/skeletons/NoAppsSkeleton"
+import NoSitesSkeleton from "@/skeletons/NoSitesSkeleton"
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -25,6 +27,7 @@ export function EmptyMenu({text}){
     const [appLoading, setAppLoading] = useState(false);
     const [appAccepted, setAppAccepted] = useState(false);
     const [remAppLoading, setRemAppLoading] = useState(false);
+    const { showAlert } = useAlert();
 
     async function addApp(app){
       let obj = await fetch('/api/bloqueios/app',{
@@ -37,6 +40,7 @@ export function EmptyMenu({text}){
       setAppLoading(false);
       if(obj.status === 200){
         setAppAccepted(true);
+        showAlert("App adicionada com sucesso")
       }
     }
     async function handleRemApp(){
@@ -47,6 +51,7 @@ export function EmptyMenu({text}){
         method:'DELETE',
         body:JSON.stringify({name:props.app.name,id:props.app.id})
       })
+      showAlert("App deletada com sucesso")
       setRemAppLoading(false);
     }
 
@@ -108,7 +113,8 @@ export function EmptyMenu({text}){
 
   function Site(props){
     const [remSiteLoading, setRemSiteLoading] = useState(false);
-    
+    const { showAlert } = useAlert();
+
     async function remSite(){
       await fetch('/api/bloqueios/site',{
         headers:{
@@ -117,7 +123,7 @@ export function EmptyMenu({text}){
         method:'DELETE',
         body:JSON.stringify({domain:props.site.domain,id:props.site.id})
       })
-
+      showAlert("Site deletado com sucesso")
       setTimeout(()=>setRemSiteLoading(false),1500)
     }
 
@@ -137,8 +143,10 @@ export function EmptyMenu({text}){
 
   function AdicionarSites() {
     const [searchSiteLoading, setSearchSiteLoading] = useState(false);
+    const [addSiteLoading, setAddSiteLoading] = useState(false)
     const [validatedSite, setValidatedSite] = useState(null);
     const [url, setURL] = useState('');
+    const { showAlert } = useAlert();
     
     async function validateSite() {
       if (!url.trim()) return;
@@ -170,14 +178,14 @@ export function EmptyMenu({text}){
 
     const handleSearch = () => {
       if (url.trim()) {
-        setSearchSiteLoading(true);
+        //setSearchSiteLoading(true);
         validateSite();
       }
     };
 
     const handleAddSite = async ()=>{
       
-      setSearchSiteLoading(true)
+      setAddSiteLoading(true)
       const response = await fetch('/api/bloqueios/site',{
         headers:{
           'Content-Type':'application/json'
@@ -186,7 +194,13 @@ export function EmptyMenu({text}){
         body:JSON.stringify({domain:validatedSite.normalizedUrl})
       })
 
-      setTimeout(()=>setSearchSiteLoading(false),1500)
+      if(response.ok){
+        showAlert("Site adicionado com sucesso")
+      } else
+        showAlert("Erro ao adicionar site")
+
+        setAddSiteLoading(false)
+      //setTimeout(()=>setSearchSiteLoading(false),1500)
       
     }
 
@@ -217,9 +231,9 @@ export function EmptyMenu({text}){
               {validatedSite.status===202 &&(<span>{validatedSite.error.toLowerCase()}</span>)}
               {validatedSite.normalizedUrl&&(
                 <Button onClick={handleAddSite} >
-                {searchSiteLoading ? 
-                  <PendingIcon color={'#fff'}/> :
-                  'Adicionar Site'}
+                {addSiteLoading ? 
+                  "Adicionando..." :
+                  'Adicionar site'}
                   </Button>)}
             </section>
           </>
@@ -274,7 +288,7 @@ export function EmptyMenu({text}){
     if(!apps) return <Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuAplicativos">
-        {apps.length < 1 && <EmptyMenu text="Nenhum aplicativo adicionado" />}
+        {apps.length < 1 && <NoAppsSkeleton/>}
         {apps.map((elemento, index)=>{
           if(!elemento.active) return null;
           return <Aplicativo key={"app"+index} app={elemento} name={elemento.name} loaded={true} tentativas={4/*elemento.tentativas*/}/>
@@ -330,7 +344,7 @@ export function EmptyMenu({text}){
     if(!sites) return <Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuSites">
-        {sites.length < 1 && <EmptyMenu text="Nenhum site adicionado" /> }
+        {sites.length < 1 && <NoSitesSkeleton/>}
         {sites.map((elemento, index)=>{
           return <Site key={index} domain={elemento.domain/*domain*/} site={elemento} tentativas={4/*elemento.tentativas*/}/> 
          }

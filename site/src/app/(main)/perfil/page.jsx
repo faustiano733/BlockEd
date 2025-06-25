@@ -4,7 +4,7 @@ import Image from "next/image";
 import {useRouter} from "next/navigation";
 import "./page.css";
 //import {Aluno} from "./alunos/page.js";
-import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon, AddIcon } from "@icon";
+import { LockIcon, CalendarIcon, CalendarAddIcon, LocationIcon, CloseIcon, ForwardIcon, ProfileIcon, StudentIcon, DeleteIcon, LogoutIcon, StudentsIcon, SmartPhoneIcon, AndroidIcon, SiteIcon, PendingIcon, AddIcon, NotificationIcon } from "@icon";
 import { useEffect, useState } from "react";
 import Button from "@components/Button.js";
 import Input from "@components/Input.js";
@@ -15,11 +15,14 @@ import { EmptyMenu } from "../bloqueio/page";
 import MapaComRaio from "@/components/MapaComRaio";
 import { useAlert } from "@/context/AlertContext";
 import Notifications from "@components/Notifications";
+import NoExceptionSkeleton from "@/skeletons/NoExceptionSkeleton"
 
 function LocationMenu(){
+  const [initialLoading, setInitialLoading] = useState(true);
+  const { showAlert } = useAlert();
   const [locationData, setLocationData] = useState({ 
-    latitude: -8.8383, 
-    longitude: 13.2344, 
+    latitude: 0,//-8.8383, 
+    longitude: 0,//13.2344, 
     radius: 500 
   });
 
@@ -39,6 +42,8 @@ function LocationMenu(){
       const response = await fetch('/api/location')
       const dados = await response.json()
       setLocationData({latitude:parseFloat(dados.latitude), longitude:parseFloat(dados.longitude), radius:dados.radius})
+      //await new Promise( resolve => setTimeout(resolve, 1000))
+      setInitialLoading(false)
     }
 
     fetchData()
@@ -57,15 +62,26 @@ function LocationMenu(){
       }})
     })
 
+    if(response.ok)
+      showAlert("Localização alterada com sucesso")
+    else{
+      showAlert("Erro ao alterar localização")
+    }
+
     setChangeLocationLoading(false)
   }
 
   return (
     <>
-    <div style={{ maxWidth: '1200px', margin: '0 auto',height:'70%' }}>
-      <h1 className="titulo-mapa">Marque a localização da escola</h1>
-      <MapaComRaio className='mapa-wrapper' onChange={handleLocationChange} initialPosition={{lat:locationData.latitude,lng:locationData.longitude}} initialRadius={locationData.radius} />
+    <div style={{width: "100%", margin: '0 auto',maxHeight:'60%', height: "60%", display: "flex", flexDirection: "column", gap: 10}}>
+      { initialLoading ? <Loading /> :
+        <>
+          <h4 className="titulo-mapa">Marque a localização da escola</h4>
+          <MapaComRaio className='mapa-wrapper' onChange={handleLocationChange} initialPosition={{lat:locationData.latitude,lng:locationData.longitude}} initialRadius={locationData.radius} />
+        </>
+      }
     </div>
+    {/*
     <div className="dados-localizacao">
     <h3>Dados da Localização:</h3>
     <pre>
@@ -75,10 +91,11 @@ function LocationMenu(){
       <br />
       Raio: {locationData.radius} metros
     </pre>
-  </div>
-  <Button onClick={() =>{setChangeLocationLoading(true);handleSubmit()}}>
-	       {changeLocationLoading ? <>Alterando<PendingIcon color="#fff"/></> : <><small>Confirmar</small></>}
-  </Button>
+    </div>
+    */}
+    <Button onClick={() =>{setChangeLocationLoading(true);handleSubmit()}}>
+	       {changeLocationLoading ? <><small>Confirmando...</small></> : <><small>Confirmar</small></>}
+    </Button>
   </>
   );
 }
@@ -101,7 +118,7 @@ function ExceptionSection(){
     //return ()=>clearInterval(interval)
   },[])
   if(!exceptions) return <Loading />
- if(!(exceptions.length >= 1)) return <EmptyMenu text='Nenhuma excepção adicionada'/>
+ if(!(exceptions.length >= 1)) return <NoExceptionSkeleton/>
  return (<section className="excecoesSection">
     {exceptions.map((exception,index)=>(
       <Excecao id={exception.id} key={`exception-${index}`}>{meses[new Date(exception.date).getMonth()]}{' '}{new Date(exception.date).getDate()}</Excecao>
@@ -111,6 +128,7 @@ function ExceptionSection(){
 
 function Excecao({children,id}){
   const [isDeleting, setIsDeleting] = useState(false)
+  const { showAlert } = useAlert();
   async function handleDeleteException(id){
     setIsDeleting(true)
     await fetch('/api/exception',{
@@ -121,14 +139,16 @@ function Excecao({children,id}){
       method:'DELETE',
       body:JSON.stringify({exception:id})
     })
-    setTimeout(()=>setIsDeleting(false),2500)
+
+    showAlert("Exceção deletada com sucesso")
+    setIsDeleting(false)
     
   }
   return(
     <div className="excecao">
       <CalendarIcon color="#358bff"/>
       <span>{children}</span>
-      {isDeleting?<PendingIcon/>:<DeleteIcon color="#ff8080" className="excecaoDelIcon" onClick={async ()=>await handleDeleteException(id)}/>}
+      {isDeleting?<PendingIcon color="#ff8080" className="excecaoDelIcon"/>:<DeleteIcon color="#ff8080" className="excecaoDelIcon" onClick={async ()=>await handleDeleteException(id)}/>}
     </div>
   );
 }
@@ -165,6 +185,7 @@ function AddExcecaoSection({setShow}){
   const[mes, setMes] = useState(0);
   const[maxDia, setMaxDia] = useState(31);
   const[dia, setDia] = useState(31);
+  const { showAlert } = useAlert();
   const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
   const limites = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -216,7 +237,9 @@ function AddExcecaoSection({setShow}){
     })
     const data = await response.json()
     const {error} = data
-    if(error) alert(`Alguma Coisa Correu Mal ${error}`)
+    if(error) showAlert("Erro ao adicionar exceção")
+    else
+      showAlert("Exceção adicionada com sucesso")
     setShow(false)
   }
   return(
@@ -249,6 +272,7 @@ export default function Profile() {
   const [school, setSchool] = useState('')
   const [subMenu, setSubMenu] = useState('');
   const { showAlert } = useAlert();
+  const [showNot, setShowNot] = useState(false)
 
   function deletarConta(){
     alert(1);
@@ -277,7 +301,7 @@ export default function Profile() {
     return(
       <>
       <div className="profileContent">
-	<ProfileOption text="Gerir senha e exceções" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
+	<ProfileOption text="Gerir exceções" onClick={()=> setSubMenu("senha")} icon={<LockIcon color="#358bff" />}/>
 	<ProfileOption text="Alterar localização da instituição" icon={<LocationIcon color="#358bff" />} onClick={()=>setSubMenu('location')} />
 	{/*<ProfileOption text="Deletar conta" icon={<DeleteIcon color="#358bff" />} onClick={()=> setDelAccount(true)}/>*/}
 	<ProfileOption id="logoutButton" text="Terminar sessão" icon={logoutLoading ? <PendingIcon color="#ff8080" /> : <LogoutIcon color="#ff8080" />} onClick={()=>{setLogoutLoading(true); logout()}}/>
@@ -324,12 +348,12 @@ export default function Profile() {
 
     return(
       <div className="profileSubMenu" id="senhaMenu">
-        <Input onChange={handlechangeName} type='text' label='nome do usuario'></Input>
+        {/*<Input onChange={handlechangeName} type='text' label='nome do usuario'></Input>
         <Input type="password" label="Senha antiga"/>
         <Input type="password" label="Nova senha"/>
         <Button onClick={() =>{setChangePassLoading(true); changePass()}}>
-	       {changePassLoading ? <>Alterando <PendingIcon color="#fff"/></> : <><small>Confirmar</small></>}
-        </Button>
+	       {changePassLoading ? <>Confirmando...</> : <><small>Confirmar</small></>}
+        </Button>*/}
         <ExcecaoTit />
         {
         showAddExcecao ?
@@ -369,20 +393,25 @@ export default function Profile() {
   return (
     <>
       <div className="main">
-        {subMenu ? <SubMenu /> : <> <Header user={user} school={school} /> <Content /> </>}
+        { showNot ? <Notifications/> : subMenu ? <SubMenu /> : <> <Header user={user} school={school} /> <Content /> </>}
+        <div style={{position: "fixed", bottom: 30, right: 20, padding: 5, backgroundColor: "white", display: "flex", borderRadius: 100, boxShadow: "0 0 2px 0.5px rgba(0, 0, 0, 0.6)"}} onClick={()=>{
+          setShowNot(!showNot)
+        }}>
+          <NotificationIcon size={30}/>
+        </div>
       </div>
       <div className="mainDesktop">
         <div className="profileSettingsDesktop">
           <Header user={user} school={school} />
           <Content />
         </div>
-        <div className="profileScreenDesktop">
+        <div className="profileScreenDesktop" style={subMenu ? {} : {display: "none"}}>
           {subMenu === 'senha' && <SenhaMenu />}
           {subMenu === 'location' && <LocationMenu />} {/* Substitua LocationMenu por Location */}
         </div>
+        <Notifications />
       </div>
       {/*<div onClick={()=>{showAlert("Bruh2mnjdhfdgjfhdhgfhdfdhfdjgfjgdhjfgdgfhdghfdgfdgf")}}>Clique</div>*/}
-      <Notifications />
     </>
   );
 }
