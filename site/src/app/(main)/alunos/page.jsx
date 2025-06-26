@@ -12,6 +12,7 @@ import Button from "@/components/Button";
 import Confirm from "@components/Confirm.js";
 import { useAlert } from "@/context/AlertContext";
 import NoStudentSkeleton from "@/skeletons/NoStudentSkeleton"
+import LoadingStudentSkeleton from "@/skeletons/LoadingStudentSkeleton"
 import NoStudentSelectedSkeleton from "@/skeletons/NoStudentSelectedSkeleton"
 //import { Metadata } from "next";
 
@@ -107,7 +108,7 @@ function MenuAlunos({setAluno}){
     return diff;
   }
   
-  if(!alunos) return <Loading bg="transparent"/>
+  if(!alunos) return <div className="menuAlunos"><LoadingStudentSkeleton/></div> //<Loading bg="transparent"/>
   if(alunos.length == 0) 
     return(
       /*<div style={{color: "gray", display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "transparent"}}> 
