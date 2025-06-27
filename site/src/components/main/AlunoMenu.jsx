@@ -1,4 +1,5 @@
 import { Aluno } from "@/app/(main)/alunos/page";
+import NoStudentSkeleton from "@/skeletons/NoStudentSkeleton"
 export default function AlunosMenu({alunos}){
   function timeDiff(before){
     let agr = new Date();
@@ -25,7 +26,7 @@ export default function AlunosMenu({alunos}){
     }
     return diff;
   }
-
+  if(alunos.length == 0) return <NoStudentSkeleton />
   return(
     <div className="homePageAlunos">
 <div className="homePageAlunosSection">

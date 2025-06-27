@@ -12,6 +12,8 @@ import Loading from "@components/Loading";
 import { useAlert } from "@/context/AlertContext";
 import NoAppsSkeleton from "@/skeletons/NoAppsSkeleton"
 import NoSitesSkeleton from "@/skeletons/NoSitesSkeleton"
+import LoadingAppSkeleton from "@/skeletons/LoadingAppSkeleton";
+import LoadingSiteSkeleton from "@/skeletons/LoadingSiteSkeleton";
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -61,7 +63,7 @@ export function EmptyMenu({text}){
             <AndroidIcon color="#358bff"/>
           <div>
             <span>{props.name}</span>
-            {props.loaded ? <small><small>{props.tentativas} tentativas</small></small> : ""}
+            {props.loaded ? <small><small>{props.tentativas} tentativa(s)</small></small> : ""}
           </div>
         </div>
         {
@@ -195,7 +197,8 @@ export function EmptyMenu({text}){
       })
 
       if(response.ok){
-        showAlert("Site adicionado com sucesso")
+        showAlert("Site adicionado com sucesso");
+        setValidatedSite(null)
       } else
         showAlert("Erro ao adicionar site")
 
@@ -285,13 +288,13 @@ export function EmptyMenu({text}){
     }, [])
 
     /*    if(apps.length < 1) return <EmptyMenu text="Nenhum aplicativo adicionado" />*/
-    if(!apps) return <Loading bg="transparent" />
+    if(!apps) return <LoadingAppSkeleton/> //<Loading bg="transparent" />
     return(
       <div className="menuItem" id="menuAplicativos">
         {apps.length < 1 && <NoAppsSkeleton/>}
         {apps.map((elemento, index)=>{
           if(!elemento.active) return null;
-          return <Aplicativo key={"app"+index} app={elemento} name={elemento.name} loaded={true} tentativas={4/*elemento.tentativas*/}/>
+          return <Aplicativo key={"app"+index} app={elemento} name={elemento.name} loaded={true} tentativas={elemento.attempts/*elemento.tentativas*/}/>
         }
         )}
         <Add onClick={()=>{setSubMenu("adicionarAplicativos")}}/>
@@ -341,7 +344,7 @@ export function EmptyMenu({text}){
       }
     }, []) 
 
-    if(!sites) return <Loading bg="transparent" />
+    if(!sites) return <LoadingSiteSkeleton/>
     return(
       <div className="menuItem" id="menuSites">
         {sites.length < 1 && <NoSitesSkeleton/>}

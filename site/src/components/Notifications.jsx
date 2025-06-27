@@ -4,7 +4,8 @@ import {NotificationIcon} from "@icon";
 import {useState, useEffect} from "react";
 import { useAlert } from "@/context/AlertContext";
 import NoNotificationSkeleton from "@/skeletons/NoNotificationSkeleton"
- 
+import LoadingNotificationSkeleton from "@/skeletons/LoadingNotificationSkeleton";
+
 export default function	Notifications(){
 	const [loadingNot, setLoadingNot] = useState(true);
 	const [data, setData] = useState([])
@@ -46,7 +47,11 @@ export default function	Notifications(){
 
 	
 	if (loadingNot) {
-  		return <div className="notificationsContainer"><span>Carregando notificações...</span></div>
+  		return(
+		<div className="notificationsContainer">
+			<LoadingNotificationSkeleton/>
+		</div>
+		)
 	}
 
 	if (!data || data.length === 0) {

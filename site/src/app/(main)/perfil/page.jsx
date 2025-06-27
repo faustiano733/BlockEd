@@ -16,6 +16,8 @@ import MapaComRaio from "@/components/MapaComRaio";
 import { useAlert } from "@/context/AlertContext";
 import Notifications from "@components/Notifications";
 import NoExceptionSkeleton from "@/skeletons/NoExceptionSkeleton"
+import LoadingExceptionSkeleton from "@/skeletons/LoadingExceptionSkeleton"
+import LoadingLocationSkeleton from '@/skeletons/LoadingLocationSkeleton';
 
 function LocationMenu(){
   const [initialLoading, setInitialLoading] = useState(true);
@@ -74,7 +76,7 @@ function LocationMenu(){
   return (
     <>
     <div style={{width: "100%", margin: '0 auto',maxHeight:'60%', height: "60%", display: "flex", flexDirection: "column", gap: 10}}>
-      { initialLoading ? <Loading /> :
+      { initialLoading ? <LoadingLocationSkeleton />:
         <>
           <h4 className="titulo-mapa">Marque a localização da escola</h4>
           <MapaComRaio className='mapa-wrapper' onChange={handleLocationChange} initialPosition={{lat:locationData.latitude,lng:locationData.longitude}} initialRadius={locationData.radius} />
@@ -117,7 +119,7 @@ function ExceptionSection(){
     //const interval = setInterval(()=>fetchData(),2500)
     //return ()=>clearInterval(interval)
   },[])
-  if(!exceptions) return <Loading />
+  if(!exceptions) return <LoadingExceptionSkeleton/>
  if(!(exceptions.length >= 1)) return <NoExceptionSkeleton/>
  return (<section className="excecoesSection">
     {exceptions.map((exception,index)=>(

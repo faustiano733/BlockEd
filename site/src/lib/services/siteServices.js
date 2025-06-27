@@ -51,14 +51,30 @@ export async function validateSite(url_site) {
     }
 
     // Remove www. e protocolo para armazenamento consistente
-    const normalizedUrl = parsed.hostname.replace(/^www\./, '');
+    let normalizedUrl = parsed.hostname.replace(/^www\./, '');
     
     // Verificação adicional de conectividade (opcional)
     try {
       const resposta = await fetch(`https://${normalizedUrl}`, {
         method: 'HEAD', 
         timeout: 5000 
-      });    
+      });
+
+
+      console.log("URL formatada", normalizedUrl);
+      if(!normalizedUrl.startsWith("www.")){
+        console.log("URL formatada 2", normalizedUrl);
+        const attempt = await fetch(`https://www.${normalizedUrl}`, {
+          method: 'HEAD', 
+          timeout: 5000 
+        })
+
+        //console.log("resposta", attempt)
+
+        if(attempt.ok || (!attempt.ok && attempt.redirected))
+          normalizedUrl = "www." + normalizedUrl
+
+      }    
       
       return { 
         isValid: true, 

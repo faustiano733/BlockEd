@@ -8,6 +8,10 @@ import AlunosMenu from "@/components/main/AlunoMenu";
 import { useAlert } from "@/context/AlertContext";
 import Notifications from "@components/Notifications";
 import dynamic from 'next/dynamic';
+import LoadingLineChartSkeleton from "@/skeletons/LoadingLineChartSkeleton"
+import LoadingBarChartSkeleton from "@/skeletons/LoadingBarChartSkeleton"
+import LoadingDoughChartSkeleton from "@/skeletons/LoadingDoughChartSkeleton"
+import NoChartDataSkeleton from "@/skeletons/NoChartDataSkeleton"
 import 'chart.js/auto';
 
 function lineLabels(){
@@ -101,7 +105,7 @@ const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
     
     
 
-export function DetalhesMenu({data}){
+export function DetalhesMenu({data, loading}){
   const dataDoughnut = {
       labels: [
         'Normal',
@@ -129,7 +133,9 @@ export function DetalhesMenu({data}){
       </div>
         );
       }
-  
+      
+      if(loading) return <LoadingDoughChartSkeleton/>
+      if(data[0] == 0 && data[1] == 0 && data[2] == 0) return <NoChartDataSkeleton/>
       return(
         <div className="homeDoughnut">
       <h5>Actividade dos alunos</h5>
@@ -145,7 +151,7 @@ export function DetalhesMenu({data}){
       );
 }
   
-export function TentativasMenu({data}){
+export function TentativasMenu({data, loading}){
   const dataLine = {
       labels: lineLabels(),
       datasets: [
@@ -166,13 +172,14 @@ export function TentativasMenu({data}){
       ],
     };   
     
-  
+      if(loading) return <LoadingLineChartSkeleton />
+      if(data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 0 && data[4] == 0 && data[5] == 0 && data[6] == 0) return <NoChartDataSkeleton/>
       return(
         <Line data={dataLine} options={optionsLine}/>
       );
 }
 
-export function AppsMenu({data, labels}){
+export function AppsMenu({data, labels, loading}){
   const optionsBar = {
       plugins: {
         legend: {
@@ -228,7 +235,8 @@ export function AppsMenu({data, labels}){
       ],
     };
     
-    
+    if(loading) return <LoadingBarChartSkeleton/>
+    if((data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 0) || (data[0] == 0 && data[1] == 0 && data[2] == 0 && data.length == 3) || (data[0] == 0 && data[1] == 0 && data.length == 2) || (data[0] == 0 && data.length == 1)) return <NoChartDataSkeleton/>
     return(
       <Bar data={dataBar} options={optionsBar}/>
     );
@@ -266,18 +274,18 @@ function HomePageHeader({totalAlunos, totalDispositivos,totalApps,totalSites}){
   );
 }
 
-function MainGraphConteiner({alunos, overviewMenu, lineData, doughData}){
+function MainGraphConteiner({alunos, overviewMenu, lineData, doughData, barData, barLabels, loading}){
     return(
       <div className="homeOverview">
         {
     overviewMenu == "tentativas" ?
-    <TentativasMenu  data={lineData}/> :
+    <TentativasMenu  data={lineData} loading={loading}/> :
     overviewMenu == "apps" ?
-    <AppsMenu alunos={alunos} /> :
+    <AppsMenu data={barData} labels={barLabels} loading={loading}/> :
     overviewMenu == "alunos" ?
           <AlunosMenu alunos={alunos} /> :
           overviewMenu == "detalhes" ?
-          <DetalhesMenu data={doughData}/> :
+          <DetalhesMenu data={doughData} loading={loading}/> :
     null
            
         }
@@ -297,9 +305,11 @@ export default function Home() {
   const [totalSites, setTotalSites] = useState(0);
   const [lineData, setLineData] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [doughData, setDoughData] = useState([0, 0, 0]);
-  const [barLabels, setBarLabels] = useState([0, 0, 0, 0]);
-  const [barData, setBarData] = useState(["", "", "", ""])
+  const [barLabels, setBarLabels] = useState(["", "", "", ""]);
+  const [barData, setBarData] = useState([0, 0, 0, 0]);
   const {showAlert} = useAlert();
+  const [loading, setLoading] = useState(true);
+
   function Overview(){ 
     return(
       <div className="overviewTit">
@@ -337,6 +347,7 @@ export default function Home() {
             setDoughData([data.normalSt, data.alertSt, data.suspectSt])
             setBarData(data.appAttemptsData)
             setBarLabels(data.appAttemptsLabel)
+            setLoading(false);
           } catch(error){
 
           } finally {
@@ -406,7 +417,7 @@ export default function Home() {
       <HomePageHeader totalAlunos={totalAlunos} totalApps={totalApps} totalDispositivos={totalDispositivos} totalSites={totalSites} />
       <Overview />
       <div id="homePageContent">
-        <MainGraphConteiner alunos={alunos} overviewMenu={overviewMenu} lineData={lineData} doughData={doughData} barData={barData} barLabels={barLabels}/>
+        <MainGraphConteiner loading={loading} alunos={alunos} overviewMenu={overviewMenu} lineData={lineData} doughData={doughData} barData={barData} barLabels={barLabels}/>
       </div>
     </div>
 
@@ -415,12 +426,12 @@ export default function Home() {
     <div className="homePageDesktop">
       <HomePageHeader  totalAlunos={totalAlunos} totalApps={totalApps} totalDispositivos={totalDispositivos} totalSites={totalSites} />
       <div className="desktopGraphConteiner">
-        <section> <TentativasMenu data={lineData}/> </section>
-        <section> <AppsMenu data={barData} labels={barLabels}/> </section>
+        <section> <TentativasMenu data={lineData} loading={loading}/> </section>
+        <section> <AppsMenu data={barData} labels={barLabels} loading={loading}/> </section>
       </div>
       <div className="othersConteiner">
         <section className="section1"><AlunosMenu alunos={alunos} /></section>
-        <section className="section2"><DetalhesMenu data={doughData}/></section>
+        <section className="section2"><DetalhesMenu data={doughData} loading={loading}/></section>
       </div>
     </div>
     {/*<Notifications />*/}

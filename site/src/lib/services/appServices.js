@@ -1,10 +1,35 @@
-import { apps } from "../db/models.js";
+import { apps, attempt } from "../db/models.js";
 import gplay from "google-play-scraper";
 import db from "../db/connection";
+import {getNumberOfAttempts} from "@/lib/services/attemptServices";
 
 export async function getAllApps(idSchool){
-    const all_apps_list = await apps.findAll({where:{idSchool:idSchool}})
-    return all_apps_list
+    let all_apps_list = await apps.findAll({where:{idSchool:idSchool}})
+    let all_apps = []
+    for(let i = 0; i < all_apps_list.length; i ++){
+        let el = all_apps_list[i]
+        let at = await attempt.count({
+            where: {
+                idSchool,
+                value: el.packageName
+            }
+        })
+        //console.log(at)
+        all_apps = [...all_apps, {
+            id: el.id, 
+            name: el.name, 
+            active: el.active, 
+            packageName: el.packageName, 
+            idSchool: el.idSchool, 
+            createdAt: el.createdAt, 
+            attempts: at
+        }]
+        //console.log(all_apps_list[index])
+    }
+
+    console.log(all_apps)
+
+    return all_apps
 }
 
 export async function getApp(app_name){
