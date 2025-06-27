@@ -225,19 +225,7 @@ public class LocationService extends Service {
                     return;
                 }
 
-                if(Functions.isException(LocationService.this)){
-                    stopService(new Intent(LocationService.this, CamMonitorService.class));
-                    stopService(new Intent(LocationService.this, AppMonitorService.class));
-                    
-                    Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
-                    stopIntent.setAction("STOP_VPN");
-                    startService(stopIntent);
-
-                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
-                    stopSiteIntent.setAction("STOP_VPN");
-                    startService(stopSiteIntent);
-                    return;
-                }
+                
 
 
                 double latitude = location.getLatitude();
@@ -434,6 +422,20 @@ public void onLocationChanged(Location location) {
     }
 
     private void updateInfo(){
+        if(Functions.isException(LocationService.this)){
+                    stopService(new Intent(LocationService.this, CamMonitorService.class));
+                    stopService(new Intent(LocationService.this, AppMonitorService.class));
+                    
+                    Intent stopIntent = new Intent(LocationService.this, InternetBlockerService.class);
+                    stopIntent.setAction("STOP_VPN");
+                    startService(stopIntent);
+
+                    Intent stopSiteIntent = new Intent(LocationService.this, SiteBlockerService.class);
+                    stopSiteIntent.setAction("STOP_VPN");
+                    startService(stopSiteIntent);
+                    return;
+                }
+                
         File file = new File(FILE_PATH);
 
         if(!file.exists()){

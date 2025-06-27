@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashSet;
 import java.util.Set;
+import android.content.pm.PackageManager;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -80,7 +81,13 @@ public class InternetBlockerService extends VpnService implements Runnable {
         Builder builder = new Builder();
         builder.addAddress("10.0.0.2", 32); // Endereço IP virtual para a VPN
         builder.addRoute("0.0.0.0", 0); // Redireciona todo tráfego para a VPN
-        builder.setBlocking(true); // Garante que o tráfego seja processado corretamente
+        builder.setBlocking(true);
+         try {
+            builder.addDisallowedApplication("com.blocked"); // App que será excluído da VPN
+        } catch (PackageManager.NameNotFoundException e) {
+            
+        }
+        // Garante que o tráfego seja processado corretamente
         vpnInterface = builder.establish();
     }
 

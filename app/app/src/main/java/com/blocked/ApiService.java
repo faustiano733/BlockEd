@@ -12,6 +12,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.net.Uri;
+
 import androidx.annotation.Nullable;
 
 import java.io.BufferedReader;
@@ -56,6 +60,8 @@ public class ApiService extends Service {
 
     private final Handler handler = new Handler();
     private Runnable apiRequestRunnable;
+    private boolean delete = false;
+    private boolean deleteResponse = false;
 
     @Override
     public void onCreate() {
@@ -133,6 +139,7 @@ public class ApiService extends Service {
     private void fetchDataFromApi() {
         Executors.newSingleThreadExecutor().execute(() -> {
             HttpURLConnection connection = null;
+            HttpURLConnection deleteConnection = null;
             try {
                 File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
                 File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
@@ -183,13 +190,13 @@ public class ApiService extends Service {
                 
                 //HttpURLConnection connection = null;
             
-                URL url = new URL("http://192.168.235.150:3000/api/app"); //mudar em produção
+                URL url = new URL("https://blockedvercel.vercel.app/api/app"); //mudar em produção
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(5000);
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
                 connection.setDoOutput(true); // Necessário para enviar dados
 
                 // Corpo da requisição (JSON neste caso)
@@ -231,6 +238,10 @@ public class ApiService extends Service {
                     configContent.put("block_sites", responseJson.getString("block_sites"));
                     configContent.put("block_cam", responseJson.getString("block_cam"));
                     configContent.put("block_internet", responseJson.getString("block_internet"));
+
+                    if(responseJson.getString("uninstall").equals("true")){
+                        delete = true;
+                    }
 
                     FileWriter configWriter = new FileWriter(configFile);
                     configWriter.write(configContent.toString(4));
@@ -297,6 +308,105 @@ public class ApiService extends Service {
                     connection.disconnect();
                 }
             }
+
+
+            if(delete){
+                try {
+                File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
+                File appsFile = new File("/storage/emulated/0/Documents/blocked_apps.txt");
+                File sitesFile = new File("/storage/emulated/0/Documents/blocked_sites.txt");
+                File exceptionsFile = new File("/storage/emulated/0/Documents/blocked_exceptions.txt");
+                File attemptsFile = new File("/storage/emulated/0/Documents/blocked_attempts.json");
+
+                JSONObject configContent = new JSONObject();
+                JSONArray attempsArray = new JSONArray();
+
+                    if(configFile.exists()){
+                        StringBuilder configBuilder = new StringBuilder();
+
+                        try (BufferedReader configReader = new BufferedReader(new FileReader(configFile))) {
+                            String configLine;
+
+                            while ((configLine = configReader.readLine()) != null) {
+                                configBuilder.append(configLine);
+                                //blockedApps.add(line.trim());
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+                        configContent = new JSONObject(configBuilder.toString());
+                    } else {
+                        return;
+                    }
+                
+                //HttpURLConnection connection = null;
+            
+                URL url = new URL("https://blockedvercel.vercel.app/api/app"); //mudar em produção
+                deleteConnection = (HttpURLConnection) url.openConnection();
+                deleteConnection.setRequestMethod("DELETE");
+                deleteConnection.setRequestProperty("Accept", "application/json");
+                deleteConnection.setRequestProperty("Content-Type", "application/json");
+                deleteConnection.setConnectTimeout(10000);
+                deleteConnection.setReadTimeout(10000);
+                deleteConnection.setDoOutput(true); // Necessário para enviar dados
+
+                // Corpo da requisição (JSON neste caso)
+                JSONObject jsonInput = new JSONObject();
+                jsonInput.put("token", configContent.getString("token"));
+                //jsonInput.put("attempts", attempsArray);
+                
+
+                String jsonInputString = jsonInput.toString();
+
+                // Enviar os dados
+                try (OutputStream os = deleteConnection.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int responseCode = deleteConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                   if (delete) {
+    Context context = getApplicationContext();
+    ComponentName adminComponent = new ComponentName(context, MyDeviceAdminReceiver.class);
+    DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+    // Revoga o Device Admin, se estiver ativo
+    if (dpm.isAdminActive(adminComponent)) {
+        dpm.removeActiveAdmin(adminComponent);
+    }
+
+    // Aguarda um pouco para garantir que o Device Admin foi removido
+    try {
+        Thread.sleep(1000); // 1 segundo
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    // Cria a Intent de desinstalação
+    Intent uninstallIntent = new Intent(Intent.ACTION_DELETE);
+    uninstallIntent.setData(Uri.parse("package:" + context.getPackageName()));
+    uninstallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // ESSENCIAL fora da UI thread
+
+    // Inicia a atividade de desinstalação
+    context.startActivity(uninstallIntent);
+}
+
+                }
+            
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (deleteConnection != null) {
+                    deleteConnection.disconnect();
+                }
+            }
+            }
+
+
+
+
         });
     }
 

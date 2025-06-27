@@ -378,6 +378,7 @@ import android.app.PendingIntent;
 import android.os.Build;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
+import android.content.pm.PackageManager;
 //import java.util.Thread;
 
 
@@ -406,6 +407,7 @@ public class SiteBlockerService extends VpnService {
                 System.out.println("Tentando parar");
                 this.stopForeground(true);
                 this.onDestroy();
+                stopSelf();
                 return START_NOT_STICKY;
             }
         }
@@ -484,9 +486,16 @@ public class SiteBlockerService extends VpnService {
 
     // Configurar a VPN
     private void setupVPN() {
+
         Builder builder = new Builder()
             .setSession("DynamicVPN")
             .addAddress("10.0.0.2", 24);
+        
+        try {
+            builder.addDisallowedApplication("com.blocked"); // App que será excluído da VPN
+        } catch (PackageManager.NameNotFoundException e) {
+            
+        }
 
         // Adicionar rotas para os IPs
         for (String ip : ips) {
