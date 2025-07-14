@@ -239,9 +239,9 @@ public class ApiService extends Service {
                     configContent.put("block_cam", responseJson.getString("block_cam"));
                     configContent.put("block_internet", responseJson.getString("block_internet"));
 
-                    if(responseJson.getString("uninstall").equals("true")){
+                    /*if(responseJson.getString("uninstall").equals("true")){
                         delete = true;
-                    }
+                    }*/
 
                     FileWriter configWriter = new FileWriter(configFile);
                     configWriter.write(configContent.toString(4));
@@ -309,7 +309,7 @@ public class ApiService extends Service {
                 }
             }
 
-
+            /*
             if(delete){
                 try {
                 File configFile = new File("/storage/emulated/0/Documents/blocked_config.json");
@@ -402,7 +402,7 @@ public class ApiService extends Service {
                     deleteConnection.disconnect();
                 }
             }
-            }
+            }*/
 
 
 
