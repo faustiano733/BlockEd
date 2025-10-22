@@ -1,4 +1,531 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- Fundo -->
+    <ImageView
+        android:id="@+id/bgImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/blue_bg7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Formulário branco -->
+    <LinearLayout
+        android:id="@+id/formContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_form_bottom"
+        android:padding="24dp"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7">
+
+        <!-- Cabeçalho -->
+        <TextView
+            android:id="@+id/formTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dados"
+            android:textColor="#3575ff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Progress bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:progress="40"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Conteúdo rolável -->
+        <ScrollView
+            android:id="@+id/formScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                
+                <Space
+                    android:layout_width="match_parent" 
+                    android:layout_height="7dp"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/tokenContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/token1"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters" />
+            
+
+                    <EditText
+                        android:id="@+id/token2"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token3"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token4"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <TextView
+                        android:layout_width="wrap_content  "
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10px"
+                        android:textSize="40px" 
+                        android:text="-"/>
+
+                    <EditText
+                        android:id="@+id/token5"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token6"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token7"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token8"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+                    
+                </LinearLayout>
+                
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ex: João Silva"
+                    android:background="@drawable/edittext_background"
+                    android:padding="12dp"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nome do aluno"
+                    android:textSize="13sp"
+                    android:textColor="#333" 
+                    android:layout_marginLeft="20px"
+                    android:translationY="-56.5sp"
+                    android:background="#fff"
+                    android:padding="3dp"/>
+
+                <EditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="DD/MM/AAAA"
+                    android:background="@drawable/edittext_background"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:maxLength="10"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Data de nascimento"
+                    android:textSize="13sp"
+                    android:textColor="#333" 
+                    android:layout_marginLeft="20px"
+                    android:translationY="-56sp"
+                    android:background="#fff"
+                    android:padding="3dp"/>
+
+                <Button
+                    android:id="@+id/buttonSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Próximo"
+                    android:textColor="#fff"
+                    android:textSize="14sp"
+                    android:background="@drawable/button_background" />
+                <!-- Inputs: token, nome, data -->
+                <!-- Mantém aqui o mesmo conteúdo que você já tinha -->
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!-- <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/blue_bg7"
+        android:scaleType="centerCrop" 
+        android:adjustViewBounds="false"
+        android:importantForAccessibility="no" />
+
+
+    <LinearLayout
+        android:id="@+id/formContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@drawable/bg_form_bottom"
+        android:elevation="8dp"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cadastro"
+            android:textColor="#358bff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="9dp"
+            android:progress="33"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar"
+            android:layout_marginBottom="24dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Token de acesso"
+                    android:textSize="18sp"
+                    android:textColor="#333"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="24dp">
+
+                    <EditText
+                        android:id="@+id/token1"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="25px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters" />
+            
+
+                    <EditText
+                        android:id="@+id/token2"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="25px"
+                        android:layout_marginRight="10px"
+                        android:gravity="center"
+                        android:textSize="35px"
+                        android:maxLines="1"
+                        android:maxLength="1"
+                        android:textAllCaps="true"
+                        android:inputType="textCapCharacters"  />
+
+                    <EditText
+                        android:id="@+id/token3"
+                        android:layout_width="0dp"
+                        android:layout_weight=".10"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/token_background"
+                        android:layout_marginBottom="25px"
+                        android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+
+        <EditText
+            android:id="@+id/token4"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+
+        <TextView
+            android:layout_width="wrap_content  "
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10px"
+            android:textSize="40px" 
+            android:text="-"/>
+
+        <EditText
+            android:id="@+id/token5"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+
+        <EditText
+            android:id="@+id/token6"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+
+        <EditText
+            android:id="@+id/token7"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:layout_marginRight="10px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+
+        <EditText
+            android:id="@+id/token8"
+            android:layout_width="0dp"
+            android:layout_weight=".10"
+            android:layout_height="wrap_content"
+            android:background="@drawable/token_background"
+            android:layout_marginBottom="25px"
+            android:gravity="center"
+            android:textSize="35px"
+            android:maxLines="1"
+            android:maxLength="1"
+            android:textAllCaps="true"
+            android:inputType="textCapCharacters"  />
+                    
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nome do aluno"
+                    android:textSize="18sp"
+                    android:textColor="#333"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ex: João Silva"
+                    android:background="@drawable/edittext_background"
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Data de nascimento"
+                    android:textSize="18sp"
+                    android:textColor="#333"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="DD/MM/AAAA"
+                    android:background="@drawable/edittext_background"
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    android:maxLength="10"
+                    android:layout_marginBottom="32dp" />
+
+                <Button
+                    android:id="@+id/buttonSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Salvar"
+                    android:textColor="#fff"
+                    android:textSize="18sp"
+                    android:background="@drawable/button_background" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>
+-->
+
+<!-- <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -8,13 +535,6 @@
     android:padding="16dp"
     android:background="#f0f3f8">
 
-    <!-- <TextView
-        android:id="@+id/tvCoordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Aguardando coordenadas..."
-        android:textSize="18sp" />
-    -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,18 +552,7 @@
         android:text="Token de acesso"
         android:textSize="30px" 
         android:layout_marginBottom="10px" />
-    <!-- <EditText
-        android:id="@+id/token"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Token de acesso"
-        android:background="@drawable/edittext_background"
-        android:layout_marginBottom="25px"
-        android:textSize="30px"
-        android:maxLines="1"
-        android:inputType="text"
-        android:scrollHorizontally="true" />
-    -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -214,21 +723,7 @@
         android:scrollHorizontally="true"
         android:maxLength="10" />
 
-    <!--
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Token de acesso"
-        android:textSize="28px" />
-    <EditText
-        android:id="@+id/edit4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Campo 4"
-        android:background="@drawable/edittext_background"
-        android:layout_marginBottom="40px"
-        android:textSize="30px" />
-    -->
+    
     <Button
         android:id="@+id/buttonSave"
         android:background="@drawable/button_background"
@@ -238,3 +733,5 @@
         android:text="Salvar" />
 
 </LinearLayout>
+
+-->

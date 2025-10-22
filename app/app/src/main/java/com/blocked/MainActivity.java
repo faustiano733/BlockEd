@@ -36,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.ComponentName;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final View form = findViewById(R.id.formContainer);
+
+        // Após layout estar medido, ajusta altura
+        /*form.post(() -> {
+            int screenHeight = getResources().getDisplayMetrics().heightPixels;
+            int targetHeight = (int) (screenHeight * 0.7); // 70% da tela
+            ViewGroup.LayoutParams lp = form.getLayoutParams();
+            lp.height = targetHeight;
+            form.setLayoutParams(lp);
+        });*/
 
         //token = findViewById(R.id.token);
         name = findViewById(R.id.name);
