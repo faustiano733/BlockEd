@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
 # dependencies
 site/node_modules
 site/.pnp
@@ -10,7 +11,7 @@ site/.pnp
 !.yarn/releases
 !.yarn/versions
 
-site/
+**/site/
 # testing
 site/coverage
 
