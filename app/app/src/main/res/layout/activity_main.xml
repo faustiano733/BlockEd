@@ -50,7 +50,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="12dp"
-            android:progress="40"
+            android:progress="25"
             android:max="100"
             android:progressDrawable="@drawable/progress_bar"
             android:layout_marginBottom="24dp" />
@@ -99,7 +99,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="55dp"
                     android:visibility="gone">
 
                     <EditText
@@ -108,6 +109,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -124,6 +126,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -139,6 +142,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -154,6 +158,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -176,6 +181,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -191,6 +197,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -206,6 +213,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:layout_marginRight="10px"
                         android:gravity="center"
@@ -221,6 +229,7 @@
                         android:layout_weight=".10"
                         android:layout_height="wrap_content"
                         android:background="@drawable/token_background"
+                        android:layout_marginTop="2dp"
                         android:layout_marginBottom="10px"
                         android:gravity="center"
                         android:textSize="35px"
@@ -230,57 +239,101 @@
                         android:inputType="textCapCharacters"  />
                     
                 </LinearLayout>
-                
-                <EditText
-                    android:id="@+id/name"
+                <LinearLayout
+                    android:id="@+id/dataContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ex: João Silva"
-                    android:background="@drawable/edittext_background"
-                    android:padding="12dp"
-                    android:textSize="14sp"/>
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nome do aluno"
-                    android:textSize="13sp"
-                    android:textColor="#333" 
-                    android:layout_marginLeft="20px"
-                    android:translationY="-56.5sp"
-                    android:background="#fff"
-                    android:padding="3dp"/>
+                    <Space
+                        android:layout_width="match_parent" 
+                        android:layout_height="7dp"
+                    />
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ex: João Silva"
+                        android:background="@drawable/edittext_background"
+                        android:padding="12dp"
+                        android:textSize="14sp"/>
 
-                <EditText
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="DD/MM/AAAA"
-                    android:background="@drawable/edittext_background"
-                    android:padding="12dp"
-                    android:textSize="14sp"
-                    android:maxLength="10"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nome do aluno"
+                        android:textSize="13sp"
+                        android:textColor="#333" 
+                        android:layout_marginLeft="20px"
+                        android:translationY="-56.5sp"
+                        android:background="#fff"
+                        android:padding="3dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Data de nascimento"
-                    android:textSize="13sp"
-                    android:textColor="#333" 
-                    android:layout_marginLeft="20px"
-                    android:translationY="-56sp"
-                    android:background="#fff"
-                    android:padding="3dp"/>
+                    <EditText
+                        android:id="@+id/date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="DD/MM/AAAA"
+                        android:background="@drawable/edittext_background"
+                        android:padding="12dp"
+                        android:textSize="14sp"
+                        android:maxLength="10"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Data de nascimento"
+                        android:textSize="13sp"
+                        android:textColor="#333" 
+                        android:layout_marginLeft="20px"
+                        android:translationY="-56sp"
+                        android:background="#fff"
+                        android:padding="3dp"/>
+
+                </LinearLayout>
 
                 <Button
-                    android:id="@+id/buttonSave"
+                    android:id="@+id/fase1Btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Próximo"
                     android:textColor="#fff"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:background="@drawable/button_background" />
-                <!-- Inputs: token, nome, data -->
+
+                <LinearLayout
+                    android:id="@+id/fase2Buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    
+                    <Button
+                        android:id="@+id/back_button"
+                        android:layout_width="0dp"
+                        android:layout_weight=".48"
+                        android:layout_height="wrap_content"
+                        android:text="Voltar"
+                        android:textColor="#0a0a0a"
+                        android:textSize="13sp"
+                        android:background="@drawable/back_button_background" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_weight=".04" 
+                        android:layout_height="7dp"/>
+
+                    <Button
+                        android:id="@+id/buttonSave"
+                        android:layout_width="0dp"
+                        android:layout_weight=".48"
+                        android:layout_height="wrap_content"
+                        android:text="Finalizar"
+                        android:textColor="#fff"
+                        android:textSize="13sp"
+                        android:background="@drawable/button_background" />
+                </LinearLayout>
                 <!-- Mantém aqui o mesmo conteúdo que você já tinha -->
 
             </LinearLayout>

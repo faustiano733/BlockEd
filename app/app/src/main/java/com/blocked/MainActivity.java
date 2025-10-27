@@ -38,8 +38,13 @@ import android.content.ComponentName;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.KeyEvent;
+import android.animation.ObjectAnimator;
+import android.view.animation.DecelerateInterpolator;
+
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int USAGE_STATS_REQUEST_CODE = 123;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 1;
     private static final int REQUEST_CODE_MANAGE_STORAGE = 1234;
-    private TextView tvCoordinates;
+    private TextView tvCoordinates, formTitle;
     private EditText token1;
     private EditText token2;
     private EditText token3;
@@ -71,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText name;
     private EditText date;
     private Button btnSave;
+    private Button fase1Btn, back_button;
+    private LinearLayout loadingContainer, tokenContainer, dataContainer, fase2Buttons;
+    private ProgressBar progressBar;
     private BroadcastReceiver locationReceiver;
     private ComponentName adminComponent;
     
@@ -92,10 +100,18 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
         //token = findViewById(R.id.token);
+        formTitle = findViewById(R.id.formTitle);
         name = findViewById(R.id.name);
         date = findViewById(R.id.date);
         //editText4 = findViewById(R.id.editText4);
         btnSave = findViewById(R.id.buttonSave);
+        fase1Btn = findViewById(R.id.fase1Btn);
+        back_button = findViewById(R.id.back_button);
+        loadingContainer = findViewById(R.id.loadingContainer);
+        tokenContainer = findViewById(R.id.tokenContainer);
+        dataContainer = findViewById(R.id.dataContainer);
+        fase2Buttons = findViewById(R.id.fase2Buttons);
+        progressBar = findViewById(R.id.progressBar);
         token1 = findViewById(R.id.token1);
         token2 = findViewById(R.id.token2);
         token3 = findViewById(R.id.token3);
@@ -157,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                phase3();
                 saveConfig();
                 //hideApp();
                 /*Intent stopIntent = new Intent(MainActivity.this, InternetBlockerService.class);
@@ -164,6 +181,22 @@ public class MainActivity extends AppCompatActivity {
                 startService(stopIntent);*/
             }
         });
+
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phase1();
+            }
+        });
+
+        fase1Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phase2();
+            }
+        });
+
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -206,6 +239,45 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         //registerLocationReceiver();
+    }
+
+    private void phase1(){
+        formTitle.setText("Dados do estudante");
+        customSetProgress(progressBar, 25);
+        loadingContainer.setVisibility(View.GONE);
+        tokenContainer.setVisibility(View.GONE);
+        fase2Buttons.setVisibility(View.GONE);
+        dataContainer.setVisibility(View.VISIBLE);
+        fase1Btn.setVisibility(View.VISIBLE);
+    }
+
+    private void phase2(){
+        formTitle.setText("Código de acesso");
+        customSetProgress(progressBar, 50);
+        loadingContainer.setVisibility(View.GONE);
+        dataContainer.setVisibility(View.GONE);
+        fase1Btn.setVisibility(View.GONE);
+        tokenContainer.setVisibility(View.VISIBLE);
+        fase2Buttons.setVisibility(View.VISIBLE);
+    }
+
+    private void phase3(){
+        formTitle.setText("Carregando dados");
+        customSetProgress(progressBar, 75);
+        dataContainer.setVisibility(View.GONE);
+        fase1Btn.setVisibility(View.GONE);
+        tokenContainer.setVisibility(View.GONE);
+        fase2Buttons.setVisibility(View.GONE);
+        loadingContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void customSetProgress(ProgressBar pgb, int newValue){
+        int progressoAtual = pgb.getProgress();
+
+        ObjectAnimator animation = ObjectAnimator.ofInt(pgb, "progress", progressoAtual, newValue);
+        animation.setDuration(600); // duração em milissegundos
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
     }
 
     private void saveConfig() {
